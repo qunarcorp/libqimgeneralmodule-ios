@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMGeneralModule"
-  s.version      = "0.0.1-beta"
+  s.version      = "0.0.2-beta"
   s.summary      = "Qunar chat App 6.0+ version QIMGeneralModule"
   s.description  = <<-DESC
                    Qunar QIMGeneralModule公共模块
@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
       webrtc.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMWebRTCEnable=1'}
       webrtc.frameworks = 'VideoToolbox', 'GLKit', 'CoreTelephony', 'AVFoundation', 'UIKit', 'Foundation'
       webrtc.dependency 'SocketRocket'
-      webrtc.dependency 'QIMOpenSSL'
+
       webrtc.dependency 'GoogleWebRTC'
       webrtc.libraries = 'stdc++', 'bz2', 'resolv'
 
@@ -65,6 +65,13 @@ Pod::Spec.new do |s|
       calendar.public_header_files = 'QIMGeneralModule/QIMCalendars/**/*{h,m,c}'
   end
   
+  s.dependency 'QIMCommon', '~> 1.0.0-beta'
+  s.dependency 'QIMOpenSSL', '~> 1.0.1-beta'
+  s.dependency 'QIMKitVendor', '~> 1.1.4-beta'
+  s.dependency 'QIMPublicRedefineHeader', '~> 0.0.2-beta'
+  s.dependency 'QIMCommonCategories', '~> 1.0.1-beta'
+
+
   s.frameworks = 'Foundation', 'UIKit', 'AVFoundation', 'CoreTelephony'
 
 end
