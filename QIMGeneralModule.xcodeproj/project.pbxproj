@@ -47,12 +47,10 @@
 		2C1D0F7B215F2CBA00275225 /* icon_av_audio_micro_normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C1D0F71215F2CBA00275225 /* icon_av_audio_micro_normal@2x.png */; };
 		2C1D0F7C215F2CBA00275225 /* icon_call_reject_normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C1D0F72215F2CBA00275225 /* icon_call_reject_normal@2x.png */; };
 		2C1D0F7D215F2CBA00275225 /* icon_avp_loudspeaker_gray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C1D0F73215F2CBA00275225 /* icon_avp_loudspeaker_gray@2x.png */; };
-		2C1D0F7E215F2CBA00275225 /* portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C1D0F74215F2CBA00275225 /* portrait.png */; };
 		2C1D0F7F215F2CBA00275225 /* im_skin_icon_audiocall_bg.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 2C1D0F75215F2CBA00275225 /* im_skin_icon_audiocall_bg.jpg */; };
 		2C1D0F80215F2CBA00275225 /* icon_av_reply_message_normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C1D0F76215F2CBA00275225 /* icon_av_reply_message_normal@2x.png */; };
 		2C1D0F81215F2CBA00275225 /* icon_av_audio_receive_normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C1D0F77215F2CBA00275225 /* icon_av_audio_receive_normal@2x.png */; };
 		2C1D0F82215F2CBA00275225 /* icon_audio_receive_normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C1D0F78215F2CBA00275225 /* icon_audio_receive_normal@2x.png */; };
-		2C1D0F83215F2CBA00275225 /* view_audio_reply_message_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C1D0F79215F2CBA00275225 /* view_audio_reply_message_bg@2x.png */; };
 		2C1D0F84215F2CBA00275225 /* icon_avp_camera_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C1D0F7A215F2CBA00275225 /* icon_avp_camera_white@2x.png */; };
 		2C33141420AC24E500819A6E /* QIMGeneralModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C33141220AC24E500819A6E /* QIMGeneralModule.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2C3314C120AC347500819A6E /* QIMWebRTCSocketClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C33146120AC347500819A6E /* QIMWebRTCSocketClient.h */; };
@@ -119,12 +117,10 @@
 		2C1D0F71215F2CBA00275225 /* icon_av_audio_micro_normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_av_audio_micro_normal@2x.png"; sourceTree = "<group>"; };
 		2C1D0F72215F2CBA00275225 /* icon_call_reject_normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_call_reject_normal@2x.png"; sourceTree = "<group>"; };
 		2C1D0F73215F2CBA00275225 /* icon_avp_loudspeaker_gray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_avp_loudspeaker_gray@2x.png"; sourceTree = "<group>"; };
-		2C1D0F74215F2CBA00275225 /* portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = portrait.png; sourceTree = "<group>"; };
 		2C1D0F75215F2CBA00275225 /* im_skin_icon_audiocall_bg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = im_skin_icon_audiocall_bg.jpg; sourceTree = "<group>"; };
 		2C1D0F76215F2CBA00275225 /* icon_av_reply_message_normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_av_reply_message_normal@2x.png"; sourceTree = "<group>"; };
 		2C1D0F77215F2CBA00275225 /* icon_av_audio_receive_normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_av_audio_receive_normal@2x.png"; sourceTree = "<group>"; };
 		2C1D0F78215F2CBA00275225 /* icon_audio_receive_normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_audio_receive_normal@2x.png"; sourceTree = "<group>"; };
-		2C1D0F79215F2CBA00275225 /* view_audio_reply_message_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "view_audio_reply_message_bg@2x.png"; sourceTree = "<group>"; };
 		2C1D0F7A215F2CBA00275225 /* icon_avp_camera_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_avp_camera_white@2x.png"; sourceTree = "<group>"; };
 		2C33140F20AC24E400819A6E /* QIMGeneralModule.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = QIMGeneralModule.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C33141220AC24E500819A6E /* QIMGeneralModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMGeneralModule.h; sourceTree = "<group>"; };
@@ -229,12 +225,10 @@
 				2C1D0F71215F2CBA00275225 /* icon_av_audio_micro_normal@2x.png */,
 				2C1D0F72215F2CBA00275225 /* icon_call_reject_normal@2x.png */,
 				2C1D0F73215F2CBA00275225 /* icon_avp_loudspeaker_gray@2x.png */,
-				2C1D0F74215F2CBA00275225 /* portrait.png */,
 				2C1D0F75215F2CBA00275225 /* im_skin_icon_audiocall_bg.jpg */,
 				2C1D0F76215F2CBA00275225 /* icon_av_reply_message_normal@2x.png */,
 				2C1D0F77215F2CBA00275225 /* icon_av_audio_receive_normal@2x.png */,
 				2C1D0F78215F2CBA00275225 /* icon_audio_receive_normal@2x.png */,
-				2C1D0F79215F2CBA00275225 /* view_audio_reply_message_bg@2x.png */,
 				2C1D0F7A215F2CBA00275225 /* icon_avp_camera_white@2x.png */,
 			);
 			path = icons;
@@ -478,7 +472,6 @@
 				2C1D0F82215F2CBA00275225 /* icon_audio_receive_normal@2x.png in Resources */,
 				2C1D0F81215F2CBA00275225 /* icon_av_audio_receive_normal@2x.png in Resources */,
 				2C1D0F80215F2CBA00275225 /* icon_av_reply_message_normal@2x.png in Resources */,
-				2C1D0F7E215F2CBA00275225 /* portrait.png in Resources */,
 				2C3314F820AC347500819A6E /* AVChat_waitingForAnswer.mp3 in Resources */,
 				2C1D0F7B215F2CBA00275225 /* icon_av_audio_micro_normal@2x.png in Resources */,
 				2C1D0F7F215F2CBA00275225 /* im_skin_icon_audiocall_bg.jpg in Resources */,
@@ -486,7 +479,6 @@
 				2C3314FA20AC347500819A6E /* AVChat_endCall.mp3 in Resources */,
 				2C3314F720AC347500819A6E /* AVChat_busy.mp3 in Resources */,
 				2C3314F920AC347500819A6E /* Message_system.mp3 in Resources */,
-				2C1D0F83215F2CBA00275225 /* view_audio_reply_message_bg@2x.png in Resources */,
 				2C3314F520AC347500819A6E /* incomingRing.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -532,7 +524,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-QIMGeneralModule/Pods-QIMGeneralModule-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-QIMGeneralModule/Pods-QIMGeneralModule-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/QIMCommon/QIMCommonResource.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/QIMKitVendor/QIMPinYin.bundle",
 			);
@@ -543,7 +535,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-QIMGeneralModule/Pods-QIMGeneralModule-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-QIMGeneralModule/Pods-QIMGeneralModule-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
