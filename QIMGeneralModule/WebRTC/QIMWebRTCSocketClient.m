@@ -10,6 +10,7 @@
 #import "SocketRocket.h"
 #import "QIMJSONSerializer.h"
 #import "QIMKitPublicHeader.h"
+#import "QIMNetwork.h"
 #import "QIMPublicRedefineHeader.h"
 
 // http://doc-kurento-room.readthedocs.io/en/stable/websocket_api_room_server.html#websocket-messages

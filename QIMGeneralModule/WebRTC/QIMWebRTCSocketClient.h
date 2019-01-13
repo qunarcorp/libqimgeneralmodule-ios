@@ -6,7 +6,7 @@
 //  Copyright © 2017年 May. All rights reserved.
 //
 
-#import "QIMGeneralModuleFramework.h"
+#import <Foundation/Foundation.h>
 
 typedef NS_ENUM(SInt32, WebRTCRoomEvent) {
     WebRTCRoomEvent_Unknow = 0,

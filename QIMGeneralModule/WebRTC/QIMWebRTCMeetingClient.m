@@ -18,6 +18,7 @@
 #import "QIMUUIDTools.h"
 #import "QIMJSONSerializer.h"
 #import "UIView+QIMExtension.h"
+#import "QIMNetwork.h"
 
 #import <WebRTC/WebRTC.h>
 #import "Masonry.h"

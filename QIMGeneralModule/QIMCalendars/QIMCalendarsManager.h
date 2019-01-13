@@ -6,7 +6,7 @@
 //  Copyright © 2018年 QIM. All rights reserved.
 //
 
-#import "QIMGeneralModuleFramework.h"
+#import <Foundation/Foundation.h>
 
 typedef void(^completion)(BOOL granted, NSError *error);
 
