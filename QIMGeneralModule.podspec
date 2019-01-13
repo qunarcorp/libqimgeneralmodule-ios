@@ -24,7 +24,7 @@ Pod::Spec.new do |s|
       webrtc.resources = "QIMGeneralModule/WebRTC/RTC/icons/*.{png,jpg}", "QIMGeneralModule/WebRTC/RTC/sound/*.{mp3,wav}"
       webrtc.source_files = 'QIMGeneralModule/WebRTC/**/*.{h,m,c}', 'QIMGeneralModule/WebRTC/RTC/**/*.{h,m,c}'
 #      webrtc.vendored_libraries = ['QIMGeneralModule/WebRTC/WebRTC/libWebRTC.a']
-      webrtc.public_header_files = 'QIMGeneralModule/WebRTC/**/*.{h,m,c}' 'QIMGeneralModule/WebRTC/RTC/**/*.{h,m,c}'
+      webrtc.public_header_files = 'QIMGeneralModule/WebRTC/**/*.{h}' 'QIMGeneralModule/WebRTC/RTC/**/*.{h}'
       webrtc.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMWebRTCEnable=1'}
       webrtc.frameworks = 'VideoToolbox', 'GLKit', 'CoreTelephony', 'AVFoundation', 'UIKit', 'Foundation'
       webrtc.dependency 'SocketRocket'
@@ -37,7 +37,7 @@ Pod::Spec.new do |s|
   s.subspec 'Note' do |note|
 
       note.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMNoteEnable=1'}
-      note.public_header_files = 'QIMGeneralModule/QIMNotes/ARC/**/*{h,m,c}'
+      note.public_header_files = 'QIMGeneralModule/QIMNotes/ARC/**/*{h}'
       note.source_files = ['QIMGeneralModule/QIMNotes/ARC/**/*{h,m,c}', 'QIMGeneralModule/QIMNotes/NoARC/**/*{h,m,c}']
       note.requires_arc = false
       note.requires_arc = ['QIMGeneralModule/QIMNotes/ARC/**/*{h,m,c}']
@@ -47,7 +47,7 @@ Pod::Spec.new do |s|
 
       notify.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMNotifyEnable=1'}
       notify.source_files = ['QIMGeneralModule/QIMNotify/**/*{h,m,c}']
-      notify.public_header_files = 'QIMGeneralModule/QIMNotify/**/*{h,m,c}'
+      notify.public_header_files = 'QIMGeneralModule/QIMNotify/**/*.{h}'
 
   end
 
@@ -55,14 +55,14 @@ Pod::Spec.new do |s|
 
       log.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMLogEnable=1'}
       log.source_files = ['QIMGeneralModule/QIMLocalLog/**/*{h,m,c}']
-      log.public_header_files = 'QIMGeneralModule/QIMLocalLog/**/*{h,m,c}'
+      log.public_header_files = 'QIMGeneralModule/QIMLocalLog/**/*.{h}'
 
   end
   
   s.subspec 'Calendars' do |calendar|
       calendar.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMCalendarEnable=1'}
       calendar.source_files = ['QIMGeneralModule/QIMCalendars/**/*{h,m,c}']
-      calendar.public_header_files = 'QIMGeneralModule/QIMCalendars/**/*{h,m,c}'
+      calendar.public_header_files = 'QIMGeneralModule/QIMCalendars/**/*.{h}'
   end
   
   s.dependency 'QIMCommon', '~> 1.0.0-beta'
