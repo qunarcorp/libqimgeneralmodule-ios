@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMGeneralModule"
-  s.version      = "0.0.9-beta"
+  s.version      = "0.0.10-beta"
   s.summary      = "Qunar chat App 6.0+ version QIMGeneralModule"
   s.description  = <<-DESC
                    Qunar QIMGeneralModule公共模块
@@ -65,7 +65,7 @@ Pod::Spec.new do |s|
       calendar.public_header_files = 'QIMGeneralModule/QIMCalendars/**/*.{h}'
   end
   
-  s.dependency 'QIMCommon', '~> 1.0.0-beta'
+  s.dependency 'QIMCommon', '~> 1.1.6-beta'
   s.dependency 'QIMOpenSSL', '~> 1.0.1-beta'
   s.dependency 'QIMKitVendor', '~> 1.1.4-beta'
   s.dependency 'QIMPublicRedefineHeader', '~> 0.0.2-beta'
