@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMGeneralModule"
-  s.version      = "0.0.6-beta"
+  s.version      = "0.0.7-beta"
   s.summary      = "Qunar chat App 6.0+ version QIMGeneralModule"
   s.description  = <<-DESC
                    Qunar QIMGeneralModule公共模块
@@ -37,16 +37,16 @@ Pod::Spec.new do |s|
   s.subspec 'Note' do |note|
 
       note.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMNoteEnable=1'}
-      note.public_header_files = 'QIMGeneralModule/QIMNotes/ARC/**/*{h}'
-      note.source_files = ['QIMGeneralModule/QIMNotes/ARC/**/*{h,m,c,mm}', 'QIMGeneralModule/QIMNotes/NoARC/**/*{h,m,c,mm}']
+      note.public_header_files = 'QIMGeneralModule/QIMNotes/**/*.{h}'
+      note.source_files = ['QIMGeneralModule/QIMNotes/ARC/**/*.{h,m,c,mm}', 'QIMGeneralModule/QIMNotes/NoARC/**/*.{h,m,c,mm}']
       note.requires_arc = false
-      note.requires_arc = ['QIMGeneralModule/QIMNotes/ARC/**/*{h,m,c,mm}']
+      note.requires_arc = ['QIMGeneralModule/QIMNotes/ARC/**/*.{h,m,c,mm}']
   end
 
   s.subspec 'Notify' do |notify|
 
       notify.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMNotifyEnable=1'}
-      notify.source_files = ['QIMGeneralModule/QIMNotify/**/*{h,m,c}']
+      notify.source_files = ['QIMGeneralModule/QIMNotify/**/*.{h,m,c}']
       notify.public_header_files = 'QIMGeneralModule/QIMNotify/**/*.{h}'
 
   end
@@ -54,14 +54,14 @@ Pod::Spec.new do |s|
   s.subspec 'Log' do |log|
 
       log.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMLogEnable=1'}
-      log.source_files = ['QIMGeneralModule/QIMLocalLog/**/*{h,m,c}']
+      log.source_files = ['QIMGeneralModule/QIMLocalLog/**/*.{h,m,c}']
       log.public_header_files = 'QIMGeneralModule/QIMLocalLog/**/*.{h}'
 
   end
   
   s.subspec 'Calendars' do |calendar|
       calendar.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMCalendarEnable=1'}
-      calendar.source_files = ['QIMGeneralModule/QIMCalendars/**/*{h,m,c}']
+      calendar.source_files = ['QIMGeneralModule/QIMCalendars/**/*.{h,m,c}']
       calendar.public_header_files = 'QIMGeneralModule/QIMCalendars/**/*.{h}'
   end
   
