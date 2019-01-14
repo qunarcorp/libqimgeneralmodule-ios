@@ -16,7 +16,7 @@
     
     uint8_t *output = NULL;
     if (message && password) {
-        int length = AES_CBC_Encode_auto_bytes(
+        int length = AES_CBC_Encode_auto_bytes_int(
                                                (const uint8_t *) [message UTF8String],
                                                strlen([message UTF8String]),
                                                [password UTF8String],
@@ -56,7 +56,7 @@
     if (data != nil) {
         char *output = NULL;
         
-        int length = AES_CBC_Decode_auto_bytes(
+        int length = AES_CBC_Decode_auto_bytes_int(
                                                (const uint8_t *) [data bytes],
                                                [data length],
                                                [password UTF8String],

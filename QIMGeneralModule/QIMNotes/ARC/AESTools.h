@@ -16,7 +16,7 @@ typedef enum _tag_aes_out_format {
 //#endif
 
 
-int AES_CBC_Encode_auto_bytes(const uint8_t *input, const int length, const char *password, uint8_t **bytesOutput);
+int AES_CBC_Encode_auto_bytes_int(const uint8_t *input, const int length, const char *password, uint8_t **bytesOutput);
 //
 //void AES_CBC_Encode_base64(const uint8_t *input, const int length, const char *password, char **base64Output);
 //
@@ -56,10 +56,10 @@ extern int AES_CBC_Encode_base64(char *base64Output, const int outlen, const uin
 //
 //
 extern int AES_CBC_Decode_bytes(char *output, const int inputLen,
-        const uint8_t *input, const int length,
-        const char *password);
+                                const uint8_t *input, const int length,
+                                const char *password);
 
-int AES_CBC_Decode_auto_bytes(const uint8_t *input, const int length, const char *password, char **output);
+int AES_CBC_Decode_auto_bytes_int(const uint8_t *input, const int length, const char *password, char **output);
 
 
 /*
@@ -69,8 +69,8 @@ int AES_CBC_Decode_auto_bytes(const uint8_t *input, const int length, const char
  * 需要分配足够大的缓冲区以保存输出文本
  */
 int AES_CBC_Decode_base64(char *output, const int inputLen,
-        const char *base64Input, const int length,
-        const char *password);
+                          const char *base64Input, const int length,
+                          const char *password);
 
 //
 ///*
@@ -79,11 +79,10 @@ int AES_CBC_Decode_base64(char *output, const int inputLen,
 // * 此为自动分配内存的版本。
 // * output是一个指向指针的指针，计算后包含输出值，用完后记得释放
 // */
-void
-AES_CBC_Encode_auto_bytes(uint8_t **output, int *outLen,
-        const uint8_t *input, const int length,
-        const char iv[32],
-        const char key[32]);
+void AES_CBC_Encode_auto_bytes(uint8_t **output, int *outLen,
+                               const uint8_t *input, const int length,
+                               const char iv[32],
+                               const char key[32]);
 
 //
 //
@@ -94,9 +93,9 @@ AES_CBC_Encode_auto_bytes(uint8_t **output, int *outLen,
 // * output是一个指向指针的指针，计算后包含输出值，用完后记得释放
 // */
 void AES_CBC_Decode_auto_bytes(char **output, int *outLen,
-        const uint8_t *input, const int length,
-        const char iv[32],
-        const char key[32]);
+                               const uint8_t *input, const int length,
+                               const char iv[32],
+                               const char key[32]);
 //
 /*
  *
@@ -108,9 +107,9 @@ void AES_CBC_Decode_auto_bytes(char **output, int *outLen,
  */
 int
 AES_CBC_Encode_base(uint8_t *output,
-        const uint8_t *input, const int length,
-        const char iv[32],
-        const char key[32]);
+                    const uint8_t *input, const int length,
+                    const char iv[32],
+                    const char key[32]);
 
 /*
  *
@@ -121,9 +120,9 @@ AES_CBC_Encode_base(uint8_t *output,
  * outlen = (length / KEYLEN + 1) * KEYLEN;
  */
 int AES_CBC_Decode_base(char *output,
-        const uint8_t *input, const int length,
-        const char iv[32],
-        const char key[32]);
+                        const uint8_t *input, const int length,
+                        const char iv[32],
+                        const char key[32]);
 
 
 
