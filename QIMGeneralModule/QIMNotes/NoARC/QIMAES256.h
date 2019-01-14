@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AES256 : NSObject
+@interface QIMAES256 : NSObject
 
 + (NSData *)encryptForData:(NSString *)message password:(NSString *)password;
 

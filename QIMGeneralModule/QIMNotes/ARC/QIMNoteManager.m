@@ -22,7 +22,7 @@
 #import "QIMNetwork.h"
 #import "QIMPublicRedefineHeader.h"
 #import "AESCrypt.h"
-#import "AES256.h"
+#import "QIMAES256.h"
 
 @interface QIMNoteManager () {
     dispatch_queue_t _loadNoteModelQueue;
@@ -1296,7 +1296,7 @@ static QIMNoteManager *__QIMNoteManager = nil;
         if ([[QIMNoteManager sharedInstance] getPasswordWithCid:cid]) {
             NSString *contentJson = [AESCrypt decrypt:content password:[[QIMNoteManager sharedInstance] getPasswordWithCid:cid]];
             if (!contentJson) {
-                contentJson = [AES256 decryptForBase64:content password:[[QIMNoteManager sharedInstance] getPasswordWithCid:cid]];
+                contentJson = [QIMAES256 decryptForBase64:content password:[[QIMNoteManager sharedInstance] getPasswordWithCid:cid]];
             }
             NSDictionary *contentDic = [[QIMJSONSerializer sharedInstance] deserializeObject:contentJson error:nil];
             password = [contentDic objectForKey:@"P"];
@@ -1316,7 +1316,7 @@ static QIMNoteManager *__QIMNoteManager = nil;
         [contentDic setObject:[NSString stringWithFormat:@"%@", password] forKey:@"P"];
     }
     NSString *contentJson =  [[QIMJSONSerializer sharedInstance] serializeObject:contentDic];
-    NSString *content = [AES256 encryptForBase64:contentJson password:[[QIMNoteManager sharedInstance] getPasswordWithCid:cid]];
+    NSString *content = [QIMAES256 encryptForBase64:contentJson password:[[QIMNoteManager sharedInstance] getPasswordWithCid:cid]];
     QIMNoteModel *model = [[QIMNoteModel alloc] init];
     model.qs_content = content;
     model.c_id = cid;

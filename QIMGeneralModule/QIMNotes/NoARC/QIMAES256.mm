@@ -3,12 +3,12 @@
 // Copyright (c) 2017 May. All rights reserved.
 //
 
-#import "AES256.h"
+#import "QIMAES256.h"
 #import "AESTools.h"
 #import "NSString+QIMBase64.h"
 #import "NSData+QIMBase64.h"
 
-@implementation AES256 {
+@implementation QIMAES256 {
     
 }
 
@@ -35,7 +35,7 @@
 
 + (NSString *)encryptForBase64:(NSString *)message password:(NSString *)password {
     
-    NSData *data = [AES256 encryptForData:message password:password];
+    NSData *data = [QIMAES256 encryptForData:message password:password];
     if (data) {
         NSString *base64EncodedString = [NSString qim_base64StringFromData:data length:[data length]];
         return base64EncodedString;
@@ -46,7 +46,7 @@
 + (NSString *)decryptForBase64:(NSString *)base64EncodedString password:(NSString *)password {
     NSData *data = [NSData qim_base64DataFromString:base64EncodedString];
     if (password) {
-        return [AES256 decryptForData:data password:password];
+        return [QIMAES256 decryptForData:data password:password];
     }
     return nil;
 }

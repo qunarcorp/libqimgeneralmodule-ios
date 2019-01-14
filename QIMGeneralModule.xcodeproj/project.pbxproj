@@ -21,8 +21,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		2C136D6420AD7AC1005BE210 /* AES256.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2C136D6220AD7AC1005BE210 /* AES256.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		2C136D6520AD7AC1005BE210 /* AES256.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C136D6320AD7AC1005BE210 /* AES256.h */; };
+		2C136D6420AD7AC1005BE210 /* QIMAES256.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2C136D6220AD7AC1005BE210 /* QIMAES256.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		2C136D6520AD7AC1005BE210 /* QIMAES256.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C136D6320AD7AC1005BE210 /* QIMAES256.h */; };
 		2C136D7720AD7B51005BE210 /* QIMNoteModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C136D6720AD7B51005BE210 /* QIMNoteModel.m */; };
 		2C136D7820AD7B51005BE210 /* QIMEncryptChat.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C136D6820AD7B51005BE210 /* QIMEncryptChat.m */; };
 		2C136D7920AD7B51005BE210 /* AESTools.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2C136D6920AD7B51005BE210 /* AESTools.mm */; };
@@ -91,8 +91,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2C136D6220AD7AC1005BE210 /* AES256.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AES256.mm; sourceTree = "<group>"; };
-		2C136D6320AD7AC1005BE210 /* AES256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AES256.h; sourceTree = "<group>"; };
+		2C136D6220AD7AC1005BE210 /* QIMAES256.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = QIMAES256.mm; sourceTree = "<group>"; };
+		2C136D6320AD7AC1005BE210 /* QIMAES256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMAES256.h; sourceTree = "<group>"; };
 		2C136D6720AD7B51005BE210 /* QIMNoteModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMNoteModel.m; sourceTree = "<group>"; };
 		2C136D6820AD7B51005BE210 /* QIMEncryptChat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMEncryptChat.m; sourceTree = "<group>"; };
 		2C136D6920AD7B51005BE210 /* AESTools.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AESTools.mm; sourceTree = "<group>"; };
@@ -190,8 +190,8 @@
 		2C136D6120AD7AC1005BE210 /* NoARC */ = {
 			isa = PBXGroup;
 			children = (
-				2C136D6320AD7AC1005BE210 /* AES256.h */,
-				2C136D6220AD7AC1005BE210 /* AES256.mm */,
+				2C136D6320AD7AC1005BE210 /* QIMAES256.h */,
+				2C136D6220AD7AC1005BE210 /* QIMAES256.mm */,
 			);
 			path = NoARC;
 			sourceTree = "<group>";
@@ -395,7 +395,7 @@
 				2CC9A51520AE8DF600A3FC8C /* QIMBacktraceLogger.h in Headers */,
 				2C148362213FDC70009D4AE3 /* QIMLogFormatter.h in Headers */,
 				2C136D7F20AD7B52005BE210 /* QIMEncryptChat.h in Headers */,
-				2C136D6520AD7AC1005BE210 /* AES256.h in Headers */,
+				2C136D6520AD7AC1005BE210 /* QIMAES256.h in Headers */,
 				2CC9A50B20AE78C000A3FC8C /* QIMNotifyManager.h in Headers */,
 				2C136D8420AD7B52005BE210 /* QIMNoteManager.h in Headers */,
 				2C3314CD20AC347500819A6E /* QIMRTCView.h in Headers */,
@@ -546,7 +546,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C3314CB20AC347500819A6E /* QIMRTCButton.m in Sources */,
-				2C136D6420AD7AC1005BE210 /* AES256.mm in Sources */,
+				2C136D6420AD7AC1005BE210 /* QIMAES256.mm in Sources */,
 				2C7333A72179DA73006C7EA8 /* QIMRTCSingleView.m in Sources */,
 				2C136D7D20AD7B52005BE210 /* QIMPasswordGenerate.m in Sources */,
 				2C136D7820AD7B51005BE210 /* QIMEncryptChat.m in Sources */,

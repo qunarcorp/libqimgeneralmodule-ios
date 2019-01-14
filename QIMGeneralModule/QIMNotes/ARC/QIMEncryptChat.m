@@ -11,7 +11,7 @@
 #import "SCLAlertView.h"
 #import "QIMNoteModel.h"
 #import "AESCrypt.h"
-#import "AES256.h"
+#import "QIMAES256.h"
 #import "QIMKitPublicHeader.h"
 #import "QIMJSONSerializer.h"
 #import "QIMUUIDTools.h"
@@ -152,7 +152,7 @@ NSString *kNoticeTitle = @"Notice";
             pwdBoxModel.q_introduce = pwdBoxIntroduceField.text;
             pwdBoxModel.q_type = QIMNoteTypeChatPwdBox;
             pwdBoxModel.q_state = QIMNoteStateNormal;
-            NSString *encryptStr = [AES256 encryptForBase64:pwdBoxModel.q_title password:pwdBoxTextField.text];
+            NSString *encryptStr = [QIMAES256 encryptForBase64:pwdBoxModel.q_title password:pwdBoxTextField.text];
             pwdBoxModel.q_content = encryptStr;
             pwdBoxModel.q_time = [[NSDate date] timeIntervalSince1970] * 1000;
             [[QIMNoteManager sharedInstance] saveNewQTNoteMainItem:pwdBoxModel];
@@ -203,7 +203,7 @@ NSString *kNoticeTitle = @"Notice";
         
         NSString *vaildPassworBoxPass = [AESCrypt decrypt:content password:vaildPwdBoxTextField.text];
         if (!vaildPassworBoxPass) {
-            vaildPassworBoxPass = [AES256 decryptForBase64:content password:vaildPwdBoxTextField.text];
+            vaildPassworBoxPass = [QIMAES256 decryptForBase64:content password:vaildPwdBoxTextField.text];
         }
         
         if (!vaildPassworBoxPass) {
@@ -611,7 +611,7 @@ NSString *kNoticeTitle = @"Notice";
         [msgDict setObject:extendInfo forKey:@"ExtendInfo"];
     }
     NSString *msgJson = [[QIMJSONSerializer sharedInstance] serializeObject:msgDict];
-    NSString *encryptMsg = [AES256 encryptForBase64:msgJson password:[[QIMNoteManager sharedInstance] getEncryptChatPasswordWithUserId:userId]];
+    NSString *encryptMsg = [QIMAES256 encryptForBase64:msgJson password:[[QIMNoteManager sharedInstance] getEncryptChatPasswordWithUserId:userId]];
     return encryptMsg;
 }
 
@@ -648,7 +648,7 @@ NSString *kNoticeTitle = @"Notice";
     if (pwd) {
         NSString *contentJson = [AESCrypt decrypt:decryptContent password:pwd];
         if (!contentJson) {
-            contentJson = [AES256 decryptForBase64:decryptContent password:pwd];
+            contentJson = [QIMAES256 decryptForBase64:decryptContent password:pwd];
         }
         NSDictionary *contentDic = [[QIMJSONSerializer sharedInstance] deserializeObject:contentJson error:nil];
         return contentDic;
