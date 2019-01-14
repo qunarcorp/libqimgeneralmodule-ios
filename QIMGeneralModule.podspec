@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMGeneralModule"
-  s.version      = "1.0.0-beta"
+  s.version      = "1.0.1-beta"
   s.summary      = "Qunar chat App 6.0+ version QIMGeneralModule"
   s.description  = <<-DESC
                    Qunar QIMGeneralModule公共模块
@@ -18,6 +18,7 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios, "9.0"
   s.source_files = "QIMGeneralModule/QIMGeneralModuleFramework.h"
+  $debug = ENV['debug']
 
   s.subspec 'WebRTC' do |webrtc|
     
@@ -64,12 +65,21 @@ Pod::Spec.new do |s|
       calendar.source_files = ['QIMGeneralModule/QIMCalendars/**/*.{h,m,c}']
       calendar.public_header_files = 'QIMGeneralModule/QIMCalendars/**/*.{h}'
   end
+
+  if $debug
+    puts 'debug QIMGeneralModule'
+
+  else
+
+    puts '线上release QIMGeneralModule依赖第三方库'
+      s.dependency 'QIMCommon', '~> 1.beta'
+      s.dependency 'QIMOpenSSL', '~> 1.beta'
+      s.dependency 'QIMKitVendor', '~> 1.beta'
+      s.dependency 'QIMPublicRedefineHeader', '~> 0.beta'
+      s.dependency 'QIMCommonCategories', '~> 1.beta'
+  end
   
-  s.dependency 'QIMCommon', '~> 1.beta'
-  s.dependency 'QIMOpenSSL', '~> 1.beta'
-  s.dependency 'QIMKitVendor', '~> 1.beta'
-  s.dependency 'QIMPublicRedefineHeader', '~> 0.beta'
-  s.dependency 'QIMCommonCategories', '~> 1.beta'
+
   s.dependency 'SCLAlertView-Objective-C'
   s.dependency 'Masonry'
 
