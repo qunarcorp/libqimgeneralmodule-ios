@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMGeneralModule"
-  s.version      = "0.0.5-beta"
+  s.version      = "0.0.6-beta"
   s.summary      = "Qunar chat App 6.0+ version QIMGeneralModule"
   s.description  = <<-DESC
                    Qunar QIMGeneralModule公共模块
@@ -38,9 +38,9 @@ Pod::Spec.new do |s|
 
       note.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMNoteEnable=1'}
       note.public_header_files = 'QIMGeneralModule/QIMNotes/ARC/**/*{h}'
-      note.source_files = ['QIMGeneralModule/QIMNotes/ARC/**/*{h,m,c}', 'QIMGeneralModule/QIMNotes/NoARC/**/*{h,m,c}']
+      note.source_files = ['QIMGeneralModule/QIMNotes/ARC/**/*{h,m,c,mm}', 'QIMGeneralModule/QIMNotes/NoARC/**/*{h,m,c,mm}']
       note.requires_arc = false
-      note.requires_arc = ['QIMGeneralModule/QIMNotes/ARC/**/*{h,m,c}']
+      note.requires_arc = ['QIMGeneralModule/QIMNotes/ARC/**/*{h,m,c,mm}']
   end
 
   s.subspec 'Notify' do |notify|
