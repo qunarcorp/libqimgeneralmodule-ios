@@ -114,11 +114,7 @@ static QIMNoteManager *__QIMNoteManager = nil;
 - (instancetype)init {
     self = [super init];
     if (self) {
-        if ([[QIMKit sharedInstance] debugMode]) {
-            self.baseUrl = @"http://l-wxapp1.vc.beta.cn0.qunar.com:8900/qtapi/qcloud/";
-        } else {
-            self.baseUrl = [[QIMKit sharedInstance] qimNav_QCloudHost];
-        }
+        self.baseUrl = [[QIMKit sharedInstance] qimNav_QCloudHost];
         if (self.baseUrl.length <= 0) {
             self.baseUrl = @"https://qt.qunar.com/package/qtapi/qcloud/";
         }
