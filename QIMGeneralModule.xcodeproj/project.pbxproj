@@ -525,12 +525,10 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-QIMGeneralModule/Pods-QIMGeneralModule-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/QIMCommon/QIMCommonResource.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/QIMKitVendor/QIMPinYin.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QIMCommonResource.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QIMPinYin.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;

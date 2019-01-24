@@ -75,7 +75,6 @@ Pod::Spec.new do |s|
       s.dependency 'QIMCommon', '~> 1.beta'
       s.dependency 'QIMOpenSSL', '~> 1.beta'
       s.dependency 'QIMKitVendor', '~> 1.beta'
-      s.dependency 'QIMPublicRedefineHeader', '~> 0.beta'
       s.dependency 'QIMCommonCategories', '~> 1.beta'
   end
   
