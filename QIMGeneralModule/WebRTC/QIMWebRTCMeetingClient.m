@@ -789,7 +789,7 @@ static QIMWebRTCMeetingClient *instance = nil;
 }
 
 #pragma mark - WebRTC Socket Delegate
-- (void)receveRemoteVideoWithUserName:(NSString *)user WihtStream:(NSArray *)streams {
+- (void)receveRemoteVideoWithUserName:(NSString *)user WithStream:(NSArray *)streams {
 
     RTCPeerConnection *peerConnection = [self.peerConnectionDic objectForKey:user];
     if (peerConnection == nil) {
@@ -844,7 +844,7 @@ static QIMWebRTCMeetingClient *instance = nil;
 // Connected Server
 - (void)webRTCSocketClientDidConnected:(QIMWebRTCSocketClient *)client{
     __weak QIMWebRTCMeetingClient *mySelf = self;
-    [mySelf.rtcMeetingView.socketClient joinRoom:mySelf.roomId WithTopic:mySelf.roomName WihtNickName:[[QIMKit sharedInstance] getLastJid] complete:^(NSDictionary *resultDic) {
+    [mySelf.rtcMeetingView.socketClient joinRoom:mySelf.roomId WithTopic:mySelf.roomName WithNickName:[[QIMKit sharedInstance] getLastJid] complete:^(NSDictionary *resultDic) {
         NSDictionary *result = [resultDic objectForKey:@"result"];
         if (result) {
             NSArray *userList = [result objectForKey:@"value"];
@@ -861,7 +861,7 @@ static QIMWebRTCMeetingClient *instance = nil;
                 [messageDic setObject:@([[QIMKit sharedInstance] getCurrentServerTime]) forKey:@"startTime"];
                 [messageDic setObject:[mySelf.rtcMeetingView.socketClient getServerAdress] forKey:@"server"];
                 NSString *extendInfo = [[QIMJSONSerializer sharedInstance] serializeObject:messageDic];
-                Message *msg = [[QIMKit sharedInstance] sendMessage:@"[当前客户端不支持音视频]" WithInfo:extendInfo ToGroupId:mySelf.groupId WihtMsgType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
+                Message *msg = [[QIMKit sharedInstance] sendMessage:@"[当前客户端不支持音视频]" WithInfo:extendInfo ToGroupId:mySelf.groupId WithMsgType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:mySelf.groupId userInfo:@{@"message":msg}];
                 });
@@ -909,7 +909,7 @@ static QIMWebRTCMeetingClient *instance = nil;
                                                 NSArray *streams = [value objectForKey:@"streams"];
                                                 NSNumber *plat = [value objectForKey:@"plat"];
 //                                                [self.userPlatDic setObject:plat?@(plat.intValue):@(-1) forKey:user];
-                                                [self receveRemoteVideoWithUserName:user WihtStream:streams];
+                                                [self receveRemoteVideoWithUserName:user WithStream:streams];
                                                 
                                             }
                                         });
@@ -971,7 +971,7 @@ static QIMWebRTCMeetingClient *instance = nil;
 //streams: list of stream identifiers that the participant has opened to connect with the room. As only webcam is supported, will always be [{"id":"webcam"}].
 - (void)participantPublishedWithUserName:(NSString *)userName WithStreams:(NSArray *)streams{
     QIMVerboseLog(@"%s", __func__);
-    [self receveRemoteVideoWithUserName:userName WihtStream:streams];
+    [self receveRemoteVideoWithUserName:userName WithStream:streams];
 }
 
 //Participant unpublished event

@@ -426,7 +426,7 @@ NSString *NSStringFromWebRTCRoomEvent(WebRTCRoomEvent value){
 #pragma mark - webrtc message
 //Join room
 //Represents a client’s request to join a room. If the room does not exist, it is created. To obtain the available rooms, the client should previously use the REST method getAllRooms.
-- (void)joinRoom:(NSString *)roomName WithTopic:(NSString *)topic WihtNickName:(NSString *)nickName complete:(void (^)(NSDictionary *))complete{
+- (void)joinRoom:(NSString *)roomName WithTopic:(NSString *)topic WithNickName:(NSString *)nickName complete:(void (^)(NSDictionary *))complete{
     NSAssert(dispatch_get_specific(_mainQueueTag) != NULL, @"Not Allow Call Metod In Main Queue");
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:nickName?nickName:@"飞翔的昵称" forKey:@"user"];
