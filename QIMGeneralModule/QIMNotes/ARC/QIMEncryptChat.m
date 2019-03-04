@@ -306,7 +306,7 @@ NSString *kNoticeTitle = @"Notice";
     NSString *name = [userInfo objectForKey:@"Name"];
     NSString *subTitle = [NSString stringWithFormat:@"【%@】请求与你加密会话，是否同意开启？", name?name:self.userId];
     self.chatDirection = QIMEncryptChatDirectionReceived;
-    [[QIMKit sharedInstance] createMessageWithMsg:@"对方发起加密会话请求" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:MessageState_Success willSave:YES];
+    [[QIMKit sharedInstance] createMessageWithMsg:@"对方发起加密会话请求" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:QIMMessageSendState_Success willSave:YES];
     [self.promptAlert showInfo:[[[[UIApplication sharedApplication] delegate] window] rootViewController] title:@"加密会话" subTitle:subTitle closeButtonTitle:nil duration:60.0f];
 }
 
@@ -317,10 +317,10 @@ NSString *kNoticeTitle = @"Notice";
     BOOL carbon = [[notify.userInfo objectForKey:@"carbon"] boolValue];
     if (carbon == YES) {
         QIMVerboseLog(@"Carbon 过来的已在其他设备同意加密会话请求");
-        [[QIMKit sharedInstance] createMessageWithMsg:@"已在其他设备同意加密会话请求" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:MessageState_Success willSave:YES];
+        [[QIMKit sharedInstance] createMessageWithMsg:@"已在其他设备同意加密会话请求" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:QIMMessageSendState_Success willSave:YES];
         [self handleEncryptWithUserId:notify.object WithState:QIMEncryptChatStateNone];
     } else {
-        [[QIMKit sharedInstance] createMessageWithMsg:@"对方同意加密会话请求" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:MessageState_Success willSave:YES];
+        [[QIMKit sharedInstance] createMessageWithMsg:@"对方同意加密会话请求" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:QIMMessageSendState_Success willSave:YES];
         [self handleEncryptWithUserId:notify.object WithState:QIMEncryptChatStateEncrypting];
     }
 }
@@ -332,10 +332,10 @@ NSString *kNoticeTitle = @"Notice";
     BOOL carbon = [[notify.userInfo objectForKey:@"carbon"] boolValue];
     if (carbon == YES) {
         QIMVerboseLog(@"Carbon 过来的已在其他设备拒绝加密会话请求");
-        [[QIMKit sharedInstance] createMessageWithMsg:@"已在其他设备拒绝加密会话请求" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:MessageState_Success willSave:YES];
+        [[QIMKit sharedInstance] createMessageWithMsg:@"已在其他设备拒绝加密会话请求" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:QIMMessageSendState_Success willSave:YES];
         [self handleEncryptWithUserId:notify.object WithState:QIMEncryptChatStateNone];
     } else {
-        [[QIMKit sharedInstance] createMessageWithMsg:@"对方拒绝加密会话请求" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:MessageState_Success willSave:YES];
+        [[QIMKit sharedInstance] createMessageWithMsg:@"对方拒绝加密会话请求" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:QIMMessageSendState_Success willSave:YES];
         [self handleEncryptWithUserId:notify.object WithState:QIMEncryptChatStateNone];
     }
 }
@@ -345,10 +345,10 @@ NSString *kNoticeTitle = @"Notice";
     BOOL carbon = [[notify.userInfo objectForKey:@"carbon"] boolValue];
     if (carbon == YES) {
         QIMVerboseLog(@"Carbon 过来的已在其他设备取消加密会话");
-        [[QIMKit sharedInstance] createMessageWithMsg:@"已在其他设备取消加密会话" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:MessageState_Success willSave:YES];
+        [[QIMKit sharedInstance] createMessageWithMsg:@"已在其他设备取消加密会话" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:QIMMessageSendState_Success willSave:YES];
         [self handleEncryptWithUserId:notify.object WithState:QIMEncryptChatStateNone];
     } else {
-        [[QIMKit sharedInstance] createMessageWithMsg:@"对方已取消加密会话" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:MessageState_Success willSave:YES];
+        [[QIMKit sharedInstance] createMessageWithMsg:@"对方已取消加密会话" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:QIMMessageSendState_Success willSave:YES];
         [self handleEncryptWithUserId:notify.object WithState:QIMEncryptChatStateNone];
     }
 }
@@ -358,10 +358,10 @@ NSString *kNoticeTitle = @"Notice";
     BOOL carbon = [[notify.userInfo objectForKey:@"carbon"] boolValue];
     if (carbon == YES) {
         QIMVerboseLog(@"Carbon 过来的已在其他设备关闭加密会话");
-        [[QIMKit sharedInstance] createMessageWithMsg:@"已在其他设备关闭加密会话" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:MessageState_Success willSave:YES];
+        [[QIMKit sharedInstance] createMessageWithMsg:@"已在其他设备关闭加密会话" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:QIMMessageSendState_Success willSave:YES];
         [self handleEncryptWithUserId:notify.object WithState:QIMEncryptChatStateNone];
     } else {
-        [[QIMKit sharedInstance] createMessageWithMsg:@"对方已关闭加密会话" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:MessageState_Success willSave:YES];
+        [[QIMKit sharedInstance] createMessageWithMsg:@"对方已关闭加密会话" extenddInfo:nil userId:notify.object realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:QIMMessageSendState_Success willSave:YES];
         [self handleEncryptWithUserId:notify.object WithState:QIMEncryptChatStateNone];
     }
 }
@@ -444,7 +444,7 @@ NSString *kNoticeTitle = @"Notice";
  拒绝加密会话请求
  */
 - (void)refuseEncrypt {
-    [[QIMKit sharedInstance] createMessageWithMsg:@"拒绝加密会话请求" extenddInfo:nil userId:self.userId realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:MessageState_Success willSave:YES];
+    [[QIMKit sharedInstance] createMessageWithMsg:@"拒绝加密会话请求" extenddInfo:nil userId:self.userId realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:QIMMessageSendState_Success willSave:YES];
     [[QIMNoteManager sharedInstance] refuseEncryptSessionWithUserId:self.userId];
     [self handleEncryptWithUserId:self.userId WithState:QIMEncryptChatStateNone];
 }
@@ -453,14 +453,14 @@ NSString *kNoticeTitle = @"Notice";
  取消发送加密会话请求
  */
 - (void)cancelEncrypt {
-    [[QIMKit sharedInstance] createMessageWithMsg:@"取消加密会话请求" extenddInfo:nil userId:self.userId realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:MessageState_Success willSave:YES];
+    [[QIMKit sharedInstance] createMessageWithMsg:@"取消加密会话请求" extenddInfo:nil userId:self.userId realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:QIMMessageSendState_Success willSave:YES];
     [[QIMNoteManager sharedInstance] cancelEncryptSessionWithUserId:self.userId];
     [self handleEncryptWithUserId:self.userId WithState:QIMEncryptChatStateNone];
 }
 
 //关闭加密会话
 - (void)closeEncrypt {
-    [[QIMKit sharedInstance] createMessageWithMsg:@"关闭加密会话请求" extenddInfo:nil userId:self.userId realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:MessageState_Success willSave:YES];
+    [[QIMKit sharedInstance] createMessageWithMsg:@"关闭加密会话请求" extenddInfo:nil userId:self.userId realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:QIMMessageSendState_Success willSave:YES];
     [[QIMNoteManager sharedInstance] closeEncryptSessionWithUserId:self.userId];
     [self handleEncryptWithUserId:self.userId WithState:QIMEncryptChatStateNone];
 }
@@ -516,10 +516,10 @@ NSString *kNoticeTitle = @"Notice";
     if (agree) {
         
         if (chatPwd == nil) {
-            [[QIMKit sharedInstance] createMessageWithMsg:@"拒绝加密会话请求" extenddInfo:nil userId:self.userId realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:MessageState_Success willSave:YES];
+            [[QIMKit sharedInstance] createMessageWithMsg:@"拒绝加密会话请求" extenddInfo:nil userId:self.userId realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:QIMMessageSendState_Success willSave:YES];
             [[QIMNoteManager sharedInstance] refuseEncryptSessionWithUserId:userId];
         } else {
-            [[QIMKit sharedInstance] createMessageWithMsg:@"同意加密会话请求" extenddInfo:nil userId:self.userId realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:MessageState_Success willSave:YES];
+            [[QIMKit sharedInstance] createMessageWithMsg:@"同意加密会话请求" extenddInfo:nil userId:self.userId realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:QIMMessageSendState_Success willSave:YES];
             [[QIMNoteManager sharedInstance] agreeEncryptSessionWithUserId:userId];
         }
         [self handleEncryptWithUserId:userId WithState:QIMEncryptChatStateEncrypting];
@@ -529,7 +529,7 @@ NSString *kNoticeTitle = @"Notice";
             [[QIMNoteManager sharedInstance] beginEncryptionSessionWithUserId:userId WithPassword:chatPwd];
             self.willChangeState = QIMEncryptChatStateNone;
             [self.waitingAlert showWaiting:[[[[UIApplication sharedApplication] delegate] window] rootViewController] title:@"Waiting..." subTitle:@"正在请求对方开启加密会话..." closeButtonTitle:nil duration:60.0f];
-            [[QIMKit sharedInstance] createMessageWithMsg:@"发起加密会话请求" extenddInfo:nil userId:self.userId realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:MessageState_Success willSave:YES];
+            [[QIMKit sharedInstance] createMessageWithMsg:@"发起加密会话请求" extenddInfo:nil userId:self.userId realJid:nil userType:ChatType_SingleChat msgType:QIMMessageType_Time forMsgId:[QIMUUIDTools UUID] msgState:QIMMessageSendState_Success willSave:YES];
         } else {
             self.willChangeState = QIMEncryptChatStateNone;
             [self handleEncryptWithUserId:userId WithState:QIMEncryptChatStateDecrypted];
