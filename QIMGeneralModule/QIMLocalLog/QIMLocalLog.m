@@ -212,8 +212,9 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     [[QIMKit sharedInstance] qimDB_dbCheckpoint];
     
     //数据库文件
-    NSString *UserPath = [[QIMKit sharedInstance] qimNav_Debug] ? @"_Beta": @"_Release";
-    NSString *dbPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%@/data.dat", [[QIMKit sharedInstance] getLastJid], UserPath]];
+//    NSString *UserPath = [[QIMKit sharedInstance] qimNav_Debug] ? @"_Beta": @"_Release";
+//    NSString *dbPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%@/data.dat", [[QIMKit sharedInstance] getLastJid], UserPath]];
+    NSString *dbPath = [[QIMKit sharedInstance] getDBPathWithUserXmppId:[[QIMKit sharedInstance] getLastJid]];
     [logArray addObject:dbPath];
     
     NSString *cpBundlePath = [[[QIMLocalLog sharedInstance] getLocalLogsPath] stringByAppendingPathComponent:@"suggest.jsbundle"];

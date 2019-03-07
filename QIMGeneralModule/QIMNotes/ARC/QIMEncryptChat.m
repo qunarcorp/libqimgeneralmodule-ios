@@ -617,25 +617,25 @@ NSString *kNoticeTitle = @"Notice";
 
 #pragma mark - DeCrypt Message
 
-- (NSInteger)getMessageTypeWithEncryptMsg:(Message *)msg WithUserId:(NSString *)userId {
+- (NSInteger)getMessageTypeWithEncryptMsg:(QIMMessageModel *)msg WithUserId:(NSString *)userId {
     NSDictionary *deMessage = [self decryptMessageWithMsgType:msg WithUserId:userId];
     NSInteger msgType = [[deMessage objectForKey:@"MsgType"] integerValue];
     return msgType;
 }
 
-- (NSString *)getMessageBodyWithEncryptMsg:(Message *)msg WithUserId:(NSString *)userId {
+- (NSString *)getMessageBodyWithEncryptMsg:(QIMMessageModel *)msg WithUserId:(NSString *)userId {
     NSDictionary *deMessage = [self decryptMessageWithMsgType:msg WithUserId:userId];
     NSString *msgBody = [deMessage objectForKey:@"Content"];
     return msgBody;
 }
 
-- (NSString *)getMessageExtendInfoWithEncryptMsg:(Message *)msg WithUserId:(NSString *)userId {
+- (NSString *)getMessageExtendInfoWithEncryptMsg:(QIMMessageModel *)msg WithUserId:(NSString *)userId {
     NSDictionary *deMessage = [self decryptMessageWithMsgType:msg WithUserId:userId];
     NSString *msgExtendInfo = [deMessage objectForKey:@"ExtendInfo"];
     return msgExtendInfo;
 }
 
-- (NSDictionary *)decryptMessageWithMsgType:(Message *)msg WithUserId:(NSString *)userId {
+- (NSDictionary *)decryptMessageWithMsgType:(QIMMessageModel *)msg WithUserId:(NSString *)userId {
     NSString *msgBody = msg.message;
     NSString *extendInfo = msg.extendInformation;
     NSString *decryptContent = msgBody;

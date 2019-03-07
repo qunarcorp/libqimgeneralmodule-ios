@@ -350,7 +350,7 @@ static QIMWebRTCClient *instance = nil;
     if (isCaller) {
         [self initRTCSetting];
         // 如果是发起者，创建一个offer信令
-        Message *msg = [[QIMKit sharedInstance] sendMessage:@"[当前客户端不支持音视频]" WithInfo:nil ToUserId:self.remoteJID WithMsgType:QIMWebRTC_MsgType_Video];
+        QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"[当前客户端不支持音视频]" WithInfo:nil ToUserId:self.remoteJID WithMsgType:QIMWebRTC_MsgType_Video];
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message":msg}];
         });

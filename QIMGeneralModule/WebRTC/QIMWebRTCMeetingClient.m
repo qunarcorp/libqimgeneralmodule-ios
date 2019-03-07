@@ -861,7 +861,7 @@ static QIMWebRTCMeetingClient *instance = nil;
                 [messageDic setObject:@([[QIMKit sharedInstance] getCurrentServerTime]) forKey:@"startTime"];
                 [messageDic setObject:[mySelf.rtcMeetingView.socketClient getServerAdress] forKey:@"server"];
                 NSString *extendInfo = [[QIMJSONSerializer sharedInstance] serializeObject:messageDic];
-                Message *msg = [[QIMKit sharedInstance] sendMessage:@"[当前客户端不支持音视频]" WithInfo:extendInfo ToGroupId:mySelf.groupId WithMsgType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
+                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"[当前客户端不支持音视频]" WithInfo:extendInfo ToGroupId:mySelf.groupId WithMsgType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:mySelf.groupId userInfo:@{@"message":msg}];
                 });
