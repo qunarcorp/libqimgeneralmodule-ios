@@ -274,7 +274,7 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     [requestDic setObject:@"日志反馈" forKey:@"alt_body"];
     [requestDic setObject:@(YES) forKey:@"is_html"];
     NSData *requestData = [[QIMJSONSerializer sharedInstance] serializeObject:requestDic error:nil];
-    NSURL *requestUrl = [NSURL URLWithString:@"http://qt.qunar.com/test_public/public/mainSite/sendMail.php"];
+    NSURL *requestUrl = [NSURL URLWithString:@"http://qim.qunar.com/test_public/public/mainSite/sendMail.php"];
     
     NSMutableDictionary *requestHeader = [NSMutableDictionary dictionaryWithCapacity:1];
     [requestHeader setObject:@"application/json;" forKey:@"Content-type"];
