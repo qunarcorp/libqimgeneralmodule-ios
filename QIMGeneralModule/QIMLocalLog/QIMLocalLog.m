@@ -49,7 +49,7 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
         fileLogger.maximumFileSize = 1024 * 1024 * 3; //每个log日志文件3M
         fileLogger.logFileManager.maximumNumberOfLogFiles = 1000; //最多保留1000个日志
         fileLogger.logFileManager.logFilesDiskQuota = 300 * 1024 * 1024; //300M
-        [DDLog addLogger:fileLogger withLevel:DDLogLevelAll];
+//        [DDLog addLogger:fileLogger withLevel:DDLogLevelAll];
         [DDLog addLogger:[DDASLLogger sharedInstance]]; //将日志打印到系统Console中
     }
     return self;

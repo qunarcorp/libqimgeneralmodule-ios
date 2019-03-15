@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMGeneralModule"
-  s.version      = "2.0.0"
+  s.version      = "2.0.2"
   s.summary      = "Qunar chat App 6.0+ version QIMGeneralModule"
   s.description  = <<-DESC
                    Qunar QIMGeneralModule公共模块
@@ -34,6 +34,7 @@ Pod::Spec.new do |s|
       webrtc.libraries = 'stdc++', 'bz2', 'resolv'
 
   end
+  folly_compiler_flags = '-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1'
 
   s.subspec 'Note' do |note|
 
@@ -59,7 +60,27 @@ Pod::Spec.new do |s|
       log.public_header_files = 'QIMGeneralModule/QIMLocalLog/**/*.{h}'
 
   end
+
+  # s.subspec 'QTLog' do |qtLog|
+  #     qtLog.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMLogEnable=1'}
+  #     qtLog.source_files = ['QIMGeneralModule/QTLog/**/*.{h,m,c,cpp,mm}']
+  #     qtLog.public_header_files = 'QIMGeneralModule/QIMLocalLog/**/*.{h}'
+  #     qtLog.pod_target_xcconfig     = { "CLANG_CXX_LANGUAGE_STANDARD" => "c++11" }
+  #     # qtLog.compiler_flags = folly_compiler_flags
+  #     # qtLog.libraries            = "stdc++"
+
+  # end
   
+  # s.subspec 'QTDB' do |qtdb|
+  #     qtdb.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMLogEnable=1'}
+  #     qtdb.source_files = ['QIMGeneralModule/QTDataBase/**/*.{h,m,c,cpp,mm}']
+  #     qtdb.public_header_files = 'QIMGeneralModule/QTDataBase/**/*.{h}'
+  #     qtdb.pod_target_xcconfig     = { "CLANG_CXX_LANGUAGE_STANDARD" => "c++11" }
+  #     qtdb.compiler_flags = folly_compiler_flags
+  #     qtdb.libraries            = "stdc++"
+
+  # end
+
   s.subspec 'Calendars' do |calendar|
       calendar.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMCalendarEnable=1'}
       calendar.source_files = ['QIMGeneralModule/QIMCalendars/**/*.{h,m,c}']
