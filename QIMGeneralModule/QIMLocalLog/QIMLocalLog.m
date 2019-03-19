@@ -44,13 +44,16 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     self = [super init];
     if (self) {
         
+        [DDTTYLogger sharedInstance].logFormatter = [[QIMLogFormatter alloc] init];
         DDFileLogger *fileLogger = [[DDFileLogger alloc] init];
         fileLogger.rollingFrequency = (24 * 60 * 60) * 4;   //3天
         fileLogger.maximumFileSize = 1024 * 1024 * 3; //每个log日志文件3M
-        fileLogger.logFileManager.maximumNumberOfLogFiles = 1000; //最多保留1000个日志
-        fileLogger.logFileManager.logFilesDiskQuota = 300 * 1024 * 1024; //300M
+        fileLogger.logFileManager.maximumNumberOfLogFiles = 100; //最多保留1000个日志
+        fileLogger.logFileManager.logFilesDiskQuota = 50 * 1024 * 1024; //300M
 //        [DDLog addLogger:fileLogger withLevel:DDLogLevelAll];
-        [DDLog addLogger:[DDASLLogger sharedInstance]]; //将日志打印到系统Console中
+        [DDLog addLogger:[DDTTYLogger sharedInstance]]; // TTY = Xcode console
+        [DDLog addLogger:[DDASLLogger sharedInstance]]; // ASL = Apple System Logs
+//        [DDLog addLogger:[DDASLLogger sharedInstance]]; //将日志打印到系统Console中
     }
     return self;
 }
@@ -212,8 +215,6 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     [[QIMKit sharedInstance] qimDB_dbCheckpoint];
     
     //数据库文件
-//    NSString *UserPath = [[QIMKit sharedInstance] qimNav_Debug] ? @"_Beta": @"_Release";
-//    NSString *dbPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%@/data.dat", [[QIMKit sharedInstance] getLastJid], UserPath]];
     NSString *dbPath = [[QIMKit sharedInstance] getDBPathWithUserXmppId:[[QIMKit sharedInstance] getLastJid]];
     [logArray addObject:dbPath];
     
