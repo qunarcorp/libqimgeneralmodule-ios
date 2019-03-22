@@ -18,7 +18,7 @@
 #import "CocoaLumberjack.h"
 #import "QIMPublicRedefineHeader.h"
 
-static NSString *LocalLogsPath = @"Logs";
+static NSString *LocalLogsPath = @"NewLogs";
 static NSString *LocalZipLogsPath = @"ZipLogs";
 
 @interface QIMLocalLog ()
@@ -44,16 +44,7 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     self = [super init];
     if (self) {
         
-        [DDTTYLogger sharedInstance].logFormatter = [[QIMLogFormatter alloc] init];
-        DDFileLogger *fileLogger = [[DDFileLogger alloc] init];
-        fileLogger.rollingFrequency = (24 * 60 * 60) * 4;   //3天
-        fileLogger.maximumFileSize = 1024 * 1024 * 3; //每个log日志文件3M
-        fileLogger.logFileManager.maximumNumberOfLogFiles = 100; //最多保留1000个日志
-        fileLogger.logFileManager.logFilesDiskQuota = 50 * 1024 * 1024; //300M
-//        [DDLog addLogger:fileLogger withLevel:DDLogLevelAll];
-        [DDLog addLogger:[DDTTYLogger sharedInstance]]; // TTY = Xcode console
-        [DDLog addLogger:[DDASLLogger sharedInstance]]; // ASL = Apple System Logs
-//        [DDLog addLogger:[DDASLLogger sharedInstance]]; //将日志打印到系统Console中
+        [self startLog];
     }
     return self;
 }
@@ -66,11 +57,22 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     QIMLocalLogType logType = [[[QIMKit sharedInstance] userObjectForKey:@"recordLogType"] integerValue];
     logType = QIMLocalLogTypeOpened;
     [[QIMKit sharedInstance] setUserObject:@(QIMLocalLogTypeOpened) forKey:@"recordLogType"];
-    if ([lastUserName containsString:@"dan.liu"] || [lastUserName containsString:@"weiping.he"] || [lastUserName containsString:@"lilulucas.li"] || [lastUserName containsString:@"geng.li"] || [lastUserName containsString:@"ping.xue"] || [lastUserName containsString:@"wz.wang"]) {
+    if ([lastUserName containsString:@"dan.liu"] || [lastUserName containsString:@"weiping.he"] || [lastUserName containsString:@"geng.li"] || [lastUserName containsString:@"ping.xue"] || [lastUserName containsString:@"wenhui.fan"]) {
         QIMLocalLogType logType = [[[QIMKit sharedInstance] userObjectForKey:@"recordLogType"] integerValue];
         if (logType == QIMLocalLogTypeDefault) {
             [[QIMKit sharedInstance] setUserObject:@(QIMLocalLogTypeOpened) forKey:@"recordLogType"];
         }
+    }
+    QIMLocalLogType newlogType = [[[QIMKit sharedInstance] userObjectForKey:@"recordLogType"] integerValue];
+    if (newlogType == QIMLocalLogTypeOpened) {
+        [DDTTYLogger sharedInstance].logFormatter = [[QIMLogFormatter alloc] init];
+        DDFileLogger *fileLogger = [[DDFileLogger alloc] init];
+        fileLogger.rollingFrequency = (24 * 60 * 60) * 2;   //2天
+        fileLogger.maximumFileSize = 1024 * 1024 * 2; //每个log日志文件2M
+        fileLogger.logFileManager.maximumNumberOfLogFiles = 30; //最多保留100个日志
+        fileLogger.logFileManager.logFilesDiskQuota = 15 * 1024 * 1024; //15M
+        [DDLog addLogger:fileLogger withLevel:DDLogLevelAll];
+        [DDLog addLogger:[DDASLLogger sharedInstance]]; // ASL = Apple System Logs
     }
 }
 
@@ -218,11 +220,14 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     NSString *dbPath = [[QIMKit sharedInstance] getDBPathWithUserXmppId:[[QIMKit sharedInstance] getLastJid]];
     [logArray addObject:dbPath];
     
-    NSString *cpBundlePath = [[[QIMLocalLog sharedInstance] getLocalLogsPath] stringByAppendingPathComponent:@"suggest.jsbundle"];
-    [logArray addObject:cpBundlePath];
-    
-    NSString *cpBundlePath2 = [[[QIMLocalLog sharedInstance] getLocalLogsPath] stringByAppendingPathComponent:@"suggestAssetBundle.jsbundle"];
-    [logArray addObject:cpBundlePath2];
+    //数据库文件shm文件
+    NSString *dbSHMPath = [NSString stringWithFormat:@"%@%@", dbPath, @"-shm"];
+    [logArray addObject:dbSHMPath];
+
+    //数据库文件wal文件
+    NSString *dbWALPath = [NSString stringWithFormat:@"%@%@", dbPath, @"-wal"];
+    [logArray addObject:dbWALPath];
+
 
     //本地日志
     NSArray *allLocalLogs = [self allLogFilesAtPath:[self getLocalLogsPath]];
