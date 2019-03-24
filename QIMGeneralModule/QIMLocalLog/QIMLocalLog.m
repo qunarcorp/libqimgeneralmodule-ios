@@ -57,7 +57,7 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     QIMLocalLogType logType = [[[QIMKit sharedInstance] userObjectForKey:@"recordLogType"] integerValue];
     logType = QIMLocalLogTypeOpened;
     [[QIMKit sharedInstance] setUserObject:@(QIMLocalLogTypeOpened) forKey:@"recordLogType"];
-    if ([lastUserName containsString:@"dan.liu"] || [lastUserName containsString:@"weiping.he"] || [lastUserName containsString:@"geng.li"] || [lastUserName containsString:@"ping.xue"] || [lastUserName containsString:@"wenhui.fan"]) {
+    if ([lastUserName containsString:@"dan.liu"] || [lastUserName containsString:@"weiping.he"] || [lastUserName containsString:@"geng.li"] || [lastUserName containsString:@"lilulucas.li"] || [lastUserName containsString:@"ping.xue"] || [lastUserName containsString:@"wenhui.fan"]) {
         QIMLocalLogType logType = [[[QIMKit sharedInstance] userObjectForKey:@"recordLogType"] integerValue];
         if (logType == QIMLocalLogTypeDefault) {
             [[QIMKit sharedInstance] setUserObject:@(QIMLocalLogTypeOpened) forKey:@"recordLogType"];
@@ -65,7 +65,8 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     }
     QIMLocalLogType newlogType = [[[QIMKit sharedInstance] userObjectForKey:@"recordLogType"] integerValue];
     if (newlogType == QIMLocalLogTypeOpened) {
-        [DDTTYLogger sharedInstance].logFormatter = [[QIMLogFormatter alloc] init];
+        [self deleteLocalLog];
+//        [DDTTYLogger sharedInstance].logFormatter = [[QIMLogFormatter alloc] init];
         DDFileLogger *fileLogger = [[DDFileLogger alloc] init];
         fileLogger.rollingFrequency = (24 * 60 * 60) * 2;   //2天
         fileLogger.maximumFileSize = 1024 * 1024 * 2; //每个log日志文件2M
