@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMGeneralModule"
-  s.version      = "2.0.0"
+  s.version      = "2.0.1"
   s.summary      = "Qunar chat App 6.0+ version QIMGeneralModule"
   s.description  = <<-DESC
                    Qunar QIMGeneralModule公共模块
@@ -30,7 +30,7 @@ Pod::Spec.new do |s|
       webrtc.frameworks = 'VideoToolbox', 'GLKit', 'CoreTelephony', 'AVFoundation', 'UIKit', 'Foundation'
       webrtc.dependency 'SocketRocket'
 
-      webrtc.dependency 'GoogleWebRTC'
+      webrtc.dependency 'GoogleWebRTC', '~> 1.1.26989'
       webrtc.libraries = 'stdc++', 'bz2', 'resolv'
 
   end
