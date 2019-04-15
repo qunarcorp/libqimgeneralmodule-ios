@@ -58,6 +58,13 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     logType = QIMLocalLogTypeOpened;
     [[QIMKit sharedInstance] setUserObject:@(QIMLocalLogTypeOpened) forKey:@"recordLogType"];
     if ([lastUserName containsString:@"dan.liu"] || [lastUserName containsString:@"weiping.he"] || [lastUserName containsString:@"geng.li"] || [lastUserName containsString:@"lilulucas.li"] || [lastUserName containsString:@"ping.xue"] || [lastUserName containsString:@"wenhui.fan"]) {
+        DDFileLogger *fileLogger = [[DDFileLogger alloc] init];
+        fileLogger.rollingFrequency = (24 * 60 * 60) * 2;   //2天
+        fileLogger.maximumFileSize = 1024 * 1024 * 2; //每个log日志文件2M
+        fileLogger.logFileManager.maximumNumberOfLogFiles = 30; //最多保留100个日志
+        fileLogger.logFileManager.logFilesDiskQuota = 15 * 1024 * 1024; //15M
+        [DDLog addLogger:fileLogger withLevel:DDLogLevelAll];
+        [DDLog addLogger:[DDASLLogger sharedInstance]]; // ASL = Apple System Logs
         QIMLocalLogType logType = [[[QIMKit sharedInstance] userObjectForKey:@"recordLogType"] integerValue];
         if (logType == QIMLocalLogTypeDefault) {
             [[QIMKit sharedInstance] setUserObject:@(QIMLocalLogTypeOpened) forKey:@"recordLogType"];
@@ -217,6 +224,15 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     
     [[QIMKit sharedInstance] qimDB_dbCheckpoint];
     
+    //App
+    NSString *appPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:[NSString stringWithFormat:@"/APP/"]];
+    [logArray addObject:appPath];
+    
+    //缓存Path
+    NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:[NSString stringWithFormat:@"/%@/", [[QIMKit sharedInstance] getLastJid]]];
+    [logArray addObject:cachePath];
+
+    
     //数据库文件
     NSString *dbPath = [[QIMKit sharedInstance] getDBPathWithUserXmppId:[[QIMKit sharedInstance] getLastJid]];
     [logArray addObject:dbPath];
@@ -281,7 +297,7 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     [requestDic setObject:@"日志反馈" forKey:@"alt_body"];
     [requestDic setObject:@(YES) forKey:@"is_html"];
     NSData *requestData = [[QIMJSONSerializer sharedInstance] serializeObject:requestDic error:nil];
-    NSURL *requestUrl = [NSURL URLWithString:@"http://qim.qunar.com/test_public/public/mainSite/sendMail.php"];
+    NSURL *requestUrl = [NSURL URLWithString:@"https://qim.qunar.com/test_public/public/mainSite/sendMail.php"];
     
     NSMutableDictionary *requestHeader = [NSMutableDictionary dictionaryWithCapacity:1];
     [requestHeader setObject:@"application/json;" forKey:@"Content-type"];
