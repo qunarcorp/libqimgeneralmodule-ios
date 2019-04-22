@@ -18,7 +18,7 @@
 #import "CocoaLumberjack.h"
 #import "QIMPublicRedefineHeader.h"
 
-static NSString *LocalLogsPath = @"NewLogs";
+static NSString *LocalLogsPath = @"Logs";
 static NSString *LocalZipLogsPath = @"ZipLogs";
 
 @interface QIMLocalLog ()
@@ -57,14 +57,10 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     QIMLocalLogType logType = [[[QIMKit sharedInstance] userObjectForKey:@"recordLogType"] integerValue];
     logType = QIMLocalLogTypeOpened;
     [[QIMKit sharedInstance] setUserObject:@(QIMLocalLogTypeOpened) forKey:@"recordLogType"];
-    if ([lastUserName containsString:@"dan.liu"] || [lastUserName containsString:@"weiping.he"] || [lastUserName containsString:@"geng.li"] || [lastUserName containsString:@"lilulucas.li"] || [lastUserName containsString:@"ping.xue"] || [lastUserName containsString:@"wenhui.fan"]) {
-        DDFileLogger *fileLogger = [[DDFileLogger alloc] init];
-        fileLogger.rollingFrequency = (24 * 60 * 60) * 2;   //2天
-        fileLogger.maximumFileSize = 1024 * 1024 * 2; //每个log日志文件2M
-        fileLogger.logFileManager.maximumNumberOfLogFiles = 30; //最多保留100个日志
-        fileLogger.logFileManager.logFilesDiskQuota = 15 * 1024 * 1024; //15M
-        [DDLog addLogger:fileLogger withLevel:DDLogLevelAll];
-        [DDLog addLogger:[DDASLLogger sharedInstance]]; // ASL = Apple System Logs
+    if ([lastUserName containsString:@"dan.liu"] || [lastUserName containsString:@"weiping.he"] || [lastUserName containsString:@"geng.li"] || [lastUserName containsString:@"lilulucas.li"] || [lastUserName containsString:@"ping.xue"] || [lastUserName containsString:@"wenhui.fan"] || [lastUserName containsString:@"ping.yang"]) {
+        
+        [self initDDLog];
+        
         QIMLocalLogType logType = [[[QIMKit sharedInstance] userObjectForKey:@"recordLogType"] integerValue];
         if (logType == QIMLocalLogTypeDefault) {
             [[QIMKit sharedInstance] setUserObject:@(QIMLocalLogTypeOpened) forKey:@"recordLogType"];
@@ -73,15 +69,22 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     QIMLocalLogType newlogType = [[[QIMKit sharedInstance] userObjectForKey:@"recordLogType"] integerValue];
     if (newlogType == QIMLocalLogTypeOpened) {
         [self deleteLocalLog];
-//        [DDTTYLogger sharedInstance].logFormatter = [[QIMLogFormatter alloc] init];
-        DDFileLogger *fileLogger = [[DDFileLogger alloc] init];
-        fileLogger.rollingFrequency = (24 * 60 * 60) * 2;   //2天
-        fileLogger.maximumFileSize = 1024 * 1024 * 2; //每个log日志文件2M
-        fileLogger.logFileManager.maximumNumberOfLogFiles = 30; //最多保留100个日志
-        fileLogger.logFileManager.logFilesDiskQuota = 15 * 1024 * 1024; //15M
-        [DDLog addLogger:fileLogger withLevel:DDLogLevelAll];
-        [DDLog addLogger:[DDASLLogger sharedInstance]]; // ASL = Apple System Logs
+        [self initDDLog];
     }
+    [self initDDLog];
+}
+
+- (void)initDDLog {
+    NSString *logPath = [self getLocalLogsPath];
+    DDLogFileManagerDefault* logFileManager = [[DDLogFileManagerDefault alloc] initWithLogsDirectory:logPath];
+    
+    DDFileLogger *fileLogger = [[DDFileLogger alloc] initWithLogFileManager:logFileManager];
+    fileLogger.rollingFrequency = (24 * 60 * 60) * 2;   //2天
+    fileLogger.maximumFileSize = 1024 * 1024 * 1; //每个log日志文件2M
+    fileLogger.logFileManager.maximumNumberOfLogFiles = 30; //最多保留100个日志
+    fileLogger.logFileManager.logFilesDiskQuota = 30 * 1024 * 1024; //15M
+    [DDLog addLogger:fileLogger withLevel:DDLogLevelAll];
+    [DDLog addLogger:[DDASLLogger sharedInstance]]; // ASL = Apple System Logs
 }
 
 - (void)stopLog {
@@ -196,7 +199,8 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
 - (NSString *)getLocalLogsPath {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *logDirectory = [[paths objectAtIndex:0] stringByAppendingPathComponent:LocalLogsPath];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:logDirectory]) {
+    BOOL isDir;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:logDirectory isDirectory:&isDir]) {
         [[NSFileManager defaultManager] createDirectoryAtPath:logDirectory withIntermediateDirectories:YES attributes:nil error:nil];
     }
     return logDirectory;
