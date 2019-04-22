@@ -77,6 +77,21 @@
 		2C3314FA20AC347500819A6E /* AVChat_endCall.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2C33149D20AC347500819A6E /* AVChat_endCall.mp3 */; };
 		2C3314FB20AC347500819A6E /* QIMWebRTCClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C33149E20AC347500819A6E /* QIMWebRTCClient.h */; };
 		2C3314FC20AC347500819A6E /* QIMWebRTCMeetingClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C33149F20AC347500819A6E /* QIMWebRTCMeetingClient.m */; };
+		2C532BD1226D95CF004064AC /* UICollectionView+QIMAutoTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C532BC2226D95CF004064AC /* UICollectionView+QIMAutoTracker.h */; };
+		2C532BD2226D95CF004064AC /* UITableView+QIMAutoTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C532BC3226D95CF004064AC /* UITableView+QIMAutoTracker.h */; };
+		2C532BD3226D95CF004064AC /* NSObject+QIMAutoTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C532BC4226D95CF004064AC /* NSObject+QIMAutoTracker.h */; };
+		2C532BD4226D95CF004064AC /* QIMAutoTrackerOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C532BC5226D95CF004064AC /* QIMAutoTrackerOperation.h */; };
+		2C532BD5226D95CF004064AC /* UIButton+QIMAutoTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C532BC6226D95CF004064AC /* UIButton+QIMAutoTracker.m */; };
+		2C532BD6226D95CF004064AC /* UIView+QIMAutoTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C532BC7226D95CF004064AC /* UIView+QIMAutoTracker.m */; };
+		2C532BD7226D95CF004064AC /* QIMAutoTrackerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C532BC8226D95CF004064AC /* QIMAutoTrackerManager.h */; };
+		2C532BD8226D95CF004064AC /* UICollectionView+QIMAutoTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C532BC9226D95CF004064AC /* UICollectionView+QIMAutoTracker.m */; };
+		2C532BD9226D95CF004064AC /* QIMAutoTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C532BCA226D95CF004064AC /* QIMAutoTracker.h */; };
+		2C532BDA226D95CF004064AC /* QIMAutoTrackerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C532BCB226D95CF004064AC /* QIMAutoTrackerManager.m */; };
+		2C532BDB226D95CF004064AC /* UIView+QIMAutoTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C532BCC226D95CF004064AC /* UIView+QIMAutoTracker.h */; };
+		2C532BDC226D95CF004064AC /* QIMAutoTrackerOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C532BCD226D95CF004064AC /* QIMAutoTrackerOperation.m */; };
+		2C532BDD226D95CF004064AC /* UIButton+QIMAutoTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C532BCE226D95CF004064AC /* UIButton+QIMAutoTracker.h */; };
+		2C532BDE226D95CF004064AC /* NSObject+QIMAutoTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C532BCF226D95CF004064AC /* NSObject+QIMAutoTracker.m */; };
+		2C532BDF226D95CF004064AC /* UITableView+QIMAutoTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C532BD0226D95CF004064AC /* UITableView+QIMAutoTracker.m */; };
 		2C6108D3214680EE00C30923 /* QIMCalendarsManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C6108D1214680EE00C30923 /* QIMCalendarsManager.h */; };
 		2C6108D4214680EE00C30923 /* QIMCalendarsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6108D2214680EE00C30923 /* QIMCalendarsManager.m */; };
 		2C7333A62179DA73006C7EA8 /* QIMRTCSingleView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C7333A42179DA73006C7EA8 /* QIMRTCSingleView.h */; };
@@ -149,6 +164,21 @@
 		2C33149D20AC347500819A6E /* AVChat_endCall.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = AVChat_endCall.mp3; sourceTree = "<group>"; };
 		2C33149E20AC347500819A6E /* QIMWebRTCClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMWebRTCClient.h; sourceTree = "<group>"; };
 		2C33149F20AC347500819A6E /* QIMWebRTCMeetingClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMWebRTCMeetingClient.m; sourceTree = "<group>"; };
+		2C532BC2226D95CF004064AC /* UICollectionView+QIMAutoTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UICollectionView+QIMAutoTracker.h"; sourceTree = "<group>"; };
+		2C532BC3226D95CF004064AC /* UITableView+QIMAutoTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+QIMAutoTracker.h"; sourceTree = "<group>"; };
+		2C532BC4226D95CF004064AC /* NSObject+QIMAutoTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+QIMAutoTracker.h"; sourceTree = "<group>"; };
+		2C532BC5226D95CF004064AC /* QIMAutoTrackerOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMAutoTrackerOperation.h; sourceTree = "<group>"; };
+		2C532BC6226D95CF004064AC /* UIButton+QIMAutoTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+QIMAutoTracker.m"; sourceTree = "<group>"; };
+		2C532BC7226D95CF004064AC /* UIView+QIMAutoTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+QIMAutoTracker.m"; sourceTree = "<group>"; };
+		2C532BC8226D95CF004064AC /* QIMAutoTrackerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMAutoTrackerManager.h; sourceTree = "<group>"; };
+		2C532BC9226D95CF004064AC /* UICollectionView+QIMAutoTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UICollectionView+QIMAutoTracker.m"; sourceTree = "<group>"; };
+		2C532BCA226D95CF004064AC /* QIMAutoTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMAutoTracker.h; sourceTree = "<group>"; };
+		2C532BCB226D95CF004064AC /* QIMAutoTrackerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMAutoTrackerManager.m; sourceTree = "<group>"; };
+		2C532BCC226D95CF004064AC /* UIView+QIMAutoTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+QIMAutoTracker.h"; sourceTree = "<group>"; };
+		2C532BCD226D95CF004064AC /* QIMAutoTrackerOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMAutoTrackerOperation.m; sourceTree = "<group>"; };
+		2C532BCE226D95CF004064AC /* UIButton+QIMAutoTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+QIMAutoTracker.h"; sourceTree = "<group>"; };
+		2C532BCF226D95CF004064AC /* NSObject+QIMAutoTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+QIMAutoTracker.m"; sourceTree = "<group>"; };
+		2C532BD0226D95CF004064AC /* UITableView+QIMAutoTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+QIMAutoTracker.m"; sourceTree = "<group>"; };
 		2C6108D1214680EE00C30923 /* QIMCalendarsManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMCalendarsManager.h; sourceTree = "<group>"; };
 		2C6108D2214680EE00C30923 /* QIMCalendarsManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMCalendarsManager.m; sourceTree = "<group>"; };
 		2C7333A42179DA73006C7EA8 /* QIMRTCSingleView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMRTCSingleView.h; sourceTree = "<group>"; };
@@ -258,6 +288,7 @@
 				2C33141220AC24E500819A6E /* QIMGeneralModule.h */,
 				2C1D0F6E215F212D00275225 /* QIMGeneralModuleFramework.h */,
 				2C33141320AC24E500819A6E /* Info.plist */,
+				2C532BC1226D95CF004064AC /* QIMMonitor */,
 				2C6108D0214680A400C30923 /* QIMCalendars */,
 				2CC9A50D20AE8DF600A3FC8C /* QIMLocalLog */,
 				2C136D3C20AD7526005BE210 /* QIMNotes */,
@@ -317,6 +348,28 @@
 			path = sound;
 			sourceTree = "<group>";
 		};
+		2C532BC1226D95CF004064AC /* QIMMonitor */ = {
+			isa = PBXGroup;
+			children = (
+				2C532BC4226D95CF004064AC /* NSObject+QIMAutoTracker.h */,
+				2C532BCF226D95CF004064AC /* NSObject+QIMAutoTracker.m */,
+				2C532BCA226D95CF004064AC /* QIMAutoTracker.h */,
+				2C532BC8226D95CF004064AC /* QIMAutoTrackerManager.h */,
+				2C532BCB226D95CF004064AC /* QIMAutoTrackerManager.m */,
+				2C532BC5226D95CF004064AC /* QIMAutoTrackerOperation.h */,
+				2C532BCD226D95CF004064AC /* QIMAutoTrackerOperation.m */,
+				2C532BCE226D95CF004064AC /* UIButton+QIMAutoTracker.h */,
+				2C532BC6226D95CF004064AC /* UIButton+QIMAutoTracker.m */,
+				2C532BC2226D95CF004064AC /* UICollectionView+QIMAutoTracker.h */,
+				2C532BC9226D95CF004064AC /* UICollectionView+QIMAutoTracker.m */,
+				2C532BC3226D95CF004064AC /* UITableView+QIMAutoTracker.h */,
+				2C532BD0226D95CF004064AC /* UITableView+QIMAutoTracker.m */,
+				2C532BCC226D95CF004064AC /* UIView+QIMAutoTracker.h */,
+				2C532BC7226D95CF004064AC /* UIView+QIMAutoTracker.m */,
+			);
+			path = QIMMonitor;
+			sourceTree = "<group>";
+		};
 		2C6108D0214680A400C30923 /* QIMCalendars */ = {
 			isa = PBXGroup;
 			children = (
@@ -374,19 +427,27 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C532BD4226D95CF004064AC /* QIMAutoTrackerOperation.h in Headers */,
 				2C1D0F6F215F212D00275225 /* QIMGeneralModuleFramework.h in Headers */,
 				2C7333A62179DA73006C7EA8 /* QIMRTCSingleView.h in Headers */,
 				2C136D7A20AD7B52005BE210 /* Base64.h in Headers */,
+				2C532BDD226D95CF004064AC /* UIButton+QIMAutoTracker.h in Headers */,
 				2C3314C920AC347500819A6E /* QIMRTCNSNotification.h in Headers */,
 				2C3314C220AC347500819A6E /* QIMWebRTCMeetingClient.h in Headers */,
 				2C136D8120AD7B52005BE210 /* QIMNoteModel.h in Headers */,
 				2C136D8220AD7B52005BE210 /* AES.h in Headers */,
+				2C532BD1226D95CF004064AC /* UICollectionView+QIMAutoTracker.h in Headers */,
+				2C532BD7226D95CF004064AC /* QIMAutoTrackerManager.h in Headers */,
 				2C136D8320AD7B52005BE210 /* AESCrypt.h in Headers */,
 				2C3314FB20AC347500819A6E /* QIMWebRTCClient.h in Headers */,
+				2C532BD2226D95CF004064AC /* UITableView+QIMAutoTracker.h in Headers */,
 				2CC9A51620AE8DF600A3FC8C /* QIMLocalLog.h in Headers */,
+				2C532BD3226D95CF004064AC /* NSObject+QIMAutoTracker.h in Headers */,
 				2C3314F220AC347500819A6E /* QIMRTCHeaderView.h in Headers */,
 				2C6108D3214680EE00C30923 /* QIMCalendarsManager.h in Headers */,
 				2C136D8020AD7B52005BE210 /* AESTools.h in Headers */,
+				2C532BDB226D95CF004064AC /* UIView+QIMAutoTracker.h in Headers */,
+				2C532BD9226D95CF004064AC /* QIMAutoTracker.h in Headers */,
 				2C136D8520AD7B52005BE210 /* QIMPasswordGenerate.h in Headers */,
 				2C3314CA20AC347500819A6E /* QIMRTCMeetingView.h in Headers */,
 				2C3314C620AC347500819A6E /* QIMRTCButton.h in Headers */,
@@ -543,11 +604,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C532BDC226D95CF004064AC /* QIMAutoTrackerOperation.m in Sources */,
+				2C532BD6226D95CF004064AC /* UIView+QIMAutoTracker.m in Sources */,
 				2C3314CB20AC347500819A6E /* QIMRTCButton.m in Sources */,
 				2C136D6420AD7AC1005BE210 /* QIMAES256.mm in Sources */,
 				2C7333A72179DA73006C7EA8 /* QIMRTCSingleView.m in Sources */,
 				2C136D7D20AD7B52005BE210 /* QIMPasswordGenerate.m in Sources */,
+				2C532BDA226D95CF004064AC /* QIMAutoTrackerManager.m in Sources */,
 				2C136D7820AD7B51005BE210 /* QIMEncryptChat.m in Sources */,
+				2C532BD5226D95CF004064AC /* UIButton+QIMAutoTracker.m in Sources */,
 				2C6108D4214680EE00C30923 /* QIMCalendarsManager.m in Sources */,
 				2CC9A50C20AE78C000A3FC8C /* QIMNotifyManager.m in Sources */,
 				2C136D7C20AD7B52005BE210 /* QIMNoteManager.m in Sources */,
@@ -556,13 +621,16 @@
 				2C136D7920AD7B51005BE210 /* AESTools.mm in Sources */,
 				2C3314F320AC347500819A6E /* QIMRTCMeetingView.m in Sources */,
 				2C136D8620AD7B52005BE210 /* AES.mm in Sources */,
+				2C532BDE226D95CF004064AC /* NSObject+QIMAutoTracker.m in Sources */,
 				2C136D7B20AD7B52005BE210 /* AESCrypt.m in Sources */,
 				2C3314F420AC347500819A6E /* QIMRTCNSNotification.m in Sources */,
 				2C3314C420AC347500819A6E /* QIMWebRTCSocketClient.m in Sources */,
 				2C3314FC20AC347500819A6E /* QIMWebRTCMeetingClient.m in Sources */,
 				2CC9A51720AE8DF600A3FC8C /* QIMBacktraceLogger.m in Sources */,
+				2C532BDF226D95CF004064AC /* UITableView+QIMAutoTracker.m in Sources */,
 				2CC9A51820AE8DF600A3FC8C /* QIMLocalLog.m in Sources */,
 				2C3314C820AC347500819A6E /* QIMRTCView.m in Sources */,
+				2C532BD8226D95CF004064AC /* UICollectionView+QIMAutoTracker.m in Sources */,
 				2C3314C320AC347500819A6E /* QIMWebRTCClient.m in Sources */,
 				2C148363213FDC70009D4AE3 /* QIMLogFormatter.m in Sources */,
 				2C136D7E20AD7B52005BE210 /* Base64.mm in Sources */,

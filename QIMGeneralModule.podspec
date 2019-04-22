@@ -86,6 +86,11 @@ Pod::Spec.new do |s|
       calendar.source_files = ['QIMGeneralModule/QIMCalendars/**/*.{h,m,c}']
       calendar.public_header_files = 'QIMGeneralModule/QIMCalendars/**/*.{h}'
   end
+  
+  s.subspec 'AutoMonitor' do |monitor|
+    monitor.source_files = 'QIMGeneralModule/QIMMonitor/**/*.{h,m}'
+    monitor.public_header_files = 'QIMGeneralModule/QIMMonitor/**/.h'
+  end
 
   if $debug
     puts 'debug QIMGeneralModule'
