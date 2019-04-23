@@ -51,7 +51,7 @@ void qim_didSelectItemAtIndexPath(id self, SEL _cmd, id collectionView, NSIndexP
     NSString *actionString = NSStringFromSelector(_cmd);
     
     NSString *eventId = [NSString stringWithFormat:@"%@&&%@",targetString,actionString];
-    [[QIMAutoTrackerManager sharedInstance] addACTTrackerData:eventId];
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:eventId withDescription:eventId];
 }
 
 @end

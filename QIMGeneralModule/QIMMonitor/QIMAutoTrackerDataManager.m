@@ -8,6 +8,7 @@
 
 #import "QIMAutoTrackerDataManager.h"
 #import "Database.h"
+#import "QIMJSONSerializer.h"
 
 @interface QIMAutoTrackerDataManager ()
 
@@ -116,7 +117,22 @@ static dispatch_once_t _onceTraceDBToken;
 }
 
 - (NSArray *)qim_getTraceLogWithReportTime:(long long)reportTime {
-    return nil;
+    __block NSMutableArray *result = nil;
+    [[self dbInstance] syncUsingTransaction:^(Database *database) {
+        NSString *sql = @"select content from IM_TRACE_LOG order by reportTime desc";
+        DataReader *reader = [database executeReader:sql withParameters:nil];
+        while ([reader read]) {
+            if (!result) {
+                result = [[NSMutableArray alloc] init];
+            }
+            NSString *traceInfo = [reader objectForColumnIndex:0];
+            if (traceInfo.length > 0) {
+                NSDictionary *traceInfoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:traceInfo error:nil];
+                [result addObject:traceInfoDic];
+            }
+        }
+    }];
+    return result;
 }
 
 - (void)qim_deleteTraceLog {

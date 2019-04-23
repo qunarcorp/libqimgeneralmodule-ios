@@ -38,7 +38,7 @@
             if (self.accessibilityIdentifier.length > 0) {
                 eventId = [NSString stringWithFormat:@"%@&&%@&&%@",NSStringFromClass([self class]),[actions firstObject], [self accessibilityIdentifier]];
             }
-            [[QIMAutoTrackerManager sharedInstance] addACTTrackerData:eventId];
+            [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:eventId withDescription:eventId];
         }
     }
 }

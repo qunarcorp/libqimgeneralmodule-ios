@@ -37,6 +37,6 @@ typedef void(^QIMAutoTrackerManagerBlock)(NSDictionary *trackerDictionary);
  */
 - (void)startWithCompletionBlockWithSuccess:(QIMAutoTrackerManagerBlock)successBlock debug:(QIMAutoTrackerManagerBlock)debugBlock;
 
-- (void)addACTTrackerData:(NSString *)eventId;
+- (void)addACTTrackerDataWithEventId:(NSString *)eventId withDescription:(NSString *)description;
 
 @end

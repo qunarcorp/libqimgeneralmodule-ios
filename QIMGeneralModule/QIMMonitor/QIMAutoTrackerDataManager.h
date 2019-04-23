@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)qimDB_sharedLogDBInstance;
 
+- (NSArray *)qim_getTraceLogWithReportTime:(long long)reportTime;
+
 - (void)qim_insertTraceLogWithType:(NSString *)type withSubType:(NSString *)subtype withReportTime:(long long)reportTime withLogInfo:(NSString *)logInfo;
 
 @end

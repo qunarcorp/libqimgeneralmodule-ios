@@ -19,4 +19,6 @@
  */
 - (void)sendTrackerData:(NSString *)eventId info:(NSDictionary *)info;
 
+- (void)uploadTracerData;
+
 @end

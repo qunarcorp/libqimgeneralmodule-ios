@@ -36,17 +36,17 @@
     static dispatch_once_t once;
     dispatch_once(&once, ^ {
         [QIMAutoTrackerDataManager qimDB_sharedLogDBInstanceWithDBFullJid:@"lilulucas.li@ejabhost1"];
-        [UIButton startTracker];
-        [UITableView startTracker];
-        [UICollectionView startTracker];
-        [UIView startTracker];
+//        [UIButton startTracker];
+//        [UITableView startTracker];
+//        [UICollectionView startTracker];
+//        [UIView startTracker];
     });
     
     self.successBlock = successBlock;
     self.debugBlock = debugBlock;
 }
 
-- (void)addACTTrackerData:(NSString *)eventId {
+- (void)addACTTrackerDataWithEventId:(NSString *)eventId withDescription:(NSString *)description {
     
      /*
      
@@ -72,10 +72,14 @@
     NSString *threadName = NSThread.currentThread.name;
     long long reportTime = [[NSDate date] timeIntervalSince1970] * 1000;
     
-    NSDictionary *info = @{@"costTime":@(0), @"describtion":eventId, @"isMainThread":@([NSThread isMainThread]), @"reportTime":@(reportTime), @"sql":@[], @"subType":@"click", @"threadId":@(threadID), @"threadName":threadName?threadName:@"", @"type":@"ACT"};
+    NSDictionary *info = @{@"costTime":@(0), @"eventId":eventId, @"describtion":description, @"isMainThread":@([NSThread isMainThread]), @"reportTime":@(reportTime), @"sql":@[], @"subType":@"click", @"threadId":@(threadID), @"threadName":threadName?threadName:@"", @"type":@"ACT"};
     NSString *infoStr = [[QIMJSONSerializer sharedInstance] serializeObject:info];
     [[QIMAutoTrackerDataManager qimDB_sharedLogDBInstance] qim_insertTraceLogWithType:@"ACT" withSubType:@"click" withReportTime:reportTime withLogInfo:infoStr];
     NSLog(@"这里保存一下数据库 : %@", infoStr);
+}
+
+- (void)addCODTraceData:(NSString *)sql {
+    
 }
 
 @end

@@ -62,7 +62,7 @@ void qim_didTapView(id self, SEL _cmd, id gestureRecognizer) {
     
     NSString *aciton = NSStringFromSelector(_cmd);
     NSString *eventId = [NSString stringWithFormat:@"%@&&%@",NSStringFromClass([self class]),aciton];
-    [[QIMAutoTrackerManager sharedInstance] addACTTrackerData:eventId];
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:eventId withDescription:eventId];
 }
 
 @end

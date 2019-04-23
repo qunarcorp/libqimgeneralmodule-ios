@@ -55,7 +55,7 @@ void qim_didSelectRowAtIndexPath(id self, SEL _cmd, id tableView, NSIndexPath *i
     if (cell.accessibilityIdentifier.length > 0) {
         eventId = [NSString stringWithFormat:@"%@&&%@&&%@&&%ld-%ld",targetString,actionString, cell.accessibilityIdentifier, indexpath.section, indexpath.row];
     }
-    [[QIMAutoTrackerManager sharedInstance] addACTTrackerData:eventId];
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:eventId withDescription:eventId];
 }
 
 @end
