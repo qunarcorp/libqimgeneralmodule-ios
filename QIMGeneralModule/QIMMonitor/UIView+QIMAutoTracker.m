@@ -10,17 +10,18 @@
 #import <objc/message.h>
 #import "QIMAutoTrackerOperation.h"
 #import "NSObject+QIMAutoTracker.h"
+#import "QIMAutoTrackerManager.h"
 
 @implementation UIView (QIMAutoTracker)
 
 + (void)startTracker {
     Method addGestureRecognizerMethod = class_getInstanceMethod(self, @selector(addGestureRecognizer:));
-    Method ddAddGestureRecognizerMethod = class_getInstanceMethod(self, @selector(dd_addGestureRecognizer:));
-    method_exchangeImplementations(addGestureRecognizerMethod, ddAddGestureRecognizerMethod);
+    Method qimAddGestureRecognizerMethod = class_getInstanceMethod(self, @selector(qim_addGestureRecognizer:));
+    method_exchangeImplementations(addGestureRecognizerMethod, qimAddGestureRecognizerMethod);
 }
 
-- (void)dd_addGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer {
-    [self dd_addGestureRecognizer:gestureRecognizer];
+- (void)qim_addGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer {
+    [self qim_addGestureRecognizer:gestureRecognizer];
     //只监听UITapGestureRecognizer事件
     if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
         Ivar targetsIvar = class_getInstanceVariable([UIGestureRecognizer class], "_targets");
@@ -33,12 +34,11 @@
         for (id targetActionPair in targetActionPairs) {
             id target = object_getIvar(targetActionPair, targetIvar);
             SEL action = (__bridge void *)object_getIvar(targetActionPair, actionIvar);
-            if (target &&
-                action) {
+            if (target && action) {
                 Class class = [target class];
                 SEL originSelector = action;
-                SEL swizzlSelector = NSSelectorFromString(@"dd_didTapView");
-                BOOL didAddMethod = class_addMethod(class, swizzlSelector, (IMP)dd_didTapView, "v@:@@");
+                SEL swizzlSelector = NSSelectorFromString(@"qim_didTapView");
+                BOOL didAddMethod = class_addMethod(class, swizzlSelector, (IMP)qim_didTapView, "v@:@@");
                 if (didAddMethod) {
                     Method originMethod = class_getInstanceMethod(class, swizzlSelector);
                     Method swizzlMethod = class_getInstanceMethod(class, originSelector);
@@ -50,10 +50,10 @@
     }
 }
 
-void dd_didTapView(id self, SEL _cmd, id gestureRecognizer) {
+void qim_didTapView(id self, SEL _cmd, id gestureRecognizer) {
     NSMethodSignature *signture = [[self class] instanceMethodSignatureForSelector:_cmd];
     NSUInteger numberOfArguments = signture.numberOfArguments;
-    SEL selector = NSSelectorFromString(@"dd_didTapView");
+    SEL selector = NSSelectorFromString(@"qim_didTapView");
     if (3 == numberOfArguments) {
         ((void(*)(id, SEL, id))objc_msgSend)(self, selector, gestureRecognizer);
     }else if (2 == numberOfArguments) {
@@ -62,10 +62,7 @@ void dd_didTapView(id self, SEL _cmd, id gestureRecognizer) {
     
     NSString *aciton = NSStringFromSelector(_cmd);
     NSString *eventId = [NSString stringWithFormat:@"%@&&%@",NSStringFromClass([self class]),aciton];
-    NSDictionary *infoDictionary = [self ddInfoDictionary];
-    NSLog(@"dd_didTapView : %@", infoDictionary);
-    [[QIMAutoTrackerOperation sharedInstance] sendTrackerData:eventId
-                                                        info:infoDictionary];
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerData:eventId];
 }
 
 @end

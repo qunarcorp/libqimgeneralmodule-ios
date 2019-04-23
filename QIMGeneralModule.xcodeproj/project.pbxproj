@@ -77,6 +77,8 @@
 		2C3314FA20AC347500819A6E /* AVChat_endCall.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2C33149D20AC347500819A6E /* AVChat_endCall.mp3 */; };
 		2C3314FB20AC347500819A6E /* QIMWebRTCClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C33149E20AC347500819A6E /* QIMWebRTCClient.h */; };
 		2C3314FC20AC347500819A6E /* QIMWebRTCMeetingClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C33149F20AC347500819A6E /* QIMWebRTCMeetingClient.m */; };
+		2C3D1DD3226DCBE900918302 /* QIMAutoTrackerDataManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C3D1DD1226DCBE900918302 /* QIMAutoTrackerDataManager.h */; };
+		2C3D1DD4226DCBE900918302 /* QIMAutoTrackerDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C3D1DD2226DCBE900918302 /* QIMAutoTrackerDataManager.m */; };
 		2C532BD1226D95CF004064AC /* UICollectionView+QIMAutoTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C532BC2226D95CF004064AC /* UICollectionView+QIMAutoTracker.h */; };
 		2C532BD2226D95CF004064AC /* UITableView+QIMAutoTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C532BC3226D95CF004064AC /* UITableView+QIMAutoTracker.h */; };
 		2C532BD3226D95CF004064AC /* NSObject+QIMAutoTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C532BC4226D95CF004064AC /* NSObject+QIMAutoTracker.h */; };
@@ -164,6 +166,8 @@
 		2C33149D20AC347500819A6E /* AVChat_endCall.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = AVChat_endCall.mp3; sourceTree = "<group>"; };
 		2C33149E20AC347500819A6E /* QIMWebRTCClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMWebRTCClient.h; sourceTree = "<group>"; };
 		2C33149F20AC347500819A6E /* QIMWebRTCMeetingClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMWebRTCMeetingClient.m; sourceTree = "<group>"; };
+		2C3D1DD1226DCBE900918302 /* QIMAutoTrackerDataManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMAutoTrackerDataManager.h; sourceTree = "<group>"; };
+		2C3D1DD2226DCBE900918302 /* QIMAutoTrackerDataManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMAutoTrackerDataManager.m; sourceTree = "<group>"; };
 		2C532BC2226D95CF004064AC /* UICollectionView+QIMAutoTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UICollectionView+QIMAutoTracker.h"; sourceTree = "<group>"; };
 		2C532BC3226D95CF004064AC /* UITableView+QIMAutoTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+QIMAutoTracker.h"; sourceTree = "<group>"; };
 		2C532BC4226D95CF004064AC /* NSObject+QIMAutoTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+QIMAutoTracker.h"; sourceTree = "<group>"; };
@@ -366,6 +370,8 @@
 				2C532BD0226D95CF004064AC /* UITableView+QIMAutoTracker.m */,
 				2C532BCC226D95CF004064AC /* UIView+QIMAutoTracker.h */,
 				2C532BC7226D95CF004064AC /* UIView+QIMAutoTracker.m */,
+				2C3D1DD1226DCBE900918302 /* QIMAutoTrackerDataManager.h */,
+				2C3D1DD2226DCBE900918302 /* QIMAutoTrackerDataManager.m */,
 			);
 			path = QIMMonitor;
 			sourceTree = "<group>";
@@ -439,6 +445,7 @@
 				2C532BD1226D95CF004064AC /* UICollectionView+QIMAutoTracker.h in Headers */,
 				2C532BD7226D95CF004064AC /* QIMAutoTrackerManager.h in Headers */,
 				2C136D8320AD7B52005BE210 /* AESCrypt.h in Headers */,
+				2C3D1DD3226DCBE900918302 /* QIMAutoTrackerDataManager.h in Headers */,
 				2C3314FB20AC347500819A6E /* QIMWebRTCClient.h in Headers */,
 				2C532BD2226D95CF004064AC /* UITableView+QIMAutoTracker.h in Headers */,
 				2CC9A51620AE8DF600A3FC8C /* QIMLocalLog.h in Headers */,
@@ -627,6 +634,7 @@
 				2C3314C420AC347500819A6E /* QIMWebRTCSocketClient.m in Sources */,
 				2C3314FC20AC347500819A6E /* QIMWebRTCMeetingClient.m in Sources */,
 				2CC9A51720AE8DF600A3FC8C /* QIMBacktraceLogger.m in Sources */,
+				2C3D1DD4226DCBE900918302 /* QIMAutoTrackerDataManager.m in Sources */,
 				2C532BDF226D95CF004064AC /* UITableView+QIMAutoTracker.m in Sources */,
 				2CC9A51820AE8DF600A3FC8C /* QIMLocalLog.m in Sources */,
 				2C3314C820AC347500819A6E /* QIMRTCView.m in Sources */,
