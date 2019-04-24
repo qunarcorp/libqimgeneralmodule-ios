@@ -31,7 +31,7 @@ static dispatch_once_t _onceTraceDBToken;
 }
 
 + (instancetype)qimDB_sharedLogDBInstance {
-    NSAssert(__manager != nil, @"请先执行qimDB_sharedLogDBInstanceWithDBFullJid:");
+//    NSAssert(__manager != nil, @"请先执行qimDB_sharedLogDBInstanceWithDBFullJid:");
     return __manager;
 }
 
