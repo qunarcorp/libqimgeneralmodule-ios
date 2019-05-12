@@ -30,7 +30,7 @@ Pod::Spec.new do |s|
       webrtc.frameworks = 'VideoToolbox', 'GLKit', 'CoreTelephony', 'AVFoundation', 'UIKit', 'Foundation'
       webrtc.dependency 'SocketRocket'
 
-      webrtc.dependency 'GoogleWebRTC', '~> 1.1.26989'
+      webrtc.dependency 'GoogleWebRTC', '1.1.26989'
       webrtc.libraries = 'stdc++', 'bz2', 'resolv'
 
   end
