@@ -79,7 +79,7 @@ static dispatch_once_t _onceTraceDBToken;
         [[NSFileManager defaultManager] createDirectoryAtPath:logDBPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     logDBPath = [logDBPath stringByAppendingPathComponent:@"logs.dat"];
-    NSLog(@"用户数据库路径为 %@", logDBPath);
+    NSLog(@"用户日志上报TraceLog数据库路径为 %@", logDBPath);
     return logDBPath;
 }
 

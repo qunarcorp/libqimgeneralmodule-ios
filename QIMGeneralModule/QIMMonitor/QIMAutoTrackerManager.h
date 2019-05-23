@@ -29,14 +29,8 @@ typedef void(^QIMAutoTrackerManagerBlock)(NSDictionary *trackerDictionary);
 
 + (QIMAutoTrackerManager *)sharedInstance;
 
-/**
- 开始打点
- 
- @param successBlock 成功回调
- @param debugBlock 调试模式回调
- */
-- (void)startWithCompletionBlockWithSuccess:(QIMAutoTrackerManagerBlock)successBlock debug:(QIMAutoTrackerManagerBlock)debugBlock;
-
 - (void)addACTTrackerDataWithEventId:(NSString *)eventId withDescription:(NSString *)description;
+
+- (void)addCATTraceData:(NSDictionary *)catDic;
 
 @end

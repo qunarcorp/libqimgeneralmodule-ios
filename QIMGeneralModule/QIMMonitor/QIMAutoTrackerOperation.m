@@ -52,7 +52,8 @@
 }
 
 - (void)uploadTracerData {
-    NSArray *traceLogs = [[QIMAutoTrackerDataManager qimDB_sharedLogDBInstance] qim_getTraceLogWithReportTime:0];
+    long long reportTime = [[NSDate date] timeIntervalSince1970] * 1000;
+    NSArray *traceLogs = [[QIMAutoTrackerDataManager qimDB_sharedLogDBInstance] qim_getTraceLogWithReportTime:reportTime];
     if (traceLogs.count > 0) {
         NSMutableDictionary *oldNavConfigUrlDict = [[QIMKit sharedInstance] userObjectForKey:@"QC_CurrentNavDict"];
         NSLog(@"本地找到的oldNavConfigUrlDict : %@", oldNavConfigUrlDict);
@@ -84,7 +85,7 @@
             NSString *osVersion = [[QIMKit sharedInstance] SystemVersion];
             NSString *versionCode = [[QIMKit sharedInstance] AppBuildVersion];
             NSString *versionName = [[QIMKit sharedInstance] AppVersion];
-            NSString *plat = @"qtalk";
+            NSString *plat = [QIMKit getQIMProjectTitleName];
             
             [deviceInfo setObject:os forKey:@"os"];
             [deviceInfo setObject:osBrand forKey:@"osBrand"];
