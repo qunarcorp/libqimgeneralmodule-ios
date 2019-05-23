@@ -80,7 +80,7 @@
 
 - (void)addCATTraceData:(NSDictionary *)catDic {
     dispatch_async(self.trackerDataManagerQueue, ^{
-        long long costTime = [[catDic objectForKey:@"costTime"] longLongValue];
+        CGFloat costTime = [[catDic objectForKey:@"costTime"] floatValue];
         long long reportTime = [[NSDate date] timeIntervalSince1970] * 1000;
         NSString *threadName = [catDic objectForKey:@"threadName"];
         BOOL isMainThread = [[catDic objectForKey:@"isMainThread"] boolValue];
@@ -92,7 +92,7 @@
         
         NSDictionary *info = @{@"costTime":@(costTime), @"url":url, @"method":@"method", @"methodParams":methodParams, @"describtion":describtion, @"isMainThread":@(isMainThread), @"reportTime":@(reportTime), @"sql":@[], @"subType":@"http", @"threadName":threadName?threadName:@"", @"type":@"CAT"};
         NSString *infoStr = [[QIMJSONSerializer sharedInstance] serializeObject:info];
-        [[QIMAutoTrackerDataManager qimDB_sharedLogDBInstance] qim_insertTraceLogWithType:@"ACT" withSubType:@"click" withReportTime:reportTime withLogInfo:infoStr];
+        [[QIMAutoTrackerDataManager qimDB_sharedLogDBInstance] qim_insertTraceLogWithType:@"CAT" withSubType:@"http" withReportTime:reportTime withLogInfo:infoStr];
     });
 }
 
