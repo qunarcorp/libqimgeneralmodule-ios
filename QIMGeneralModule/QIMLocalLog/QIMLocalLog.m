@@ -291,7 +291,7 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     NSMutableDictionary *requestDic = [NSMutableDictionary dictionary];
     [requestDic setObject:@"qchat@qunar.com" forKey:@"from"];
     [requestDic setObject:@"QChat Team" forKey:@"from_name"];
-    [requestDic setObject:@[@{@"to":@"lilulucas.li@qunar.com",@"name":@"李露"}] forKey:@"tos"];
+    [requestDic setObject:@[@{@"to":@"lilulucas.li@qunar.com",@"name":@"李露"}, @{@"to":@"kaiming.zhang@qunar.com",@"name":@"张凯铭"}] forKey:@"tos"];
     [requestDic setObject:title forKey:@"subject"];
     NSString *systemVersion = [[QIMKit sharedInstance] SystemVersion];
     NSString *appVersion = [[QIMKit sharedInstance] AppBuildVersion];

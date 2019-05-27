@@ -71,10 +71,9 @@
         NSString *threadName = NSThread.currentThread.name;
         long long reportTime = [[NSDate date] timeIntervalSince1970] * 1000;
         
-        NSDictionary *info = @{@"costTime":@(0), @"eventId":eventId, @"describtion":description, @"isMainThread":@([NSThread isMainThread]), @"reportTime":@(reportTime), @"sql":@[], @"subType":@"click", @"threadId":@(threadID), @"threadName":threadName?threadName:@"", @"type":@"ACT"};
+        NSDictionary *info = @{@"costTime":@(0), @"eventId":eventId?eventId:@"", @"describtion":description?description:@"", @"isMainThread":@([NSThread isMainThread]), @"reportTime":@(reportTime), @"sql":@[], @"subType":@"click", @"threadId":@(threadID), @"threadName":threadName?threadName:@"", @"type":@"ACT"};
         NSString *infoStr = [[QIMJSONSerializer sharedInstance] serializeObject:info];
         [[QIMAutoTrackerDataManager qimDB_sharedLogDBInstance] qim_insertTraceLogWithType:@"ACT" withSubType:@"click" withReportTime:reportTime withLogInfo:infoStr];
-        NSLog(@"这里保存一下数据库 : %@", infoStr);
     });
 }
 
@@ -90,7 +89,7 @@
         NSString *qckey = [catDic objectForKey:@"q_ckey"];
         NSDictionary *describtion = [catDic objectForKey:@"describtion"];
         
-        NSDictionary *info = @{@"costTime":@(costTime), @"url":url, @"method":@"method", @"methodParams":methodParams, @"describtion":describtion, @"isMainThread":@(isMainThread), @"reportTime":@(reportTime), @"sql":@[], @"subType":@"http", @"threadName":threadName?threadName:@"", @"type":@"CAT"};
+        NSDictionary *info = @{@"costTime":@(costTime), @"url":url?url:@"", @"method":@"method", @"methodParams":methodParams?methodParams:@{}, @"describtion":describtion?describtion:@"", @"isMainThread":@(isMainThread), @"reportTime":@(reportTime), @"sql":@[], @"subType":@"http", @"threadName":threadName?threadName:@"", @"type":@"CAT"};
         NSString *infoStr = [[QIMJSONSerializer sharedInstance] serializeObject:info];
         [[QIMAutoTrackerDataManager qimDB_sharedLogDBInstance] qim_insertTraceLogWithType:@"CAT" withSubType:@"http" withReportTime:reportTime withLogInfo:infoStr];
     });

@@ -52,59 +52,61 @@
 }
 
 - (void)uploadTracerData {
-    long long reportTime = [[NSDate date] timeIntervalSince1970] * 1000;
-    NSArray *traceLogs = [[QIMAutoTrackerDataManager qimDB_sharedLogDBInstance] qim_getTraceLogWithReportTime:reportTime];
-    if (traceLogs.count > 0) {
-        NSMutableDictionary *oldNavConfigUrlDict = [[QIMKit sharedInstance] userObjectForKey:@"QC_CurrentNavDict"];
-        NSLog(@"本地找到的oldNavConfigUrlDict : %@", oldNavConfigUrlDict);
-        NSString *navUrl = [oldNavConfigUrlDict objectForKey:@"NavUrl"];
-        NSString *uid = [QIMKit getLastUserName];
-        NSString *domain = [[QIMKit sharedInstance] getDomain];
-        NSMutableDictionary *result = [NSMutableDictionary dictionaryWithCapacity:3];
-        if (uid.length && domain.length) {
-            NSDictionary *userInfo = @{@"uid":uid, @"domain":domain, @"nav":navUrl};
-            [result setObject:userInfo forKey:@"user"];
-            
-            NSMutableDictionary *deviceInfo = [NSMutableDictionary dictionaryWithCapacity:3];
-            /*
-            "os": "iOS",
-            "osBrand": "iPhoneXMax",
-            "osModel": "iPhoneXMax",
-            "osVersion": 26,
-            "versionCode": 218,
-            "versionName": "3.1.0",
-            "plat": "qtalk",
-            "ip": "127.0.0.1",
-            "lat": "39.983605",
-            "lgt": "116.312536",
-            "net": "WIFI"
-            */
-            NSString *os = @"iOS";
-            NSString *osBrand = [[QIMKit sharedInstance] deviceName];
-            NSString *osModel = [[QIMKit sharedInstance] deviceName];
-            NSString *osVersion = [[QIMKit sharedInstance] SystemVersion];
-            NSString *versionCode = [[QIMKit sharedInstance] AppBuildVersion];
-            NSString *versionName = [[QIMKit sharedInstance] AppVersion];
-            NSString *plat = [QIMKit getQIMProjectTitleName];
-            
-            [deviceInfo setObject:os forKey:@"os"];
-            [deviceInfo setObject:osBrand forKey:@"osBrand"];
-            [deviceInfo setObject:osModel forKey:@"osModel"];
-            [deviceInfo setObject:osVersion forKey:@"osVersion"];
-            [deviceInfo setObject:versionCode forKey:@"versionCode"];
-            [deviceInfo setObject:versionName forKey:@"versionName"];
-            [deviceInfo setObject:plat forKey:@"plat"];
-            
-            [result setObject:deviceInfo forKey:@"device"];
-            
-            [result setObject:traceLogs forKey:@"infos"];
-            
-            NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:result error:nil];
-            [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:[[QIMKit sharedInstance] qimNav_UploadLog] withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+    if ([[QIMKit sharedInstance] qimNav_UploadLog].length > 0) {
+        long long reportTime = [[NSDate date] timeIntervalSince1970] * 1000;
+        NSArray *traceLogs = [[QIMAutoTrackerDataManager qimDB_sharedLogDBInstance] qim_getTraceLogWithReportTime:reportTime];
+        if (traceLogs.count > 0) {
+            NSMutableDictionary *oldNavConfigUrlDict = [[QIMKit sharedInstance] userObjectForKey:@"QC_CurrentNavDict"];
+            NSLog(@"本地找到的oldNavConfigUrlDict : %@", oldNavConfigUrlDict);
+            NSString *navUrl = [oldNavConfigUrlDict objectForKey:@"NavUrl"];
+            NSString *uid = [QIMKit getLastUserName];
+            NSString *domain = [[QIMKit sharedInstance] getDomain];
+            NSMutableDictionary *result = [NSMutableDictionary dictionaryWithCapacity:3];
+            if (uid.length && domain.length) {
+                NSDictionary *userInfo = @{@"uid":uid, @"domain":domain, @"nav":navUrl};
+                [result setObject:userInfo forKey:@"user"];
                 
-            } withFailedCallBack:^(NSError *error) {
+                NSMutableDictionary *deviceInfo = [NSMutableDictionary dictionaryWithCapacity:3];
+                /*
+                 "os": "iOS",
+                 "osBrand": "iPhoneXMax",
+                 "osModel": "iPhoneXMax",
+                 "osVersion": 26,
+                 "versionCode": 218,
+                 "versionName": "3.1.0",
+                 "plat": "qtalk",
+                 "ip": "127.0.0.1",
+                 "lat": "39.983605",
+                 "lgt": "116.312536",
+                 "net": "WIFI"
+                 */
+                NSString *os = @"iOS";
+                NSString *osBrand = [[QIMKit sharedInstance] deviceName];
+                NSString *osModel = [[QIMKit sharedInstance] deviceName];
+                NSString *osVersion = [[QIMKit sharedInstance] SystemVersion];
+                NSString *versionCode = [[QIMKit sharedInstance] AppBuildVersion];
+                NSString *versionName = [[QIMKit sharedInstance] AppVersion];
+                NSString *plat = [QIMKit getQIMProjectTitleName];
                 
-            }];
+                [deviceInfo setObject:os forKey:@"os"];
+                [deviceInfo setObject:osBrand forKey:@"osBrand"];
+                [deviceInfo setObject:osModel forKey:@"osModel"];
+                [deviceInfo setObject:osVersion forKey:@"osVersion"];
+                [deviceInfo setObject:versionCode forKey:@"versionCode"];
+                [deviceInfo setObject:versionName forKey:@"versionName"];
+                [deviceInfo setObject:plat forKey:@"plat"];
+                
+                [result setObject:deviceInfo forKey:@"device"];
+                
+                [result setObject:traceLogs forKey:@"infos"];
+                
+                NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:result error:nil];
+                [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:[[QIMKit sharedInstance] qimNav_UploadLog] withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+                    
+                } withFailedCallBack:^(NSError *error) {
+                    
+                }];
+            }
         }
     }
 }
