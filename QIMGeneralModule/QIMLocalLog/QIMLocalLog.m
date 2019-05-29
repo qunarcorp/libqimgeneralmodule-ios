@@ -87,7 +87,6 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     fileLogger.logFileManager.logFilesDiskQuota = 30 * 1024 * 1024; //15M
     [DDLog addLogger:fileLogger withLevel:DDLogLevelAll];
     [DDLog addLogger:[DDASLLogger sharedInstance]]; // ASL = Apple System Logs
-//    [DDLog addLogger:[DDTTYLogger sharedInstance]];
 }
 
 - (void)stopLog {

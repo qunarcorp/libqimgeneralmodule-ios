@@ -88,8 +88,9 @@
         NSString *methodParams = [catDic objectForKey:@"methodParams"];
         NSString *qckey = [catDic objectForKey:@"q_ckey"];
         NSDictionary *describtion = [catDic objectForKey:@"describtion"];
+        NSDictionary *requestHeaders = [catDic objectForKey:@"requestHeaders"];
         
-        NSDictionary *info = @{@"costTime":@(costTime), @"url":url?url:@"", @"method":@"method", @"methodParams":methodParams?methodParams:@{}, @"describtion":describtion?describtion:@"", @"isMainThread":@(isMainThread), @"reportTime":@(reportTime), @"sql":@[], @"subType":@"http", @"threadName":threadName?threadName:@"", @"type":@"CAT"};
+        NSDictionary *info = @{@"costTime":@(costTime), @"url":url?url:@"", @"method":@"method", @"methodParams":methodParams?methodParams:@{}, @"describtion":describtion?describtion:@"", @"isMainThread":@(isMainThread), @"reportTime":@(reportTime), @"sql":@[], @"subType":@"http", @"threadName":threadName?threadName:@"", @"type":@"CAT", @"requestHeaders":requestHeaders?requestHeaders:@""};
         NSString *infoStr = [[QIMJSONSerializer sharedInstance] serializeObject:info];
         [[QIMAutoTrackerDataManager qimDB_sharedLogDBInstance] qim_insertTraceLogWithType:@"CAT" withSubType:@"http" withReportTime:reportTime withLogInfo:infoStr];
     });
