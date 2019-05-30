@@ -102,7 +102,8 @@
                 
                 NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:result error:nil];
                 [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:[[QIMKit sharedInstance] qimNav_UploadLog] withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
-                    
+                    NSLog(@"清除本地日志上报数据");
+                    [[QIMAutoTrackerDataManager qimDB_sharedLogDBInstance] qim_deleteTraceLog];
                 } withFailedCallBack:^(NSError *error) {
                     
                 }];

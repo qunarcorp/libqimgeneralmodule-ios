@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)qim_insertTraceLogWithType:(NSString *)type withSubType:(NSString *)subtype withReportTime:(long long)reportTime withLogInfo:(NSString *)logInfo;
 
+- (void)qim_deleteTraceLog;
+
 @end
 
 NS_ASSUME_NONNULL_END
