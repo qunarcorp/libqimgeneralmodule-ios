@@ -75,18 +75,18 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
 }
 
 - (void)initDDLog {
-    NSString *logPath = [self getLocalLogsPath];
-    DDLogFileManagerDefault* logFileManager = [[DDLogFileManagerDefault alloc] initWithLogsDirectory:logPath];
-    QIMLogFormatter *logFormatter = [[QIMLogFormatter alloc] init];
-    [DDASLLogger sharedInstance].logFormatter = logFormatter;
-    DDFileLogger *fileLogger = [[DDFileLogger alloc] initWithLogFileManager:logFileManager];
-    fileLogger.logFormatter = logFormatter;
-    fileLogger.rollingFrequency = (24 * 60 * 60) * 2;   //2天
-    fileLogger.maximumFileSize = 1024 * 1024 * 1; //每个log日志文件2M
-    fileLogger.logFileManager.maximumNumberOfLogFiles = 30; //最多保留100个日志
-    fileLogger.logFileManager.logFilesDiskQuota = 30 * 1024 * 1024; //15M
-    [DDLog addLogger:fileLogger withLevel:DDLogLevelAll];
-    [DDLog addLogger:[DDASLLogger sharedInstance]]; // ASL = Apple System Logs
+//    NSString *logPath = [self getLocalLogsPath];
+//    DDLogFileManagerDefault* logFileManager = [[DDLogFileManagerDefault alloc] initWithLogsDirectory:logPath];
+//    QIMLogFormatter *logFormatter = [[QIMLogFormatter alloc] init];
+//    [DDASLLogger sharedInstance].logFormatter = logFormatter;
+//    DDFileLogger *fileLogger = [[DDFileLogger alloc] initWithLogFileManager:logFileManager];
+//    fileLogger.logFormatter = logFormatter;
+//    fileLogger.rollingFrequency = (24 * 60 * 60) * 2;   //2天
+//    fileLogger.maximumFileSize = 1024 * 1024 * 1; //每个log日志文件2M
+//    fileLogger.logFileManager.maximumNumberOfLogFiles = 30; //最多保留100个日志
+//    fileLogger.logFileManager.logFilesDiskQuota = 30 * 1024 * 1024; //15M
+//    [DDLog addLogger:fileLogger withLevel:DDLogLevelAll];
+//    [DDLog addLogger:[DDASLLogger sharedInstance]]; // ASL = Apple System Logs
 }
 
 - (void)stopLog {
