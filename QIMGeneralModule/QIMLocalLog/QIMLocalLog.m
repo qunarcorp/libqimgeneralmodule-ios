@@ -240,16 +240,18 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
 
     
     //数据库文件
-    NSString *dbPath = [[QIMKit sharedInstance] getDBPathWithUserXmppId:[[QIMKit sharedInstance] getLastJid]];
+    NSString *dbPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:[NSString stringWithFormat:@"/QIMNewDataBase/%@%@/", [[[QIMKit sharedInstance] getLastJid] lowercaseString], @"_Release"]];
+
+//    NSString *dbPath = [[QIMKit sharedInstance] getDBPathWithUserXmppId:[[QIMKit sharedInstance] getLastJid]];
     [logArray addObject:dbPath];
     
     //数据库文件shm文件
-    NSString *dbSHMPath = [NSString stringWithFormat:@"%@%@", dbPath, @"-shm"];
-    [logArray addObject:dbSHMPath];
-
-    //数据库文件wal文件
-    NSString *dbWALPath = [NSString stringWithFormat:@"%@%@", dbPath, @"-wal"];
-    [logArray addObject:dbWALPath];
+//    NSString *dbSHMPath = [NSString stringWithFormat:@"%@%@", dbPath, @"-shm"];
+//    [logArray addObject:dbSHMPath];
+//
+//    //数据库文件wal文件
+//    NSString *dbWALPath = [NSString stringWithFormat:@"%@%@", dbPath, @"-wal"];
+//    [logArray addObject:dbWALPath];
 
 
     //本地日志
