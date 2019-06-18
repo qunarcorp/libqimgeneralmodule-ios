@@ -7,10 +7,13 @@
 //
 
 #import "QIMAutoTrackerDataManager.h"
-//#import "Database.h"
+#import "QIMDataBase.h"
+#import "QIMDataBasePool.h"
 #import "QIMJSONSerializer.h"
 
 @interface QIMAutoTrackerDataManager ()
+
+@property (nonatomic, strong) QIMDataBasePool *dataBasePool;
 
 @property (nonatomic, copy) NSString *logDBPath;
 
@@ -41,35 +44,39 @@ static dispatch_once_t _onceTraceDBToken;
         _traceLoggingQueue = dispatch_queue_create("com.qunar.autoTraceLogQueue", 0);
         NSString *logdbPath = [self getLogDBPathWithUserXmppId:userFullJid];
         _logDBPath = logdbPath;
-        /*
         BOOL notCheckCreateDataBase = [[NSFileManager defaultManager] fileExistsAtPath:_logDBPath] == NO;
-        BOOL isSuccess = [DatabaseManager OpenByFullPath:_logDBPath];
-        if (isSuccess == NO) {
-            [[NSFileManager defaultManager] removeItemAtPath:_logDBPath error:nil];
-            [DatabaseManager OpenByFullPath:_logDBPath];
-        }
-        if (notCheckCreateDataBase) {
-            __block BOOL result = NO;
-            [[self dbInstance] syncUsingTransaction:^(Database *database) {
-                result = [self qim_createLogDB:database];
-            }];
-            if (result) {
-                NSLog(@"创建TraceLog文件成功");
-            } else {
-                NSLog(@"创建TraceLog文件失败");
-            }
-        }
-        */
+        _dataBasePool = [QIMDataBasePool databasePoolWithPath:_logDBPath];
+        [self reCreateDB];
     }
     return self;
 }
 
-/*
-- (DatabaseOperator *) dbInstance {
-    return [DatabaseManager GetInstance:self.logDBPath];
+- (void)reCreateDB {
+    BOOL notCheckCreateDataBase = [[NSFileManager defaultManager] fileExistsAtPath:_logDBPath] == NO;
+    NSArray *paths = [_logDBPath pathComponents];
+    NSString *dbValue = [[NSUserDefaults standardUserDefaults] objectForKey:@"dbVersion"];
+    NSString *currentValue = [NSString stringWithFormat:@"%@_%lld",[paths objectAtIndex:paths.count-2] , [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] longLongValue]];
+    if (notCheckCreateDataBase || [currentValue isEqualToString:dbValue] == NO) {
+        NSLog(@"autoTracker reCreateDB");
+        __block BOOL result = NO;
+        [_dataBasePool inDatabase:^(QIMDataBase* _Nonnull db) {
+            result = [self qim_createLogDB:db];
+        }];
+        if (result) {
+            NSLog(@"创建autoTracker DB文件成功");
+            [[NSUserDefaults standardUserDefaults] setObject:currentValue forKey:@"dbVersion"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        } else {
+            NSLog(@"创建autoTracker DB文件失败");
+        }
+    } else {
+        NSLog(@"autoTracker notCheckCreateDataBase : %d, [currentValue isEqualToString:dbValue] : %d", notCheckCreateDataBase, [currentValue isEqualToString:dbValue]);
+    }
 }
-*/
 
+- (id) dbInstance {
+    return _dataBasePool;
+}
 
 - (NSString *)getLogDBPathWithUserXmppId:(NSString *)userJid {
     
@@ -87,8 +94,7 @@ static dispatch_once_t _onceTraceDBToken;
     return logDBPath;
 }
 
-/*
-- (BOOL)qim_createLogDB:(Database *)database {
+- (BOOL)qim_createLogDB:(QIMDataBase *)database {
     BOOL result = NO;
     result = [database executeNonQuery:@"CREATE TABLE IF NOT EXISTS IM_TRACE_LOG(\
               type                TEXT,\
@@ -105,11 +111,10 @@ static dispatch_once_t _onceTraceDBToken;
     }
     return result;
 }
-*/
+
 - (void)qim_insertTraceLogWithType:(NSString *)type withSubType:(NSString *)subtype withReportTime:(long long)reportTime withLogInfo:(NSString *)logInfo {
- /*
     dispatch_async(_traceLoggingQueue, ^{
-        [[self dbInstance] syncUsingTransaction:^(Database *database) {
+        [[self dbInstance] syncUsingTransaction:^(QIMDataBase * _Nonnull db, BOOL * _Nonnull rollback) {
             NSString *sql = @"Insert Into IM_TRACE_LOG(type, subType, reportTime, content) values(:type, :subType, :reportTime, :content)";
             
             NSMutableArray *param = [[NSMutableArray alloc] init];
@@ -117,16 +122,14 @@ static dispatch_once_t _onceTraceDBToken;
             [param addObject:subtype?subtype:@":NULL"];
             [param addObject:@(reportTime)];
             [param addObject:logInfo?logInfo:@":NULL"];
-            [database executeNonQuery:sql withParameters:param];
+            [db executeNonQuery:sql withParameters:param];
         }];
     });
- */
 }
 
 - (NSArray *)qim_getTraceLogWithReportTime:(long long)reportTime {
     __block NSMutableArray *result = nil;
- /*
-    [[self dbInstance] syncUsingTransaction:^(Database *database) {
+    [[self dbInstance] inDatabase:^(QIMDataBase * _Nonnull database) {
         NSString *sql = @"select content from IM_TRACE_LOG order by reportTime desc";
         DataReader *reader = [database executeReader:sql withParameters:nil];
         while ([reader read]) {
@@ -140,19 +143,16 @@ static dispatch_once_t _onceTraceDBToken;
             }
         }
     }];
- */
     return result;
 }
 
 - (void)qim_deleteTraceLog {
- /*
     dispatch_async(_traceLoggingQueue, ^{
-        [[self dbInstance] syncUsingTransaction:^(Database *database) {
+        [[self dbInstance] syncUsingTransaction:^(QIMDataBase * _Nonnull database, BOOL * _Nonnull rollback) {
             NSString *sql = @"delete from IM_TRACE_LOG";
             [database executeNonQuery:sql withParameters:nil];
         }];
     });
- */
 }
 
 @end
