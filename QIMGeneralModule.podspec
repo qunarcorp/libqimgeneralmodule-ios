@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMGeneralModule"
-  s.version      = "3.0.2"
+  s.version      = "3.0.10211613"
   s.summary      = "Qunar chat App 6.0+ version QIMGeneralModule"
   s.description  = <<-DESC
                    Qunar QIMGeneralModule公共模块
