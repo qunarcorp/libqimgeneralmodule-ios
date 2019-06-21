@@ -11,6 +11,7 @@
 #import "QIMAutoTrackerDataManager.h"
 #import "QIMKitPublicHeader.h"
 #import "QIMJSONSerializer.h"
+#import "QIMDataController.h"
 
 @implementation QIMAutoTrackerOperation
 
@@ -87,6 +88,8 @@
                 NSString *versionCode = [[QIMKit sharedInstance] AppBuildVersion];
                 NSString *versionName = [[QIMKit sharedInstance] AppVersion];
                 NSString *plat = [QIMKit getQIMProjectTitleName];
+                long long dbSize = [[QIMDataController getInstance] sizeOfDBPath];
+                NSString *dbSizeStr = [[QIMDataController getInstance] transfromTotalSize:dbSize];
                 
                 [deviceInfo setObject:os forKey:@"os"];
                 [deviceInfo setObject:osBrand forKey:@"osBrand"];
@@ -95,6 +98,7 @@
                 [deviceInfo setObject:versionCode forKey:@"versionCode"];
                 [deviceInfo setObject:versionName forKey:@"versionName"];
                 [deviceInfo setObject:plat forKey:@"plat"];
+                [deviceInfo setObject:dbSizeStr?dbSizeStr:@"" forKey:@"DBSize"];
                 
                 [result setObject:deviceInfo forKey:@"device"];
                 
