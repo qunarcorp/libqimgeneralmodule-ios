@@ -16,7 +16,7 @@
 
 @interface QIMAutoTrackerManager ()
 
-@property (nonatomic, strong) dispatch_queue_t trackerDataManagerQueue;
+@property(nonatomic, strong) dispatch_queue_t trackerDataManagerQueue;
 
 @end
 
@@ -60,7 +60,7 @@
          "type": "ACT"
          }
          */
-        
+
         __uint64_t tid;
         NSInteger threadID = 0;
         if (pthread_threadid_np(NULL, &tid) == 0) {
@@ -70,8 +70,8 @@
         }
         NSString *threadName = NSThread.currentThread.name;
         long long reportTime = [[NSDate date] timeIntervalSince1970] * 1000;
-        
-        NSDictionary *info = @{@"costTime":@(0), @"eventId":eventId?eventId:@"", @"describtion":description?description:@"", @"isMainThread":@([NSThread isMainThread]), @"reportTime":@(reportTime), @"sql":@[], @"subType":@"click", @"threadId":@(threadID), @"threadName":threadName?threadName:@"", @"type":@"ACT"};
+
+        NSDictionary *info = @{@"costTime": @(0), @"eventId": eventId ? eventId : @"", @"describtion": description ? description : @"", @"isMainThread": @([NSThread isMainThread]), @"reportTime": @(reportTime), @"sql": @[], @"subType": @"click", @"threadId": @(threadID), @"threadName": threadName ? threadName : @"", @"type": @"ACT"};
         NSString *infoStr = [[QIMJSONSerializer sharedInstance] serializeObject:info];
         [[QIMAutoTrackerDataManager qimDB_sharedLogDBInstance] qim_insertTraceLogWithType:@"ACT" withSubType:@"click" withReportTime:reportTime withLogInfo:infoStr];
     });
@@ -89,8 +89,8 @@
         NSString *qckey = [catDic objectForKey:@"q_ckey"];
         NSDictionary *describtion = [catDic objectForKey:@"describtion"];
         NSDictionary *requestHeaders = [catDic objectForKey:@"requestHeaders"];
-        
-        NSDictionary *info = @{@"costTime":@(costTime), @"url":url?url:@"", @"method":@"method", @"methodParams":methodParams?methodParams:@{}, @"describtion":describtion?describtion:@"", @"isMainThread":@(isMainThread), @"reportTime":@(reportTime), @"sql":@[], @"subType":@"http", @"threadName":threadName?threadName:@"", @"type":@"CAT", @"requestHeaders":requestHeaders?requestHeaders:@""};
+
+        NSDictionary *info = @{@"costTime": @(costTime), @"url": url ? url : @"", @"method": @"method", @"methodParams": methodParams ? methodParams : @{}, @"describtion": describtion ? describtion : @"", @"isMainThread": @(isMainThread), @"reportTime": @(reportTime), @"sql": @[], @"subType": @"http", @"threadName": threadName ? threadName : @"", @"type": @"CAT", @"requestHeaders": requestHeaders ? requestHeaders : @""};
         NSString *infoStr = [[QIMJSONSerializer sharedInstance] serializeObject:info];
         [[QIMAutoTrackerDataManager qimDB_sharedLogDBInstance] qim_insertTraceLogWithType:@"CAT" withSubType:@"http" withReportTime:reportTime withLogInfo:infoStr];
     });
@@ -98,7 +98,7 @@
 
 - (void)addCodTraceData:(NSDictionary *)sqlDic {
     dispatch_async(self.trackerDataManagerQueue, ^{
-        
+
     });
 }
 

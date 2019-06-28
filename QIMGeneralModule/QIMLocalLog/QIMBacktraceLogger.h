@@ -15,8 +15,11 @@
 @interface QIMBacktraceLogger : NSObject
 
 + (NSString *)qt_backtraceOfAllThread;
+
 + (NSString *)qt_backtraceOfCurrentThread;
+
 + (NSString *)qt_backtraceOfMainThread;
+
 + (NSString *)qt_backtraceOfNSThread:(NSThread *)thread;
 
 @end

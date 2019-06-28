@@ -22,45 +22,44 @@
 
 #import <WebRTC/WebRTC.h>
 #import "Masonry.h"
- 
-@interface QIMWebRTCMeetingClient()<QIMWebRTCSocketClientDelegate,RTCPeerConnectionDelegate /*,RTCSessionDescriptionDelegate*/, RTCVideoViewDelegate>{
+
+@interface QIMWebRTCMeetingClient () <QIMWebRTCSocketClientDelegate, RTCPeerConnectionDelegate /*,RTCSessionDescriptionDelegate*/, RTCVideoViewDelegate> {
     RTCConfiguration *_configuration;
     NSMutableArray *_addIceCandidate;
     NSMutableArray *_localIceCandidate;
     BOOL _createRoom;
 }
 
-@property (nonatomic, copy) NSString *navServer;
-@property (nonatomic, copy) NSString *httpServer;
+@property(nonatomic, copy) NSString *navServer;
+@property(nonatomic, copy) NSString *httpServer;
 
-@property (strong, nonatomic)   RTCPeerConnectionFactory *peerConnectionFactory;
-@property (nonatomic, strong)   RTCMediaConstraints *localPCConstraints;
-@property (nonatomic, strong)   RTCMediaConstraints *pcConstraints;
-@property (nonatomic, strong)   RTCMediaConstraints *sdpConstraints;
-@property (nonatomic, strong)   RTCPeerConnection *localPeerConnection;
+@property(strong, nonatomic) RTCPeerConnectionFactory *peerConnectionFactory;
+@property(nonatomic, strong) RTCMediaConstraints *localPCConstraints;
+@property(nonatomic, strong) RTCMediaConstraints *pcConstraints;
+@property(nonatomic, strong) RTCMediaConstraints *sdpConstraints;
+@property(nonatomic, strong) RTCPeerConnection *localPeerConnection;
 
-@property (nonatomic, strong)   RTCVideoTrack *localVideoTrack;
-@property (nonatomic, strong)   RTCAudioTrack *localAudioTrack;
-@property (strong, nonatomic)   NSMutableArray *ICEServers;
-@property (strong, nonatomic)   NSMutableDictionary *peerConnectionDic;
-@property (strong, nonatomic)   NSMutableArray *roomMembers;
-@property (strong, nonatomic)   NSMutableDictionary *roomMemberStreams;
-@property (strong, nonatomic)   NSMutableDictionary *peerConnectionCanDic;
-@property (strong, nonatomic)   NSMutableDictionary *willSendCanDic;
+@property(nonatomic, strong) RTCVideoTrack *localVideoTrack;
+@property(nonatomic, strong) RTCAudioTrack *localAudioTrack;
+@property(strong, nonatomic) NSMutableArray *ICEServers;
+@property(strong, nonatomic) NSMutableDictionary *peerConnectionDic;
+@property(strong, nonatomic) NSMutableArray *roomMembers;
+@property(strong, nonatomic) NSMutableDictionary *roomMemberStreams;
+@property(strong, nonatomic) NSMutableDictionary *peerConnectionCanDic;
+@property(strong, nonatomic) NSMutableDictionary *willSendCanDic;
 
-@property (nonatomic, strong)   NSMutableDictionary *remoteVideoTrackDic;
+@property(nonatomic, strong) NSMutableDictionary *remoteVideoTrackDic;
 
-@property (nonatomic, assign)   BOOL usingFrontCamera;
-@property (nonatomic, strong)   RTCCameraVideoCapturer *capturer;
-@property (nonatomic, strong)   RTCCameraPreviewView   *localVideoView;
+@property(nonatomic, assign) BOOL usingFrontCamera;
+@property(nonatomic, strong) RTCCameraVideoCapturer *capturer;
+@property(nonatomic, strong) RTCCameraPreviewView *localVideoView;
 
 @end
 
 @implementation QIMWebRTCMeetingClient
 static QIMWebRTCMeetingClient *instance = nil;
 
-+ (instancetype)sharedInstance
-{
++ (instancetype)sharedInstance {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         instance = [[QIMWebRTCMeetingClient alloc] init];
@@ -71,8 +70,8 @@ static QIMWebRTCMeetingClient *instance = nil;
     });
     return instance;
 }
-+ (instancetype)allocWithZone:(struct _NSZone *)zone
-{
+
++ (instancetype)allocWithZone:(struct _NSZone *)zone {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         instance = [super allocWithZone:zone];
@@ -86,24 +85,24 @@ static QIMWebRTCMeetingClient *instance = nil;
 
 - (RTCMediaConstraints *)defaultPCConstraints {
 
-    NSDictionary *mandatoryConstraints = @{@"OfferToReceiveAudio":@"true",@"OfferToReceiveVideo":@"true"};
-    NSDictionary *optionalConstraints = @{@"DtlsSrtpKeyAgreement":@"true",@"googIPv6": @"false"};
-    RTCMediaConstraints* constraints = [[RTCMediaConstraints alloc] initWithMandatoryConstraints:mandatoryConstraints optionalConstraints:optionalConstraints];
+    NSDictionary *mandatoryConstraints = @{@"OfferToReceiveAudio": @"true", @"OfferToReceiveVideo": @"true"};
+    NSDictionary *optionalConstraints = @{@"DtlsSrtpKeyAgreement": @"true", @"googIPv6": @"false"};
+    RTCMediaConstraints *constraints = [[RTCMediaConstraints alloc] initWithMandatoryConstraints:mandatoryConstraints optionalConstraints:optionalConstraints];
     return constraints;
 }
 
 - (RTCMediaConstraints *)defaultLocalPeerConnectionConstraints {
     NSString *value = @"true";
-    NSDictionary *mandatoryConstraints = @{@"OfferToReceiveAudio":@"false",@"OfferToReceiveVideo":@"false"};
-    NSDictionary *optionalConstraints = @{ @"DtlsSrtpKeyAgreement" : value, @"googIPv6" : @"false"};
-    RTCMediaConstraints* constraints = [[RTCMediaConstraints alloc] initWithMandatoryConstraints:mandatoryConstraints
+    NSDictionary *mandatoryConstraints = @{@"OfferToReceiveAudio": @"false", @"OfferToReceiveVideo": @"false"};
+    NSDictionary *optionalConstraints = @{@"DtlsSrtpKeyAgreement": value, @"googIPv6": @"false"};
+    RTCMediaConstraints *constraints = [[RTCMediaConstraints alloc] initWithMandatoryConstraints:mandatoryConstraints
                                                                              optionalConstraints:optionalConstraints];
     return constraints;
 }
 
 - (RTCMediaConstraints *)defaultSDPConstraints {
-    NSDictionary *sdpMandatoryConstraints = @{@"OfferToReceiveAudio":@"true",@"OfferToReceiveVideo":@"true"};
-    RTCMediaConstraints* constraints = [[RTCMediaConstraints alloc] initWithMandatoryConstraints:sdpMandatoryConstraints optionalConstraints:nil];
+    NSDictionary *sdpMandatoryConstraints = @{@"OfferToReceiveAudio": @"true", @"OfferToReceiveVideo": @"true"};
+    RTCMediaConstraints *constraints = [[RTCMediaConstraints alloc] initWithMandatoryConstraints:sdpMandatoryConstraints optionalConstraints:nil];
     return constraints;
 }
 
@@ -123,7 +122,7 @@ static QIMWebRTCMeetingClient *instance = nil;
     int targetHeight = [UIScreen mainScreen].bounds.size.height;
     AVCaptureDeviceFormat *selectedFormat = nil;
     int currentDiff = INT_MAX;
-    
+
     for (AVCaptureDeviceFormat *format in formats) {
         CMVideoDimensions dimension = CMVideoFormatDescriptionGetDimensions(format.formatDescription);
         FourCharCode pixelFormat = CMFormatDescriptionGetMediaSubType(format.formatDescription);
@@ -135,7 +134,7 @@ static QIMWebRTCMeetingClient *instance = nil;
             selectedFormat = format;
         }
     }
-    
+
     return selectedFormat;
 }
 
@@ -151,14 +150,14 @@ static QIMWebRTCMeetingClient *instance = nil;
     AVCaptureDevicePosition position = self.usingFrontCamera ? AVCaptureDevicePositionFront : AVCaptureDevicePositionBack;
     AVCaptureDevice *device = [self findDeviceForPosition:position];
     AVCaptureDeviceFormat *format = [self selectFormatForDevice:device];
-    
+
     if (format == nil) {
         RTCLogError(@"No valid formats for device %@", device);
         NSAssert(NO, @"");
-        
+
         return;
     }
-    
+
     NSInteger fps = [self selectFpsForFormat:format];
     [self.capturer startCaptureWithDevice:device format:format fps:fps];
 }
@@ -167,9 +166,9 @@ static QIMWebRTCMeetingClient *instance = nil;
  解决前置摄像头录制视频左右颠倒问题
  */
 - (void)videoMirored {
-    AVCaptureSession * session = (AVCaptureSession *)self.localVideoView.captureSession;
-    for (AVCaptureVideoDataOutput* output in session.outputs) {
-        for (AVCaptureConnection * av in output.connections) {
+    AVCaptureSession *session = (AVCaptureSession *) self.localVideoView.captureSession;
+    for (AVCaptureVideoDataOutput *output in session.outputs) {
+        for (AVCaptureConnection *av in output.connections) {
             //判断是否是前置摄像头状态
             if (_usingFrontCamera) {
                 if (av.supportsVideoMirroring) {
@@ -182,9 +181,9 @@ static QIMWebRTCMeetingClient *instance = nil;
 }
 
 - (RTCVideoTrack *)createLocalVideoTrack {
-    
+
     RTCVideoSource *source = [self.peerConnectionFactory videoSource];
-    
+
 #if !TARGET_IPHONE_SIMULATOR
     QIMVerboseLog(@"sss");
     RTCCameraVideoCapturer *capturer = [[RTCCameraVideoCapturer alloc] initWithDelegate:source];
@@ -202,7 +201,7 @@ static QIMWebRTCMeetingClient *instance = nil;
     }
 #endif
 #endif
-    
+
     return [self.peerConnectionFactory videoTrackWithSource:source trackId:kARDVideoTrackId];
 }
 
@@ -211,10 +210,10 @@ static QIMWebRTCMeetingClient *instance = nil;
     RTCAudioSource *source = [_peerConnectionFactory audioSourceWithConstraints:constraints];
     RTCAudioTrack *track = [_peerConnectionFactory audioTrackWithSource:source
                                                                 trackId:kARDAudioTrackId];
-    [self.localPeerConnection addTrack:track streamIds:@[ kARDMediaStreamId ]];
+    [self.localPeerConnection addTrack:track streamIds:@[kARDMediaStreamId]];
     _localVideoTrack = [self createLocalVideoTrack];
     if (_localVideoTrack) {
-        [self.localPeerConnection addTrack:_localVideoTrack streamIds:@[ kARDMediaStreamId ]];
+        [self.localPeerConnection addTrack:_localVideoTrack streamIds:@[kARDMediaStreamId]];
     }
 }
 
@@ -225,18 +224,16 @@ static QIMWebRTCMeetingClient *instance = nil;
     return constraints;
 }
 
-- (void)startEngine
-{
+- (void)startEngine {
     RTCDefaultVideoDecoderFactory *decoderFactory = [[RTCDefaultVideoDecoderFactory alloc] init];
     RTCDefaultVideoEncoderFactory *encoderFactory = [[RTCDefaultVideoEncoderFactory alloc] init];
-    self.peerConnectionFactory = [[RTCPeerConnectionFactory alloc] initWithEncoderFactory:encoderFactory      decoderFactory:decoderFactory];
+    self.peerConnectionFactory = [[RTCPeerConnectionFactory alloc] initWithEncoderFactory:encoderFactory decoderFactory:decoderFactory];
     self.localPCConstraints = [self defaultLocalPeerConnectionConstraints];
     self.pcConstraints = [self defaultPCConstraints];
     self.sdpConstraints = [self defaultSDPConstraints];
 }
 
-- (void)stopEngine
-{
+- (void)stopEngine {
     [self.peerConnectionFactory stopAecDump];
     _peerConnectionFactory = nil;
 }
@@ -249,18 +246,18 @@ static QIMWebRTCMeetingClient *instance = nil;
     return nil;
 }
 
-- (NSArray *)getICEServicesWithService:(NSDictionary *)service{
+- (NSArray *)getICEServicesWithService:(NSDictionary *)service {
     NSString *url = [service objectForKey:@"urls"];
     NSString *userName = [service objectForKey:@"username"];
     NSString *credential = [service objectForKey:@"credential"];
     NSMutableArray *ices = [NSMutableArray array];
-    
+
     RTCIceServer *iceServer = [[RTCIceServer alloc] initWithURLStrings:@[url] username:userName credential:credential];
     [ices addObject:iceServer];
     return ices;
 }
 
-- (void)updateICEServers{
+- (void)updateICEServers {
     if (self.httpServer.length <= 0) {
         self.httpServer = @"https://qtalktv5.vc.cn6.qunar.com:8443";
     }
@@ -269,7 +266,7 @@ static QIMWebRTCMeetingClient *instance = nil;
         NSURL *url = [NSURL URLWithString:httpUrl];
         QIMHTTPRequest *request = [[QIMHTTPRequest alloc] initWithURL:url];
         [QIMHTTPClient sendRequest:request complete:^(QIMHTTPResponse *response) {
-            if(response.code == 200) {
+            if (response.code == 200) {
                 NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:response.data error:nil];
                 int errorCode = [[infoDic objectForKey:@"error"] intValue];
                 if (errorCode == 0) {
@@ -280,13 +277,13 @@ static QIMWebRTCMeetingClient *instance = nil;
                     }
                 }
             }
-        } failure:^(NSError *error) {
-            
+        }                  failure:^(NSError *error) {
+
         }];
     }
 }
 
-- (void)addNotifications{
+- (void)addNotifications {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hangupEvent) name:kHangUpNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(switchCamera) name:kSwitchCameraNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(muteButton:) name:kMuteNotification object:nil];
@@ -303,14 +300,14 @@ static QIMWebRTCMeetingClient *instance = nil;
     return _roomMemberStreams;
 }
 
-- (void)muteButton:(NSNotification *)notify{
+- (void)muteButton:(NSNotification *)notify {
     BOOL isMute = [[notify.object objectForKey:@"isMute"] boolValue];
-    [(RTCMediaStreamTrack *)self.localAudioTrack setIsEnabled:!isMute];
+    [(RTCMediaStreamTrack *) self.localAudioTrack setIsEnabled:!isMute];
 }
 
-- (void)videoMuteButton:(NSNotification *)notify{
+- (void)videoMuteButton:(NSNotification *)notify {
     BOOL videoOpen = [[notify.object objectForKey:@"videoCapture"] boolValue];
-    [(RTCMediaStreamTrack *)self.localVideoTrack setIsEnabled:videoOpen];
+    [(RTCMediaStreamTrack *) self.localVideoTrack setIsEnabled:videoOpen];
 }
 
 - (void)switchCamera {
@@ -323,8 +320,7 @@ static QIMWebRTCMeetingClient *instance = nil;
     return self.rtcMeetingView != nil;
 }
 
-- (RTCSessionDescription *)descriptionWithDescription:(RTCSessionDescription *)description videoFormat:(NSString *)videoFormat
-{
+- (RTCSessionDescription *)descriptionWithDescription:(RTCSessionDescription *)description videoFormat:(NSString *)videoFormat {
     NSString *sdpString = description.sdp;
     NSString *lineChar = @"\n";
     NSMutableArray *lines = [NSMutableArray arrayWithArray:[sdpString componentsSeparatedByString:lineChar]];
@@ -339,30 +335,30 @@ static QIMWebRTCMeetingClient *instance = nil;
             mLineIndex = i;
             continue;
         }
-        
+
         NSTextCheckingResult *result = [regex firstMatchInString:line options:0 range:NSMakeRange(0, line.length)];
         if (result) {
             videoFormatRtpMap = [line substringWithRange:[result rangeAtIndex:1]];
             continue;
         }
     }
-    
+
     if (mLineIndex == -1) {
         // 没有m = video line, 所以不能转格式,所以返回原来的description
         return description;
     }
-    
+
     if (!videoFormatRtpMap) {
         // 没有videoFormat 类型的rtpmap。
         return description;
     }
-    
+
     NSString *spaceChar = @" ";
     NSArray *origSpaceLineParts = [lines[mLineIndex] componentsSeparatedByString:spaceChar];
     if (origSpaceLineParts.count > 3) {
         NSMutableArray *newMLineParts = [NSMutableArray arrayWithCapacity:origSpaceLineParts.count];
         NSInteger origPartIndex = 0;
-        
+
         [newMLineParts addObject:origSpaceLineParts[origPartIndex++]];
         [newMLineParts addObject:origSpaceLineParts[origPartIndex++]];
         [newMLineParts addObject:origSpaceLineParts[origPartIndex++]];
@@ -372,24 +368,24 @@ static QIMWebRTCMeetingClient *instance = nil;
                 [newMLineParts addObject:origSpaceLineParts[origPartIndex]];
             }
         }
-        
+
         NSString *newMLine = [newMLineParts componentsJoinedByString:spaceChar];
         [lines replaceObjectAtIndex:mLineIndex withObject:newMLine];
     } else {
         QIMVerboseLog(@"SDP Media description 格式 错误");
     }
     NSString *mangledSDPString = [lines componentsJoinedByString:lineChar];
-    
+
     return [[RTCSessionDescription alloc] initWithType:description.type sdp:mangledSDPString];
 }
 
-- (void)createRoomById:(NSString *)roomId WithRoomName:(NSString *)roomName{
-    [self joinRoomById:roomId WithRoomName:roomName ];
+- (void)createRoomById:(NSString *)roomId WithRoomName:(NSString *)roomName {
+    [self joinRoomById:roomId WithRoomName:roomName];
     _createRoom = YES;
 }
 
 - (void)joinRoomByMessage:(NSDictionary *)message {
-    
+
     if (message) {
         NSString *roomId = [message objectForKey:@"roomName"];
         NSString *roomName = [message objectForKey:@"topic"];
@@ -399,12 +395,12 @@ static QIMWebRTCMeetingClient *instance = nil;
         self.httpServer = httpServer;
         long long startTime = [[message objectForKey:@"startTime"] longLongValue];
         _createRoom = NO;
-    
+
         self.roomName = roomName;
         self.roomId = roomId;
         // 更新ICE Servers
         [self updateICEServers];
-        
+
         _addIceCandidate = [NSMutableArray array];
         _localIceCandidate = [NSMutableArray array];
         self.willSendCanDic = [NSMutableDictionary dictionary];
@@ -429,7 +425,7 @@ static QIMWebRTCMeetingClient *instance = nil;
         } else {
             [self.rtcMeetingView show];
         }
-        
+
         self.peerConnectionDic = [NSMutableDictionary dictionary];
         self.roomMembers = [NSMutableArray array];
         self.peerConnectionCanDic = [NSMutableDictionary dictionary];
@@ -452,13 +448,13 @@ static QIMWebRTCMeetingClient *instance = nil;
     [self.rtcMeetingView.socketClient connectWebRTCRoomServer];
 }
 
-- (void)joinRoomById:(NSString *)roomId WithRoomName:(NSString *)roomName{
+- (void)joinRoomById:(NSString *)roomId WithRoomName:(NSString *)roomName {
     _createRoom = NO;
     self.roomName = roomName;
     self.roomId = roomId;
     // 更新ICE Servers
     [self updateICEServers];
-    
+
     _addIceCandidate = [NSMutableArray array];
     _localIceCandidate = [NSMutableArray array];
     self.willSendCanDic = [NSMutableDictionary dictionary];
@@ -478,15 +474,15 @@ static QIMWebRTCMeetingClient *instance = nil;
     self.rtcMeetingView.headerImage = [QIMKit defaultGroupHeaderImage];
     self.rtcMeetingView.nickName = roomName;
     [self.rtcMeetingView show];
-    
+
     self.rtcMeetingView.socketClient = [[QIMWebRTCSocketClient alloc] init];
     [self.rtcMeetingView.socketClient setDelegate:self];
-    
+
     self.peerConnectionDic = [NSMutableDictionary dictionary];
     self.roomMembers = [NSMutableArray array];
     self.peerConnectionCanDic = [NSMutableDictionary dictionary];
     [self initRTCSetting];
-    
+
     [self.rtcMeetingView.socketClient connectWebRTCRoomServer];
 }
 
@@ -506,13 +502,13 @@ static QIMWebRTCMeetingClient *instance = nil;
  *  关于RTC 的设置
  */
 - (void)initRTCSetting {
-    
+
     self.localVideoView = [[RTCCameraPreviewView alloc] init];
     [self.rtcMeetingView.ownImageView addSubview:self.localVideoView];
     [self.localVideoView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.top.right.bottom.mas_equalTo(0);
     }];
-    
+
     [self createPeerConnection];
     [self createMediaSenders];
 }
@@ -527,8 +523,7 @@ static QIMWebRTCMeetingClient *instance = nil;
     }];
 }
 
-- (void)cleanCache
-{
+- (void)cleanCache {
     [self.localPeerConnection setDelegate:nil];
     [self.localPeerConnection close];
     for (RTCPeerConnection *connect in self.peerConnectionDic.allValues) {
@@ -537,7 +532,7 @@ static QIMWebRTCMeetingClient *instance = nil;
     }
     // 1.将试图置为nil
     self.rtcMeetingView = nil;
-    
+
     [self setLocalPeerConnection:nil];
     [self setLocalAudioTrack:nil];
     [self setLocalVideoTrack:nil];
@@ -550,7 +545,7 @@ static QIMWebRTCMeetingClient *instance = nil;
     [self setGroupId:nil];
 }
 
-- (NSString *)getUserNameWithPeerConnection:(RTCPeerConnection *)peerConnection{
+- (NSString *)getUserNameWithPeerConnection:(RTCPeerConnection *)peerConnection {
     NSString *userName = @"";
     if ([peerConnection isEqual:self.localPeerConnection]) {
         userName = @"我自己";
@@ -566,7 +561,7 @@ static QIMWebRTCMeetingClient *instance = nil;
     return userName;
 }
 
-- (void)setConnectLabelText:(NSString *)text{
+- (void)setConnectLabelText:(NSString *)text {
     dispatch_async(dispatch_get_main_queue(), ^{
         //[self.rtcMeetingView.connectLabel setStringValue:text];
         [self.rtcMeetingView setContectText:text];
@@ -575,6 +570,7 @@ static QIMWebRTCMeetingClient *instance = nil;
 }
 
 #pragma mark - RTCPeerConnectionDelegate
+
 // Triggered when the SignalingState changed.
 - (void)peerConnection:(RTCPeerConnection *)peerConnection didChangeSignalingState:(RTCSignalingState)stateChanged {
     QIMVerboseLog(@"信令状态改变");
@@ -611,8 +607,8 @@ static QIMWebRTCMeetingClient *instance = nil;
 - (void)peerConnection:(RTCPeerConnection *)peerConnection didAddStream:(RTCMediaStream *)stream {
     QIMVerboseLog(@"已添加多媒体流");
     QIMVerboseLog(@"Received %lu video tracks and %lu audio tracks",
-           (unsigned long)stream.videoTracks.count,
-           (unsigned long)stream.audioTracks.count);
+            (unsigned long) stream.videoTracks.count,
+            (unsigned long) stream.audioTracks.count);
     if ([stream.videoTracks count]) {
         if ([peerConnection isEqual:self.localPeerConnection]) {
             QIMVerboseLog(@"");
@@ -650,46 +646,46 @@ static QIMWebRTCMeetingClient *instance = nil;
 // Called any time the ICEConnectionState changes.
 - (void)peerConnection:(RTCPeerConnection *)peerConnection didChangeIceConnectionState:(RTCIceConnectionState)newState {
     NSString *user = [self getUserNameWithPeerConnection:peerConnection];
-    QIMVerboseLog(@"ICE state changed: %ld", (long)newState);
+    QIMVerboseLog(@"ICE state changed: %ld", (long) newState);
     switch (newState) {
         case RTCIceConnectionStateNew: {
-            QIMVerboseLog(@"user %@ newState = RTCICEConnectionNew",user);
+            QIMVerboseLog(@"user %@ newState = RTCICEConnectionNew", user);
             [self setConnectLabelText:@"连接中..."];
         }
             break;
         case RTCIceConnectionStateChecking: {
-            QIMVerboseLog(@"user %@ newState = RTCICEConnectionChecking",user);
-            QIMVerboseLog(@"Local ICE LIST %@\r",_localIceCandidate);
-            QIMVerboseLog(@"Add ICE LIST %@\r",_addIceCandidate);
+            QIMVerboseLog(@"user %@ newState = RTCICEConnectionChecking", user);
+            QIMVerboseLog(@"Local ICE LIST %@\r", _localIceCandidate);
+            QIMVerboseLog(@"Add ICE LIST %@\r", _addIceCandidate);
         }
             break;
         case RTCIceConnectionStateConnected: {
-            QIMVerboseLog(@"user %@ newState = RTCICEConnectionConnected",user);//15:56:56.698 15:56:57.570
+            QIMVerboseLog(@"user %@ newState = RTCICEConnectionConnected", user);//15:56:56.698 15:56:57.570
             [self setConnectLabelText:@""];
             dispatch_async(dispatch_get_main_queue(), ^{
                 //                [self.rtcMeetingView updateButtonState];
             });
-            QIMVerboseLog(@"Local ICE LIST %@\r",_localIceCandidate);
-            QIMVerboseLog(@"Add ICE LIST %@\r",_addIceCandidate);
+            QIMVerboseLog(@"Local ICE LIST %@\r", _localIceCandidate);
+            QIMVerboseLog(@"Add ICE LIST %@\r", _addIceCandidate);
         }
             break;
         case RTCIceConnectionStateCompleted: {
-            QIMVerboseLog(@"user %@ newState = RTCICEConnectionCompleted",user);//5:56:57.573
-            QIMVerboseLog(@"Local ICE LIST RTCIceConnectionStateCompleted %@\r",_localIceCandidate);
-            QIMVerboseLog(@"Add ICE LIST RTCIceConnectionStateCompleted %@\r",_addIceCandidate);
+            QIMVerboseLog(@"user %@ newState = RTCICEConnectionCompleted", user);//5:56:57.573
+            QIMVerboseLog(@"Local ICE LIST RTCIceConnectionStateCompleted %@\r", _localIceCandidate);
+            QIMVerboseLog(@"Add ICE LIST RTCIceConnectionStateCompleted %@\r", _addIceCandidate);
         }
             break;
         case RTCIceConnectionStateFailed: {
-            QIMVerboseLog(@"user %@ newState = RTCICEConnectionFailed",user);
+            QIMVerboseLog(@"user %@ newState = RTCICEConnectionFailed", user);
             [self.rtcMeetingView showAlertMessage:@"连接失败"];
             [self setConnectLabelText:@"连接失败..."];
             //[self hangupEvent];
-            QIMVerboseLog(@"Local ICE LIST %@\r",_localIceCandidate);
-            QIMVerboseLog(@"Add ICE LIST %@\r",_addIceCandidate);
+            QIMVerboseLog(@"Local ICE LIST %@\r", _localIceCandidate);
+            QIMVerboseLog(@"Add ICE LIST %@\r", _addIceCandidate);
         }
             break;
         case RTCIceConnectionStateDisconnected: {
-            QIMVerboseLog(@"user %@ newState = RTCICEConnectionDisconnected",user);
+            QIMVerboseLog(@"user %@ newState = RTCICEConnectionDisconnected", user);
             [self.rtcMeetingView showAlertMessage:@"连接断开..."];
 //            [self setConnectLabelText:@"连接断开..."];
             if ([self.localPeerConnection isEqual:peerConnection]) {
@@ -707,13 +703,13 @@ static QIMWebRTCMeetingClient *instance = nil;
         }
             break;
         case RTCIceConnectionStateClosed: {
-            QIMVerboseLog(@"user %@ newState = RTCICEConnectionClosed",user);
+            QIMVerboseLog(@"user %@ newState = RTCICEConnectionClosed", user);
             //            [self setConnectLabelText:@"关闭..."];
             if ([self.localPeerConnection isEqual:peerConnection]) {
                 dispatch_async(dispatch_get_main_queue(), ^{
 //                    [self.rtcMeetingView showAlertMessage:@"连接已关闭。"];
                 });
-            }  else {
+            } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *userName = [self getUserNameWithPeerConnection:peerConnection];
                     if (userName) {
@@ -724,7 +720,7 @@ static QIMWebRTCMeetingClient *instance = nil;
         }
             break;
         case RTCIceConnectionStateCount: {
-            QIMVerboseLog(@"user %@ newState = RTCICEConnectionMax",user);
+            QIMVerboseLog(@"user %@ newState = RTCICEConnectionMax", user);
             [self setConnectLabelText:@"连接最大数..."];
         }
             break;
@@ -733,7 +729,7 @@ static QIMWebRTCMeetingClient *instance = nil;
 
 // Called any time the ICEGatheringState changes.
 - (void)peerConnection:(RTCPeerConnection *)peerConnection didChangeIceGatheringState:(RTCIceGatheringState)newState {
-    QIMVerboseLog(@"%s",__func__);
+    QIMVerboseLog(@"%s", __func__);
     switch (newState) {
         case RTCIceGatheringStateNew: {
             QIMVerboseLog(@"newState = RTCICEGatheringNew");
@@ -752,11 +748,11 @@ static QIMWebRTCMeetingClient *instance = nil;
 
 // New Ice candidate have been found.
 - (void)peerConnection:(RTCPeerConnection *)peerConnection didGenerateIceCandidate:(RTCIceCandidate *)candidate {
-    QIMVerboseLog(@"didGenerateIceCandidate %@",candidate);
+    QIMVerboseLog(@"didGenerateIceCandidate %@", candidate);
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([peerConnection isEqual:self.localPeerConnection]) {
             if (self.localPeerConnection.remoteDescription) {
-                [self.rtcMeetingView.socketClient sendICECandidateWithEndpointName:[[QIMKit sharedInstance] getLastJid] WithCandidate:candidate.sdp WithSdpMLineIndex:(int)candidate.sdpMLineIndex WithSdpMid:candidate.sdpMid complete:^(BOOL success) {
+                [self.rtcMeetingView.socketClient sendICECandidateWithEndpointName:[[QIMKit sharedInstance] getLastJid] WithCandidate:candidate.sdp WithSdpMLineIndex:(int) candidate.sdpMLineIndex WithSdpMid:candidate.sdpMid complete:^(BOOL success) {
                     QIMVerboseLog(@"success : %d", success);
                 }];
             } else {
@@ -770,16 +766,16 @@ static QIMWebRTCMeetingClient *instance = nil;
                 [_localIceCandidate addObject:candidate];
             }
         } else {
-        
+
         }
     });
-    QIMVerboseLog(@"新的 Ice candidate 被发现. %@",candidate);
+    QIMVerboseLog(@"新的 Ice candidate 被发现. %@", candidate);
 }
 
 /** New data channel has been opened. */
-- (void)peerConnection:(RTCPeerConnection*)peerConnection
-    didOpenDataChannel:(RTCDataChannel*)dataChannel{
-    
+- (void)peerConnection:(RTCPeerConnection *)peerConnection
+    didOpenDataChannel:(RTCDataChannel *)dataChannel {
+
     NSString *userName = [self getUserNameWithPeerConnection:peerConnection];
     QIMVerboseLog(@"New data channel has been opened. %@", userName);
 }
@@ -789,6 +785,7 @@ static QIMWebRTCMeetingClient *instance = nil;
 }
 
 #pragma mark - WebRTC Socket Delegate
+
 - (void)receveRemoteVideoWithUserName:(NSString *)user WithStream:(NSArray *)streams {
 
     RTCPeerConnection *peerConnection = [self.peerConnectionDic objectForKey:user];
@@ -796,13 +793,13 @@ static QIMWebRTCMeetingClient *instance = nil;
         peerConnection = [self.peerConnectionFactory peerConnectionWithConfiguration:_configuration constraints:self.pcConstraints delegate:self];
         [self.peerConnectionDic setObject:peerConnection forKey:user];
     }
-    __weak __typeof(self)weakSelf = self;
-    [peerConnection offerForConstraints:self.pcConstraints completionHandler:^(RTCSessionDescription * _Nullable sdp, NSError * _Nullable error) {
-        QIMVerboseLog(@"receveRemoteVideoWithUserName: %@, SDP : %@", user,sdp);
+    __weak __typeof(self) weakSelf = self;
+    [peerConnection offerForConstraints:self.pcConstraints completionHandler:^(RTCSessionDescription *_Nullable sdp, NSError *_Nullable error) {
+        QIMVerboseLog(@"receveRemoteVideoWithUserName: %@, SDP : %@", user, sdp);
         RTCLogError(@"receveRemoteVideoWithUserName : %@, Error : %@", user, error);
         dispatch_async(dispatch_get_main_queue(), ^{
             RTCSessionDescription *sdpH264 = [weakSelf descriptionWithDescription:sdp videoFormat:@"VP8"];
-            [peerConnection setLocalDescription:sdpH264 completionHandler:^(NSError * _Nullable error) {
+            [peerConnection setLocalDescription:sdpH264 completionHandler:^(NSError *_Nullable error) {
                 if (error) {
                     QIMVerboseLog(@"setLocalDescription Error : %@", error);
                 } else {
@@ -815,18 +812,18 @@ static QIMWebRTCMeetingClient *instance = nil;
                         if (stream == nil) {
                             stream = @"webcam";
                         }
-                        NSString *sender = [NSString stringWithFormat:@"%@_%@",user,stream];
+                        NSString *sender = [NSString stringWithFormat:@"%@_%@", user, stream];
                         [weakSelf.rtcMeetingView.socketClient receiveVideoFromWithSender:sender WithOfferSdp:peerConnection.localDescription.sdp complete:^(NSDictionary *result) {
                             NSString *sdpAnswer = [result objectForKey:@"sdpAnswer"];
                             RTCSessionDescription *remoteSdp = [[RTCSessionDescription alloc] initWithType:RTCSdpTypeAnswer sdp:sdpAnswer];
-                            [peerConnection setRemoteDescription:remoteSdp completionHandler:^(NSError * _Nullable error) {
+                            [peerConnection setRemoteDescription:remoteSdp completionHandler:^(NSError *_Nullable error) {
                                 if (error) {
                                     QIMVerboseLog(@"");
                                 } else {
                                     dispatch_async(dispatch_get_main_queue(), ^{
                                         RTCPeerConnection *peerConnection = [weakSelf.peerConnectionDic objectForKey:user];
                                         NSArray *list = [weakSelf.peerConnectionCanDic objectForKey:user];
-                                        for(RTCIceCandidate *can in list) {
+                                        for (RTCIceCandidate *can in list) {
                                             [peerConnection addIceCandidate:can];
                                         }
                                         [weakSelf.peerConnectionCanDic removeObjectForKey:user];
@@ -842,7 +839,7 @@ static QIMWebRTCMeetingClient *instance = nil;
 }
 
 // Connected Server
-- (void)webRTCSocketClientDidConnected:(QIMWebRTCSocketClient *)client{
+- (void)webRTCSocketClientDidConnected:(QIMWebRTCSocketClient *)client {
     __weak QIMWebRTCMeetingClient *mySelf = self;
     [mySelf.rtcMeetingView.socketClient joinRoom:mySelf.roomId WithTopic:mySelf.roomName WithNickName:[[QIMKit sharedInstance] getLastJid] complete:^(NSDictionary *resultDic) {
         NSDictionary *result = [resultDic objectForKey:@"result"];
@@ -852,8 +849,8 @@ static QIMWebRTCMeetingClient *instance = nil;
             if (_createRoom) {
                 // 发送创建房间的Xmpp消息
                 NSMutableDictionary *messageDic = [NSMutableDictionary dictionary];
-                [messageDic setObject:mySelf.rtcMeetingView.roomId?mySelf.rtcMeetingView.roomId : [[QIMKit sharedInstance] getLastJid] forKey:@"roomName"];
-                [messageDic setObject:mySelf.rtcMeetingView.roomName?mySelf.rtcMeetingView.roomName: [QIMUUIDTools UUID] forKey:@"topic"];
+                [messageDic setObject:mySelf.rtcMeetingView.roomId ? mySelf.rtcMeetingView.roomId : [[QIMKit sharedInstance] getLastJid] forKey:@"roomName"];
+                [messageDic setObject:mySelf.rtcMeetingView.roomName ? mySelf.rtcMeetingView.roomName : [QIMUUIDTools UUID] forKey:@"topic"];
                 [messageDic setObject:@(600) forKey:@"ttl"];
                 [messageDic setObject:[mySelf.rtcMeetingView.socketClient getRTCServerAdress] forKey:@"navServ"];
                 [messageDic setObject:@([[QIMKit sharedInstance] getCurrentServerTime]) forKey:@"createTime"];
@@ -863,15 +860,15 @@ static QIMWebRTCMeetingClient *instance = nil;
                 NSString *extendInfo = [[QIMJSONSerializer sharedInstance] serializeObject:messageDic];
                 QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"[当前客户端不支持音视频]" WithInfo:extendInfo ToGroupId:mySelf.groupId WithMsgType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:mySelf.groupId userInfo:@{@"message":msg}];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:mySelf.groupId userInfo:@{@"message": msg}];
                 });
             }
-            [mySelf.localPeerConnection offerForConstraints:mySelf.sdpConstraints completionHandler:^(RTCSessionDescription * _Nullable sdp, NSError * _Nullable error) {
+            [mySelf.localPeerConnection offerForConstraints:mySelf.sdpConstraints completionHandler:^(RTCSessionDescription *_Nullable sdp, NSError *_Nullable error) {
                 RTCLogError(@"offerForConstraints : %@", error);
                 if (error == nil) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         RTCSessionDescription *sdpH264 = [mySelf descriptionWithDescription:sdp videoFormat:@"VP8"];
-                        [mySelf.localPeerConnection setLocalDescription:sdpH264 completionHandler:^(NSError * _Nullable error) {
+                        [mySelf.localPeerConnection setLocalDescription:sdpH264 completionHandler:^(NSError *_Nullable error) {
                             if (error) {
                                 QIMVerboseLog(@"error : %@", error);
                             }
@@ -880,7 +877,7 @@ static QIMWebRTCMeetingClient *instance = nil;
                             if (result) {
                                 NSString *sdpAnswer = [result objectForKey:@"sdpAnswer"];
                                 RTCSessionDescription *remoteSdp = [[RTCSessionDescription alloc] initWithType:RTCSdpTypeAnswer sdp:sdpAnswer];
-                                [mySelf.localPeerConnection setRemoteDescription:remoteSdp completionHandler:^(NSError * _Nullable error) {
+                                [mySelf.localPeerConnection setRemoteDescription:remoteSdp completionHandler:^(NSError *_Nullable error) {
                                     if (error) {
                                         QIMVerboseLog(@"error2 : %@", error);
                                     } else {
@@ -891,16 +888,16 @@ static QIMWebRTCMeetingClient *instance = nil;
                                             for (RTCIceCandidate *candidate in  [mySelf.willSendCanDic objectForKey:myUserName]) {
                                                 [mySelf.rtcMeetingView.socketClient sendICECandidateWithEndpointName:myUserName WithCandidate:candidate.sdp WithSdpMLineIndex:candidate.sdpMLineIndex WithSdpMid:candidate.sdpMid complete:^(BOOL success) {
                                                     if (success) {
-                                                        
+
                                                     } else {
                                                         QIMVerboseLog(@"");
                                                     }
-                                                    
+
                                                 }];
                                             }
                                             [mySelf.willSendCanDic removeObjectForKey:myUserName];
                                             NSArray *list = [mySelf.peerConnectionCanDic objectForKey:myUserName];
-                                            for(RTCIceCandidate *can in list) {
+                                            for (RTCIceCandidate *can in list) {
                                                 [mySelf.localPeerConnection addIceCandidate:can];
                                             }
                                             [mySelf.peerConnectionCanDic removeObjectForKey:myUserName];
@@ -910,7 +907,7 @@ static QIMWebRTCMeetingClient *instance = nil;
                                                 NSNumber *plat = [value objectForKey:@"plat"];
 //                                                [self.userPlatDic setObject:plat?@(plat.intValue):@(-1) forKey:user];
                                                 [self receveRemoteVideoWithUserName:user WithStream:streams];
-                                                
+
                                             }
                                         });
                                     }
@@ -924,19 +921,19 @@ static QIMWebRTCMeetingClient *instance = nil;
             NSDictionary *errorDic = [resultDic objectForKey:@"error"];
             int errorCode = [[errorDic objectForKey:@"code"] intValue];
             NSString *errorMsg = [errorDic objectForKey:@"message"];
-            [mySelf.rtcMeetingView showAlertMessage:[NSString stringWithFormat:@"加入房间失败，%d:%@",errorCode,errorMsg]];
+            [mySelf.rtcMeetingView showAlertMessage:[NSString stringWithFormat:@"加入房间失败，%d:%@", errorCode, errorMsg]];
         }
     }];
 }
 
 // Closed
-- (void)webRTCSocketClient:(QIMWebRTCSocketClient *)client didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean{
-    [self.rtcMeetingView showAlertMessage:[NSString stringWithFormat:@"视频会议连接被关闭，[%ld]%@",(long)code,reason]];
+- (void)webRTCSocketClient:(QIMWebRTCSocketClient *)client didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {
+    [self.rtcMeetingView showAlertMessage:[NSString stringWithFormat:@"视频会议连接被关闭，[%ld]%@", (long) code, reason]];
 }
 
 //
-- (void)webRTCSocketClient:(QIMWebRTCSocketClient *)client didFailWithError:(NSError *)error{
-    [self.rtcMeetingView showAlertMessage:[NSString stringWithFormat:@"连接视频会议服务器失败，%@",error]];
+- (void)webRTCSocketClient:(QIMWebRTCSocketClient *)client didFailWithError:(NSError *)error {
+    [self.rtcMeetingView showAlertMessage:[NSString stringWithFormat:@"连接视频会议服务器失败，%@", error]];
 }
 
 //Participant joined event
@@ -946,14 +943,14 @@ static QIMWebRTCMeetingClient *instance = nil;
 //Parameters:
 //
 //id: the new participant’s id (username)
-- (void)participantJoinedWithUserName:(NSString *)userName{
+- (void)participantJoinedWithUserName:(NSString *)userName {
     NSString *user = userName;
     RTCPeerConnection *peerConnection = [self.peerConnectionFactory peerConnectionWithConfiguration:_configuration constraints:self.pcConstraints delegate:self];
     [self.peerConnectionDic setObject:peerConnection forKey:user];
-    
-    [peerConnection offerForConstraints:self.pcConstraints completionHandler:^(RTCSessionDescription * _Nullable sdp, NSError * _Nullable error) {
+
+    [peerConnection offerForConstraints:self.pcConstraints completionHandler:^(RTCSessionDescription *_Nullable sdp, NSError *_Nullable error) {
         RTCSessionDescription *sdpH264 = [self descriptionWithDescription:sdp videoFormat:@"VP8"];
-        [peerConnection setLocalDescription:sdpH264 completionHandler:^(NSError * _Nullable error) {
+        [peerConnection setLocalDescription:sdpH264 completionHandler:^(NSError *_Nullable error) {
             if (error) {
                 QIMVerboseLog(@"participantJoinedWithUserName Error : %@", error);
             }
@@ -969,7 +966,7 @@ static QIMWebRTCMeetingClient *instance = nil;
 //
 //id: publisher’s username
 //streams: list of stream identifiers that the participant has opened to connect with the room. As only webcam is supported, will always be [{"id":"webcam"}].
-- (void)participantPublishedWithUserName:(NSString *)userName WithStreams:(NSArray *)streams{
+- (void)participantPublishedWithUserName:(NSString *)userName WithStreams:(NSArray *)streams {
     QIMVerboseLog(@"%s", __func__);
     [self receveRemoteVideoWithUserName:userName WithStream:streams];
 }
@@ -981,7 +978,7 @@ static QIMWebRTCMeetingClient *instance = nil;
 //Parameters:
 //
 //name - publisher’s username
-- (void)participantUnpublishedWithUserName:(NSString *)userName{
+- (void)participantUnpublishedWithUserName:(NSString *)userName {
     QIMVerboseLog(@"%s", __func__);
     // 会议成员取消了 输入流
 }
@@ -997,7 +994,7 @@ static QIMWebRTCMeetingClient *instance = nil;
 //sdpMLineIndex: the index (starting at zero) of the m-line in the SDP this candidate is associated with
 //sdpMid: media stream identification, “audio” or “video”, for the m-line this candidate is associated with
 - (void)addIceCandidateWithUserName:(NSString *)userName WithCandidate:(NSString *)candidate WithSdpMLineIndex:(int)sdpMLineIndex WithSdpMid:(NSString *)sdpMid {
-    
+
     RTCIceCandidate *cand = [[RTCIceCandidate alloc] initWithSdp:candidate sdpMLineIndex:sdpMLineIndex sdpMid:sdpMid];
     if ([userName isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
         if ([self.localPeerConnection remoteDescription]) {
@@ -1027,7 +1024,7 @@ static QIMWebRTCMeetingClient *instance = nil;
         }
         [_addIceCandidate addObject:cand];
     }
-    QIMVerboseLog(@"Add ICE Candidate %@",self.peerConnectionCanDic);
+    QIMVerboseLog(@"Add ICE Candidate %@", self.peerConnectionCanDic);
 }
 
 //Participant left event
@@ -1037,7 +1034,7 @@ static QIMWebRTCMeetingClient *instance = nil;
 //Parameters:
 //
 //name: username of the participant that has disconnected
-- (void)participantLeftWithUserName:(NSString *)userName{
+- (void)participantLeftWithUserName:(NSString *)userName {
     QIMVerboseLog(@"participantLeftWithUserName : %@", userName);
     RTCPeerConnection *connection = [self.peerConnectionDic objectForKey:userName];
     [connection setDelegate:nil];
@@ -1056,7 +1053,7 @@ static QIMWebRTCMeetingClient *instance = nil;
 //
 //Method: participantEvicted
 //Parameters: NONE
-- (void)participantLeft{
+- (void)participantLeft {
     QIMVerboseLog(@"%s", __func__);
 }
 
@@ -1069,7 +1066,7 @@ static QIMWebRTCMeetingClient *instance = nil;
 //room: current room name
 //name: username of the text message source
 //message: the text message
-- (void)receiveMessage:(NSString *)message WithUserName:(NSString *)userName WithRoomName:(NSString *)roomName{
+- (void)receiveMessage:(NSString *)message WithUserName:(NSString *)userName WithRoomName:(NSString *)roomName {
     QIMVerboseLog(@"%s", __func__);
 }
 
@@ -1080,15 +1077,15 @@ static QIMWebRTCMeetingClient *instance = nil;
 //Parameters:
 //
 //error: description of the error
-- (void)mediaError:(NSString *)error{
+- (void)mediaError:(NSString *)error {
     QIMVerboseLog(@"%s", __func__);
 }
 
 #pragma mark - RTCEAGLVideoViewDelegate
-- (void)videoView:(RTCEAGLVideoView*)videoView didChangeVideoSize:(CGSize)size
-{
+
+- (void)videoView:(RTCEAGLVideoView *)videoView didChangeVideoSize:(CGSize)size {
     if (videoView == self.localVideoView) {
-        QIMVerboseLog(@"local size === %@",NSStringFromCGSize(size));
+        QIMVerboseLog(@"local size === %@", NSStringFromCGSize(size));
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.rtcMeetingView setLocalVideoViewSize:size];
             [self.rtcMeetingView updateVideoView];

@@ -43,14 +43,14 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
 - (instancetype)init {
     self = [super init];
     if (self) {
-        
+
         [self startLog];
     }
     return self;
 }
 
 - (void)startLog {
-    
+
     UIDevice *device = [UIDevice currentDevice];
     NSString *lastUserName = [QIMKit getLastUserName];
     [[QIMKit sharedInstance] setCacheName:[[QIMKit sharedInstance] getLastJid]];
@@ -58,9 +58,9 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     logType = QIMLocalLogTypeOpened;
     [[QIMKit sharedInstance] setUserObject:@(QIMLocalLogTypeOpened) forKey:@"recordLogType"];
     if ([lastUserName containsString:@"dan.liu"] || [lastUserName containsString:@"weiping.he"] || [lastUserName containsString:@"geng.li"] || [lastUserName containsString:@"lilulucas.li"] || [lastUserName containsString:@"ping.xue"] || [lastUserName containsString:@"wenhui.fan"] || [lastUserName containsString:@"ping.yang"]) {
-        
+
         [self initDDLog];
-        
+
         QIMLocalLogType logType = [[[QIMKit sharedInstance] userObjectForKey:@"recordLogType"] integerValue];
         if (logType == QIMLocalLogTypeDefault) {
             [[QIMKit sharedInstance] setUserObject:@(QIMLocalLogTypeOpened) forKey:@"recordLogType"];
@@ -76,7 +76,7 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
 
 - (void)initDDLog {
     NSString *logPath = [self getLocalLogsPath];
-    DDLogFileManagerDefault* logFileManager = [[DDLogFileManagerDefault alloc] initWithLogsDirectory:logPath];
+    DDLogFileManagerDefault *logFileManager = [[DDLogFileManagerDefault alloc] initWithLogsDirectory:logPath];
     QIMLogFormatter *logFormatter = [[QIMLogFormatter alloc] init];
     [DDASLLogger sharedInstance].logFormatter = logFormatter;
     DDFileLogger *fileLogger = [[DDFileLogger alloc] initWithLogFileManager:logFileManager];
@@ -125,7 +125,7 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
 }
 
 - (void)redirectNSLogToDocumentFolder {
-    
+
     NSString *logFilePath = [self getLogFilePath];
     // 将log输入到文件
     QIMVerboseLog(@"本地日志路径 : %@", logFilePath);
@@ -160,7 +160,7 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
         if ([fileMgr fileExistsAtPath:fullPath isDirectory:&flag]) {
             if (!flag) {
                 NSDictionary *logFileAttributeDict = [[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:nil];
-                [array addObject:@{@"LogFilePath":fullPath, @"logFileAttribute":logFileAttributeDict}];
+                [array addObject:@{@"LogFilePath": fullPath, @"logFileAttribute": logFileAttributeDict}];
             }
         }
     }
@@ -219,30 +219,30 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
 
 //合并数据库，本地日志等
 - (NSData *)allLogData {
-    
+
     NSMutableArray *logArray = [NSMutableArray arrayWithCapacity:5];
 
     NSString *libraryPath = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0];
-    
+
     //UserDefault文件
     NSString *userDefaultPath = [libraryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@/%@.plist", @"Preferences", [[NSBundle mainBundle] bundleIdentifier]]];
     [logArray addObject:userDefaultPath];
-    
+
     [[QIMKit sharedInstance] qimDB_dbCheckpoint];
-    
+
     //App
     NSString *appPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:[NSString stringWithFormat:@"/APP/"]];
     [logArray addObject:appPath];
-    
+
     //缓存Path
     NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:[NSString stringWithFormat:@"/%@/", [[QIMKit sharedInstance] getLastJid]]];
     [logArray addObject:cachePath];
 
-    
+
     //数据库文件
     NSString *dbPath = [[QIMKit sharedInstance] getDBPathWithUserXmppId:[[QIMKit sharedInstance] getLastJid]];
     [logArray addObject:dbPath];
-    
+
     //数据库文件shm文件
     NSString *dbSHMPath = [NSString stringWithFormat:@"%@%@", dbPath, @"-shm"];
     [logArray addObject:dbSHMPath];
@@ -285,12 +285,12 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     }
 }
 
-- (void)sendFeedBackWithLogFileUrl:(NSString *)logFileUrl WithContent:(NSString *)content withUserInitiative:(BOOL)initiative{
-    NSString *title = [NSString stringWithFormat:@"【IOS】来自：%@的反馈日志",[[QIMKit sharedInstance] getLastJid]];
+- (void)sendFeedBackWithLogFileUrl:(NSString *)logFileUrl WithContent:(NSString *)content withUserInitiative:(BOOL)initiative {
+    NSString *title = [NSString stringWithFormat:@"【IOS】来自：%@的反馈日志", [[QIMKit sharedInstance] getLastJid]];
     NSMutableDictionary *requestDic = [NSMutableDictionary dictionary];
     [requestDic setObject:@"qchat@qunar.com" forKey:@"from"];
     [requestDic setObject:@"QChat Team" forKey:@"from_name"];
-    [requestDic setObject:@[@{@"to":@"lilulucas.li@qunar.com",@"name":@"李露"}, @{@"to":@"kaiming.zhang@qunar.com",@"name":@"张凯铭"}] forKey:@"tos"];
+    [requestDic setObject:@[@{@"to": @"lilulucas.li@qunar.com", @"name": @"李露"}, @{@"to": @"kaiming.zhang@qunar.com", @"name": @"张凯铭"}] forKey:@"tos"];
     [requestDic setObject:title forKey:@"subject"];
     NSString *systemVersion = [[QIMKit sharedInstance] SystemVersion];
     NSString *appVersion = [[QIMKit sharedInstance] AppBuildVersion];
@@ -304,10 +304,10 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     [requestDic setObject:@(YES) forKey:@"is_html"];
     NSData *requestData = [[QIMJSONSerializer sharedInstance] serializeObject:requestDic error:nil];
     NSURL *requestUrl = [NSURL URLWithString:@"https://qim.qunar.com/test_public/public/mainSite/sendMail.php"];
-    
+
     NSMutableDictionary *requestHeader = [NSMutableDictionary dictionaryWithCapacity:1];
     [requestHeader setObject:@"application/json;" forKey:@"Content-type"];
-    
+
     QIMHTTPRequest *request = [[QIMHTTPRequest alloc] initWithURL:requestUrl];
     [request setHTTPMethod:QIMHTTPMethodPOST];
     [request setHTTPBody:requestData];
@@ -320,7 +320,7 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
                 NSDictionary *responseDic = [[QIMJSONSerializer sharedInstance] deserializeObject:response.data error:nil];
                 BOOL isOk = [[responseDic objectForKey:@"ok"] boolValue];
                 if (isOk) {
-                    
+
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySubmitLogSuccessed object:nil];
                     });
@@ -331,7 +331,7 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
                 }
             }
         }
-    } failure:^(NSError *error) {
+    }                  failure:^(NSError *error) {
         QIMVerboseLog(@"提交日志失败 : %@", error);
         if (initiative == YES) {
             dispatch_async(dispatch_get_main_queue(), ^{

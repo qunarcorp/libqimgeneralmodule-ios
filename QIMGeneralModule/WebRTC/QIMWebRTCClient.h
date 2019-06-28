@@ -12,11 +12,11 @@
 
 @interface QIMWebRTCClient : NSObject
 
-@property (strong, nonatomic)   QIMRTCSingleView            *rtcView;
+@property(strong, nonatomic) QIMRTCSingleView *rtcView;
 
-@property (copy, nonatomic)     NSString            *myJID;  /**< 自己的JID */
-@property (copy, nonatomic)     NSString            *remoteJID;    /**< 对方JID */
-@property (copy, nonatomic)     NSString *remoteResource;
+@property(copy, nonatomic) NSString *myJID;  /**< 自己的JID */
+@property(copy, nonatomic) NSString *remoteJID;    /**< 对方JID */
+@property(copy, nonatomic) NSString *remoteResource;
 
 + (instancetype)sharedInstance;
 

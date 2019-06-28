@@ -9,7 +9,7 @@
 
 @interface NSObject (QIMAutoTracker)
 
-@property (nonatomic ,strong) NSDictionary *ddInfoDictionary;
+@property(nonatomic, strong) NSDictionary *ddInfoDictionary;
 
 - (void)configInfoData:(id)obj;
 

@@ -26,17 +26,17 @@
     if (![self isKindOfClass:[UIButton class]]) {
         return;
     }
-    
+
     [self qim_endTrackingWithTouch:touch withEvent:event];
     NSArray *targers = [self.allTargets allObjects];
     if (targers.count > 0) {
         NSArray *actions = [self actionsForTarget:[targers firstObject] forControlEvent:UIControlEventTouchUpInside];
         if (actions.count > 0 &&
-            [[actions firstObject] length] > 0) {
-            
-            NSString *eventId = [NSString stringWithFormat:@"%@&&%@",NSStringFromClass([[targers firstObject] class]),[actions firstObject]];
+                [[actions firstObject] length] > 0) {
+
+            NSString *eventId = [NSString stringWithFormat:@"%@&&%@", NSStringFromClass([[targers firstObject] class]), [actions firstObject]];
             if (self.accessibilityIdentifier.length > 0) {
-                eventId = [NSString stringWithFormat:@"%@&&%@&&%@",NSStringFromClass([self class]),[actions firstObject], [self accessibilityIdentifier]];
+                eventId = [NSString stringWithFormat:@"%@&&%@&&%@", NSStringFromClass([self class]), [actions firstObject], [self accessibilityIdentifier]];
             }
             [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:eventId withDescription:eventId];
         }

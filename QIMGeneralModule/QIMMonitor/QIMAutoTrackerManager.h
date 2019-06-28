@@ -17,15 +17,15 @@ typedef void(^QIMAutoTrackerManagerBlock)(NSDictionary *trackerDictionary);
 /**
  是否开启调试模式
  */
-@property (nonatomic, assign) BOOL isDebug;
+@property(nonatomic, assign) BOOL isDebug;
 
 /**
  配置数据
  */
-@property (nonatomic, strong) NSArray *configArray;
+@property(nonatomic, strong) NSArray *configArray;
 
-@property (nonatomic, copy) QIMAutoTrackerManagerBlock successBlock;
-@property (nonatomic, copy) QIMAutoTrackerManagerBlock debugBlock;
+@property(nonatomic, copy) QIMAutoTrackerManagerBlock successBlock;
+@property(nonatomic, copy) QIMAutoTrackerManagerBlock debugBlock;
 
 + (QIMAutoTrackerManager *)sharedInstance;
 

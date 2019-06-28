@@ -8,7 +8,7 @@
 #import "NSObject+QIMAutoTracker.h"
 #import <objc/runtime.h>
 
-static void * ddInfoDictionaryPropertyKey = &ddInfoDictionaryPropertyKey;
+static void *ddInfoDictionaryPropertyKey = &ddInfoDictionaryPropertyKey;
 
 @implementation NSObject (QIMAutoTracker)
 
@@ -28,22 +28,22 @@ static void * ddInfoDictionaryPropertyKey = &ddInfoDictionaryPropertyKey;
     }
     if ([obj isKindOfClass:[NSDictionary class]]) {
         self.ddInfoDictionary = obj;
-    }else {
+    } else {
         NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-        
+
         unsigned count;
         objc_property_t *properties = class_copyPropertyList([obj class], &count);
-        
+
         for (int i = 0; i < count; i++) {
             NSString *key = [NSString stringWithUTF8String:property_getName(properties[i])];
             if (key.length > 0 &&
-                [obj valueForKey:key]) {
+                    [obj valueForKey:key]) {
                 [dict setObject:[obj valueForKey:key] forKey:key];
             }
         }
-        
+
         free(properties);
-        
+
         if (dict) {
             self.ddInfoDictionary = dict;
         }
