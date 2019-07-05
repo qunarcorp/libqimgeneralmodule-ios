@@ -220,6 +220,9 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
 //合并数据库，本地日志等
 - (NSData *)allLogData {
 
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySubmitLog object:@{@"promotMessage":@"准备打包日志文件，请勿关闭应用程序！"}];
+    });
     NSMutableArray *logArray = [NSMutableArray arrayWithCapacity:5];
 
     NSString *libraryPath = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0];
@@ -261,6 +264,10 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
 
     NSString *zipFilePath = [[QIMZipArchive sharedInstance] zipFiles:logArray ToFile:[[QIMLocalLog sharedInstance] getLocalZipLogsPath] ToZipFileName:zipFileName WithZipPassword:@"lilulucas.li"];
     NSData *logData = [NSData dataWithContentsOfFile:zipFilePath];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySubmitLog object:@{@"promotMessage":@"打包完成，准备上传日志文件, ，请勿关闭应用程序！"}];
+    });
     return logData;
 }
 
@@ -320,13 +327,12 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
                 NSDictionary *responseDic = [[QIMJSONSerializer sharedInstance] deserializeObject:response.data error:nil];
                 BOOL isOk = [[responseDic objectForKey:@"ok"] boolValue];
                 if (isOk) {
-
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySubmitLogSuccessed object:nil];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySubmitLog object:@{@"promotMessage":@"反馈成功，非常感谢！"}];
                     });
                 } else {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySubmitLogFaild object:nil];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySubmitLog object:@{@"promotMessage":@"反馈失败，请稍后重试！"}];
                     });
                 }
             }
@@ -335,7 +341,7 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
         QIMVerboseLog(@"提交日志失败 : %@", error);
         if (initiative == YES) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySubmitLogFaild object:nil];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySubmitLog object:@{@"promotMessage":@"反馈失败，请稍后重试！"}];
             });
         }
     }];
