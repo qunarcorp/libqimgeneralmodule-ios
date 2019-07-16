@@ -22,9 +22,9 @@
 
 + (instancetype)shareNotifyManager;
 
-@property (nonatomic, weak) id <QIMNotifyManagerDelegate> notifyManagerGlobalDelegate;
+@property(nonatomic, weak) id <QIMNotifyManagerDelegate> notifyManagerGlobalDelegate;
 
-@property (nonatomic, weak) id <QIMNotifyManagerDelegate> notifyManagerSpecifiedDelegate;
+@property(nonatomic, weak) id <QIMNotifyManagerDelegate> notifyManagerSpecifiedDelegate;
 
 
 - (void)showGlobalNotifyWithMessage:(NSDictionary *)message;

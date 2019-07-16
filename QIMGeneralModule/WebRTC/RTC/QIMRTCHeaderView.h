@@ -16,7 +16,7 @@
 
 @interface QIMRTCHeaderView : UIView
 
-@property (nonatomic, weak) id <QIMRTCHeaderViewDidClickDelegate> rtcHeaderViewDidClickDelegate;
+@property(nonatomic, weak) id <QIMRTCHeaderViewDidClickDelegate> rtcHeaderViewDidClickDelegate;
 
 - (instancetype)initWithinitWithFrame:(CGRect)frame userId:(NSString *)userId;
 

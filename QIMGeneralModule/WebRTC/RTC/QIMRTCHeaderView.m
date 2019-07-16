@@ -15,8 +15,8 @@
     NSString *_userName;
 }
 
-@property (nonatomic, strong) UIImageView *headerView;
-@property (nonatomic, strong) UILabel    *nameLabel;
+@property(nonatomic, strong) UIImageView *headerView;
+@property(nonatomic, strong) UILabel *nameLabel;
 
 @end
 
@@ -35,7 +35,7 @@ static CGFloat kImageScale = 0.80f;
 
 - (UILabel *)nameLabel {
     if (!_nameLabel) {
-        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.headerView.bottom, CGRectGetWidth(self.frame), (1 - kImageScale) *CGRectGetHeight(self.frame))];
+        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.headerView.bottom, CGRectGetWidth(self.frame), (1 - kImageScale) * CGRectGetHeight(self.frame))];
         _nameLabel.text = [self getUserName];
         _nameLabel.font = [UIFont systemFontOfSize:12];
         _nameLabel.textAlignment = NSTextAlignmentCenter;
@@ -50,7 +50,7 @@ static CGFloat kImageScale = 0.80f;
         self.userInteractionEnabled = YES;
         [self addSubview:self.headerView];
         [self addSubview:self.nameLabel];
-        
+
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickUserHeaderView)];
         [self addGestureRecognizer:tapGesture];
     }
@@ -58,13 +58,13 @@ static CGFloat kImageScale = 0.80f;
 }
 
 - (NSString *)getUserName {
-    
+
     NSString *name = nil;
-    NSDictionary * userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:_userId];
+    NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:_userId];
     //备注
     NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userInfo[@"XmppId"]];
     if (remarkName) {
-        
+
         name = remarkName;
     } else {
         if (userInfo[@"Name"]) {

@@ -38,40 +38,40 @@
 
 @interface QIMRTCSingleView () <QIMRTCHeaderViewDidClickDelegate>
 
-@property (nonatomic, strong) QIMRTCViewController *rootRTCViewController;
+@property(nonatomic, strong) QIMRTCViewController *rootRTCViewController;
 
-@property (nonatomic, strong) NSString *remoteJid;
+@property(nonatomic, strong) NSString *remoteJid;
 
-@property (nonatomic, strong) UIImageView *headerImageView;
+@property(nonatomic, strong) UIImageView *headerImageView;
 
-@property (nonatomic, strong) UILabel *nameLabel;
+@property(nonatomic, strong) UILabel *nameLabel;
 
-@property (nonatomic, strong) UILabel *stateLabel;
+@property(nonatomic, strong) UILabel *stateLabel;
 
-@property (nonatomic, strong) UIView *topUserInfoView;
+@property(nonatomic, strong) UIView *topUserInfoView;
 
-@property (nonatomic, strong) UIView *bottomView;
+@property(nonatomic, strong) UIView *bottomView;
 
-@property (nonatomic, strong) QIMRTCButton *convertAudioBtn;
+@property(nonatomic, strong) QIMRTCButton *convertAudioBtn;
 
-@property (nonatomic, strong) QIMRTCButton *switchCameraBtn;
+@property(nonatomic, strong) QIMRTCButton *switchCameraBtn;
 
-@property (strong, nonatomic) QIMRTCButton *hangupBtn;
+@property(strong, nonatomic) QIMRTCButton *hangupBtn;
 
 /** 最小化 */
-@property (strong, nonatomic)   UITapGestureRecognizer *toolsGenTap;
+@property(strong, nonatomic) UITapGestureRecognizer *toolsGenTap;
 /** 工具栏是否隐藏了 */
-@property (assign, nonatomic)   BOOL                    isToolsHidden;
+@property(assign, nonatomic) BOOL isToolsHidden;
 
 /** 是否是视频聊天 */
-@property (assign, nonatomic)   BOOL                    isVideo;
+@property(assign, nonatomic) BOOL isVideo;
 /** 是否是被呼叫方 */
-@property (assign, nonatomic)   BOOL                    callee;
+@property(assign, nonatomic) BOOL callee;
 /** 本地是否开启摄像头  */
-@property (assign, nonatomic)   BOOL                    localCamera;
+@property(assign, nonatomic) BOOL localCamera;
 
 /** 接听按钮 */
-@property (strong, nonatomic)   QIMRTCButton             *answerBtn;
+@property(strong, nonatomic) QIMRTCButton *answerBtn;
 
 @end
 
@@ -131,8 +131,7 @@
     return _rootRTCViewController;
 }
 
-- (instancetype)initWithWithXmppId:(NSString *)remoteJid IsVideo:(BOOL)isVideo isCallee:(BOOL)isCallee
-{
+- (instancetype)initWithWithXmppId:(NSString *)remoteJid IsVideo:(BOOL)isVideo isCallee:(BOOL)isCallee {
     self = [super initWithFrame:[UIScreen mainScreen].bounds];
     if (self) {
         [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
@@ -145,14 +144,14 @@
         [self setBackgroundColor:[UIColor blackColor]];
         [self setupUI];
     }
-    
+
     return self;
 }
 
 - (void)hiddenHeaderView {
     [UIView animateWithDuration:0.5 animations:^{
         CGRect topFrame = self.topUserInfoView.frame;
-        topFrame.origin.y = - topFrame.size.height - 20;
+        topFrame.origin.y = -topFrame.size.height - 20;
         self.topUserInfoView.frame = topFrame;
         self.topUserInfoView.hidden = YES;
     }];
@@ -167,17 +166,17 @@
     }];
 }
 
-- (void)onToolsViewHidenClick:(UITapGestureRecognizer *)tapGesture{
-    
+- (void)onToolsViewHidenClick:(UITapGestureRecognizer *)tapGesture {
+
     if (self.isToolsHidden) {
-        
+
         //退出全屏
         [UIView animateWithDuration:0.5 animations:^{
-   
+
             CGRect buttonFrame = self.bottomView.frame;
             buttonFrame.origin.y = kRTCHeight - buttonFrame.size.height;
             self.bottomView.frame = buttonFrame;
-        } completion:^(BOOL finished) {
+        }                completion:^(BOOL finished) {
             self.isToolsHidden = NO;
             [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
@@ -185,11 +184,11 @@
     } else {
         //进入全屏
         [UIView animateWithDuration:0.5 animations:^{
-            
+
             CGRect buttonFrame = self.bottomView.frame;
             buttonFrame.origin.y = kRTCHeight;
             self.bottomView.frame = buttonFrame;
-        } completion:^(BOOL finished) {
+        }                completion:^(BOOL finished) {
             self.isToolsHidden = YES;
             [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
         }];
@@ -199,18 +198,17 @@
 /**
  *  初始化UI
  */
-- (void)setupUI
-{
+- (void)setupUI {
     if (self.isVideo && !self.callee) {
         // 视频通话时，呼叫方的UI初始化
         [self initUIForVideoCaller];
-        
+
     } else if (!self.isVideo && !self.callee) {
         // 语音通话时，呼叫方UI初始化
-        
+
     } else if (!self.isVideo && self.callee) {
         // 语音通话时，被呼叫方UI初始化
-        
+
     } else {
         // 视频通话时，被呼叫方UI初始化
         [self initUIForVideoCallee];
@@ -224,7 +222,7 @@
         make.top.left.right.mas_equalTo(0);
         make.height.mas_equalTo(80);
     }];
-    
+
     [self.topUserInfoView addSubview:self.headerImageView];
     [self.topUserInfoView addSubview:self.nameLabel];
     [self.topUserInfoView addSubview:self.stateLabel];
@@ -232,14 +230,14 @@
         make.width.height.mas_equalTo(60);
         make.top.left.mas_equalTo(12);
     }];
-    
+
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(15);
         make.left.mas_equalTo(self.headerImageView.mas_right).offset(10);
         make.width.mas_equalTo(150);
         make.height.mas_equalTo(30);
     }];
-    
+
     [self.stateLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.headerImageView.mas_right).offset(10);
         make.top.mas_equalTo(self.nameLabel.mas_bottom).offset(10);
@@ -254,7 +252,7 @@
         make.left.right.bottom.mas_equalTo(0);
         make.height.mas_equalTo(100);
     }];
-    
+
     [self.bottomView addSubview:self.convertAudioBtn];
     [self.bottomView addSubview:self.hangupBtn];
     [self.bottomView addSubview:self.switchCameraBtn];
@@ -262,13 +260,13 @@
         make.width.height.mas_equalTo(64);
         make.top.left.mas_equalTo(8);
     }];
-    
+
     [self.hangupBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(self.bottomView);
         make.width.height.mas_equalTo(64);
         make.top.mas_equalTo(8);
     }];
-    
+
     [self.switchCameraBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.height.mas_equalTo(64);
         make.top.mas_equalTo(8);
@@ -279,72 +277,70 @@
 /**
  *  视频通话时，呼叫方的UI设置
  */
-- (void)initUIForVideoCaller
-{
+- (void)initUIForVideoCaller {
     _localCamera = YES;
-    
+
     [self setUserInteractionEnabled:YES];
-    
+
     self.toolsGenTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onToolsViewHidenClick:)];
     [self addGestureRecognizer:self.toolsGenTap];
-    
+
     //主视频窗口
     self.masterView.frame = self.frame;
     self.masterView.backgroundColor = [UIColor clearColor];
     [self addSubview:self.masterView];
-    
+
     //副视频窗口
     self.otherView.frame = CGRectMake(kRTCWidth - 110, 10, 100, 150);
     self.otherView.backgroundColor = [UIColor clearColor];
     self.otherView.hidden = YES;
     [self addSubview:self.otherView];
-    
+
     [self setUpHeaderView];
-    
+
     [self setupBottomView];
 }
 
 /**
  *  视频通话，被呼叫方UI初始化
  */
-- (void)initUIForVideoCallee
-{
+- (void)initUIForVideoCallee {
     UIView *view = [[UIView alloc] initWithFrame:self.bounds];
     view.backgroundColor = [UIColor whiteColor];
     [view addSubview:self.answerBtn];
     [view addSubview:self.hangupBtn];
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
-    
+
     UIImageView *imageView = [[UIImageView alloc] init];
     imageView.image = [UIImage imageWithData:[QIMKit defaultUserHeaderImage]];
     [view addSubview:imageView];
-    
+
     UILabel *nameLabel = [[UILabel alloc] init];
     NSString *text = [NSString stringWithFormat:@"%@邀请你视频通话", [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.remoteJid]];
     [nameLabel setText:text];
     [nameLabel setTextAlignment:NSTextAlignmentCenter];
     [view addSubview:nameLabel];
-    
+
     [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(view.centerY).offset(-120);
-        make.left.mas_equalTo(width/2.0-32);
+        make.left.mas_equalTo(width / 2.0 - 32);
         make.width.height.mas_equalTo(64);
     }];
-    
+
     [nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(imageView.mas_bottom).offset(20);
-        make.left.mas_equalTo(width/2.0-150);
+        make.left.mas_equalTo(width / 2.0 - 150);
         make.width.mas_equalTo(300);
         make.height.mas_equalTo(40);
     }];
-    
+
     [self.hangupBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.mas_equalTo(view.mas_bottom).offset(-50);
-        make.left.mas_equalTo(width/2.0-32);
+        make.left.mas_equalTo(width / 2.0 - 32);
         make.width.height.mas_equalTo(64);
     }];
     [self.answerBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(width/2.0-32);
+        make.left.mas_equalTo(width / 2.0 - 32);
         make.bottom.mas_equalTo(self.hangupBtn.mas_top).offset(-50);
         make.width.height.mas_equalTo(64);
     }];
@@ -360,74 +356,68 @@
 
 - (void)updateConnectionStateText:(NSString *)stateText {
     dispatch_async(dispatch_get_main_queue(), ^{
-       self.stateLabel.text = stateText;
+        self.stateLabel.text = stateText;
     });
 }
 
-- (void)show
-{
+- (void)show {
     if (self.isVideo && self.callee) {
         self.connectLabel.text = @"视频通话";
     } else if (!self.isVideo && self.callee) {
         self.connectLabel.text = @"语音通话";
     }
-    
+
     self.alpha = 0;
-    
+
     CATransition *animation = [CATransition animation];
     animation.duration = 0.6;
     [self.rootRTCViewController.view addSubview:self];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:self.rootRTCViewController];
     [[UIApplication sharedApplication].keyWindow.layer addAnimation:animation forKey:@"animation"];
     [[[UIApplication sharedApplication].keyWindow rootViewController] presentViewController:nav animated:NO completion:nil];
-    
+
     [UIView animateWithDuration:0.5 animations:^{
         self.alpha = 1;
-    } completion:^(BOOL finished) {
-        
+    }                completion:^(BOOL finished) {
+
     }];
 }
 
-- (void)dismiss
-{
+- (void)dismiss {
     [UIView animateWithDuration:0.5 animations:^{
         [self.rootRTCViewController dismiss];
 
-    } completion:^(BOOL finished) {
+    }                completion:^(BOOL finished) {
         [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
     }];
 }
 
-- (void)dealloc
-{
-    QIMVerboseLog(@"%s",__func__);
+- (void)dealloc {
+    QIMVerboseLog(@"%s", __func__);
 }
 
 #pragma mark - 按钮点击事件
 
-- (void)switchClick
-{
+- (void)switchClick {
     [[NSNotificationCenter defaultCenter] postNotificationName:kSwitchCameraNotification object:nil];
 }
 
-- (void)hangupClick
-{
+- (void)hangupClick {
     if (self.isHanged) {
         [self performSelector:@selector(dismiss) withObject:nil afterDelay:2.0];
     } else {
         [self dismiss];
     }
-    
-    NSDictionary *dict = @{@"isVideo":@(self.isVideo),@"isCaller":@(!self.callee),@"answered":@(self.answered)};
+
+    NSDictionary *dict = @{@"isVideo": @(self.isVideo), @"isCaller": @(!self.callee), @"answered": @(self.answered)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kHangUpNotification object:dict];
 }
 
 /**
  *  接听按钮操作
  */
-- (void)answerClick
-{
+- (void)answerClick {
     self.answered = YES;
     NSDictionary *dict = nil;
     // 接听按钮只在接收方出现，分语音接听和视频接听两种情况
@@ -436,12 +426,12 @@
         [self removeAllSubviews];
         // 视频通话接听之后，UI布局与呼叫方一样
         [self initUIForVideoCaller];
-        dict = @{@"isVideo":@(YES),@"audioAccept":@(NO)};
+        dict = @{@"isVideo": @(YES), @"audioAccept": @(NO)};
     } else {
         _localCamera = NO;
-        dict = @{@"isVideo":@(NO),@"audioAccept":@(YES)};
+        dict = @{@"isVideo": @(NO), @"audioAccept": @(YES)};
     }
-    
+
     [[NSNotificationCenter defaultCenter] postNotificationName:kAcceptNotification object:dict];
 }
 
@@ -470,24 +460,22 @@
     return _bottomView;
 }
 
-- (QIMRTCButton *)hangupBtn
-{
+- (QIMRTCButton *)hangupBtn {
     if (!_hangupBtn) {
         if (_callee && !_answered) {
-            _hangupBtn = [[QIMRTCButton alloc] initWithTitle:@"拒绝"  noHandleImageName:@"icon_call_reject_normal"];
+            _hangupBtn = [[QIMRTCButton alloc] initWithTitle:@"拒绝" noHandleImageName:@"icon_call_reject_normal"];
         } else if (!_callee && !_answered) {
-            _hangupBtn = [[QIMRTCButton alloc] initWithTitle:@"拒绝"  noHandleImageName:@"icon_call_reject_normal"];
-        }else {
+            _hangupBtn = [[QIMRTCButton alloc] initWithTitle:@"拒绝" noHandleImageName:@"icon_call_reject_normal"];
+        } else {
             _hangupBtn = [[QIMRTCButton alloc] initWithTitle:nil noHandleImageName:@"icon_call_reject_normal"];
         }
-        
+
         [_hangupBtn addTarget:self action:@selector(hangupClick) forControlEvents:UIControlEventTouchUpInside];
     }
     return _hangupBtn;
 }
 
-- (QIMRTCButton *)answerBtn
-{
+- (QIMRTCButton *)answerBtn {
     if (!_answerBtn) {
         _answerBtn = [[QIMRTCButton alloc] initWithTitle:@"接听" noHandleImageName:@"icon_audio_receive_normal"];
         [_answerBtn addTarget:self action:@selector(answerClick) forControlEvents:UIControlEventTouchUpInside];
@@ -504,19 +492,19 @@
 
 - (RTCEAGLVideoView *)getOtherVideoView {
     RTCEAGLVideoView *otherVideoView = [[RTCEAGLVideoView alloc] init];
-    
+
     return otherVideoView;
 }
 
 - (void)changView:(UIButton *)btn {
-    
+
     [[QIMWebRTCClient sharedInstance] changeViews];
 }
 
 - (void)showAlertMessage:(NSString *)message {
     UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:message preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"cancel", nil) style:UIAlertActionStyleCancel handler:nil];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ok", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ok", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *_Nonnull action) {
         [self dismiss];
     }];
     [alertVc addAction:cancelAction];

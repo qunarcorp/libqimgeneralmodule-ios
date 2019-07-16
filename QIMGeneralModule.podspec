@@ -70,7 +70,7 @@ Pod::Spec.new do |s|
   #     # qtLog.libraries            = "stdc++"
 
   # end
-  
+
   # s.subspec 'QTDB' do |qtdb|
   #     qtdb.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMLogEnable=1'}
   #     qtdb.source_files = ['QIMGeneralModule/QTDataBase/**/*.{h,m,c,cpp,mm}']
@@ -86,7 +86,7 @@ Pod::Spec.new do |s|
       calendar.source_files = ['QIMGeneralModule/QIMCalendars/**/*.{h,m,c}']
       calendar.public_header_files = 'QIMGeneralModule/QIMCalendars/**/*.{h}'
   end
-  
+
   s.subspec 'AutoMonitor' do |monitor|
     monitor.source_files = 'QIMGeneralModule/QIMMonitor/**/*.{h,m}'
     monitor.public_header_files = 'QIMGeneralModule/QIMMonitor/**/.h'

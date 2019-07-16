@@ -32,23 +32,29 @@ typedef NS_ENUM(SInt32, WebRTCRoomEvent) {
 NSString *NSStringFromWebRTCRoomEvent(WebRTCRoomEvent value);
 
 @protocol QIMWebRTCSocketClientDelegate;
+
 @interface QIMWebRTCSocketClient : NSObject
 
-@property (nonatomic, weak) id<QIMWebRTCSocketClientDelegate> delegate;
+@property(nonatomic, weak) id <QIMWebRTCSocketClientDelegate> delegate;
 
 - (void)updateSocketHost;
+
 - (void)setHttpsServerAddress:(NSString *)serverAddress;
+
 - (void)setNavServerAddress:(NSString *)navServerAddress;
+
 - (NSString *)getRTCServerAdress;
+
 - (NSString *)getServerAdress;
 
 // Connect WebRTC Room Server
 - (void)connectWebRTCRoomServer;
+
 - (void)closeWebRTCRoomServer;
 
 //Join room
 //Represents a client’s request to join a room. If the room does not exist, it is created. To obtain the available rooms, the client should previously use the REST method getAllRooms.
-- (void)joinRoom:(NSString *)roomName WithTopic:(NSString *)topic WithNickName:(NSString *)nickName complete:(void(^)(NSDictionary *))complete;
+- (void)joinRoom:(NSString *)roomName WithTopic:(NSString *)topic WithNickName:(NSString *)nickName complete:(void (^)(NSDictionary *))complete;
 
 //Publish video
 //Represents a client’s request to start streaming her local media to anyone inside the room. The user can use the SDP answer from the response to display her local media after having passed through the KMS server (as opposed or besides using just the local stream), and thus check what other users in the room are receiving from her stream. The loopback can be enabled using the corresponding parameter.
@@ -58,14 +64,14 @@ NSString *NSStringFromWebRTCRoomEvent(WebRTCRoomEvent value);
 //
 //sdpOffer: SDP offer sent by this client
 //doLoopback: boolean enabling media loopback
-- (void)publishVideoWithOfferSdp:(NSString *)offerSdp doLoopback:(BOOL)loopback complete:(void(^)(NSDictionary *))complete;
+- (void)publishVideoWithOfferSdp:(NSString *)offerSdp doLoopback:(BOOL)loopback complete:(void (^)(NSDictionary *))complete;
 
 //Unpublish video
 //Represents a client’s request to stop streaming her local media to her room peers.
 //
 //Method: unpublishVideo
 //Parameters: No parameters required
-- (void)unpublishVideoComplete:(void(^)(BOOL))complete;;
+- (void)unpublishVideoComplete:(void (^)(BOOL))complete;;
 
 //Receive video
 //Represents a client’s request to receive media from participants in the room that published their media. This method can also be used for loopback connections.
@@ -75,7 +81,7 @@ NSString *NSStringFromWebRTCRoomEvent(WebRTCRoomEvent value);
 //
 //sender: id of the publisher’s endpoint, build by appending the publisher’s name and her currently opened stream (usually webcam)
 //sdpOffer: SDP offer sent by this client
-- (void)receiveVideoFromWithSender:(NSString *)sender WithOfferSdp:(NSString *)offerSdp complete:(void(^)(NSDictionary *))complete;
+- (void)receiveVideoFromWithSender:(NSString *)sender WithOfferSdp:(NSString *)offerSdp complete:(void (^)(NSDictionary *))complete;
 
 //Unsubscribe from video
 //Represents a client’s request to stop receiving media from a given publisher.
@@ -84,7 +90,7 @@ NSString *NSStringFromWebRTCRoomEvent(WebRTCRoomEvent value);
 //Parameters:
 //
 //sender: id of the publisher’s endpoint, build by appending the publisher’s name and her currently opened stream (usually webcam)
-- (void)unsubscribeFromVideoWithSender:(NSString *)sender complete:(void(^)(NSDictionary *))complete;
+- (void)unsubscribeFromVideoWithSender:(NSString *)sender complete:(void (^)(NSDictionary *))complete;
 
 //Send ICE Candidate
 //Request that carries info about an ICE candidate gathered on the client side. This information is required to implement the trickle ICE mechanism. Should be sent whenever an ICECandidate event is created by a RTCPeerConnection.
@@ -96,14 +102,14 @@ NSString *NSStringFromWebRTCRoomEvent(WebRTCRoomEvent value);
 //candidate: the candidate attribute information
 //sdpMLineIndex: the index (starting at zero) of the m-line in the SDP this candidate is associated with
 //sdpMid: media stream identification, “audio” or “video”, for the m-line this candidate is associated with
-- (void)sendICECandidateWithEndpointName:(NSString *)endpointName WithCandidate:(NSString *)candidate WithSdpMLineIndex:(int)sdpMLineIndex WithSdpMid:(NSString *)sdpMid complete:(void(^)(BOOL))complete;
+- (void)sendICECandidateWithEndpointName:(NSString *)endpointName WithCandidate:(NSString *)candidate WithSdpMLineIndex:(int)sdpMLineIndex WithSdpMid:(NSString *)sdpMid complete:(void (^)(BOOL))complete;
 
 //Leave room
 //Represents a client’s notification that she’s leaving the room.
 //
 //Method: leaveRoom
 //Parameters: NONE
-- (void)leaveRoomComplete:(void(^)(BOOL))complete;
+- (void)leaveRoomComplete:(void (^)(BOOL))complete;
 
 //Send message
 //Used by clients to send written messages to all other participants in the room.
@@ -114,7 +120,7 @@ NSString *NSStringFromWebRTCRoomEvent(WebRTCRoomEvent value);
 //message: the text message
 //userMessage: message originator (username)
 //roomMessage: room identifier (room name)
-- (void)sendMessage:(NSString *)text WithUserName:(NSString *)userName WithRoomName:(NSString *)roomName complete:(void(^)(BOOL))complete;;
+- (void)sendMessage:(NSString *)text WithUserName:(NSString *)userName WithRoomName:(NSString *)roomName complete:(void (^)(BOOL))complete;;
 
 
 @end
@@ -125,7 +131,7 @@ NSString *NSStringFromWebRTCRoomEvent(WebRTCRoomEvent value);
 - (void)webRTCSocketClientDidConnected:(QIMWebRTCSocketClient *)client;
 
 // Closed
-- (void)webRTCSocketClient:(QIMWebRTCSocketClient *)client  didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean;
+- (void)webRTCSocketClient:(QIMWebRTCSocketClient *)client didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean;
 
 //
 - (void)webRTCSocketClient:(QIMWebRTCSocketClient *)client didFailWithError:(NSError *)error;

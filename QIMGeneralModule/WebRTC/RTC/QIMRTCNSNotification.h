@@ -9,10 +9,10 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-static NSString * const kARDMediaStreamId = @"ARDAMS";
-static NSString * const kARDAudioTrackId = @"ARDAMSa0";
-static NSString * const kARDVideoTrackId = @"ARDAMSv0";
-static NSString * const kARDVideoTrackKind = @"video";
+static NSString *const kARDMediaStreamId = @"ARDAMS";
+static NSString *const kARDAudioTrackId = @"ARDAMSa0";
+static NSString *const kARDVideoTrackId = @"ARDAMSv0";
+static NSString *const kARDVideoTrackKind = @"video";
 
 /* 挂断的通知，object 中附带参数
  @{

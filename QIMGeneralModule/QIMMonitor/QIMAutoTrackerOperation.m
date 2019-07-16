@@ -32,12 +32,12 @@
  */
 - (void)sendTrackerData:(NSString *)eventId info:(NSDictionary *)info {
     NSDictionary *trackerDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                       eventId.length > 0 ? eventId : @"", QIMAutoTrackerEventIDKey,
-                                       info ? info : [[NSDictionary alloc] init], QIMAutoTrackerInfoKey, nil];
-    
+            eventId.length > 0 ? eventId : @"", QIMAutoTrackerEventIDKey,
+            info ? info : [[NSDictionary alloc] init], QIMAutoTrackerInfoKey, nil];
+
     if ([QIMAutoTrackerManager sharedInstance].configArray.count > 0 &&
-        eventId.length > 0) {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(DD_TRACKER_EVENTID_KEY == %@)",eventId];
+            eventId.length > 0) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(DD_TRACKER_EVENTID_KEY == %@)", eventId];
         NSArray *filtered = [[QIMAutoTrackerManager sharedInstance].configArray filteredArrayUsingPredicate:predicate];
         if ([filtered count] > 0) {
             if ([QIMAutoTrackerManager sharedInstance].successBlock) {
@@ -45,9 +45,9 @@
             }
         }
     }
-    
+
     if ([QIMAutoTrackerManager sharedInstance].isDebug &&
-        [QIMAutoTrackerManager sharedInstance].debugBlock) {
+            [QIMAutoTrackerManager sharedInstance].debugBlock) {
         [QIMAutoTrackerManager sharedInstance].debugBlock(trackerDictionary);
     }
 }
@@ -64,9 +64,9 @@
             NSString *domain = [[QIMKit sharedInstance] getDomain];
             NSMutableDictionary *result = [NSMutableDictionary dictionaryWithCapacity:3];
             if (uid.length && domain.length) {
-                NSDictionary *userInfo = @{@"uid":uid, @"domain":domain, @"nav":navUrl};
+                NSDictionary *userInfo = @{@"uid": uid, @"domain": domain, @"nav": navUrl};
                 [result setObject:userInfo forKey:@"user"];
-                
+
                 NSMutableDictionary *deviceInfo = [NSMutableDictionary dictionaryWithCapacity:3];
                 /*
                  "os": "iOS",
@@ -90,7 +90,7 @@
                 NSString *plat = [QIMKit getQIMProjectTitleName];
                 long long dbSize = [[QIMDataController getInstance] sizeOfDBPath];
                 NSString *dbSizeStr = [[QIMDataController getInstance] transfromTotalSize:dbSize];
-                
+
                 [deviceInfo setObject:os forKey:@"os"];
                 [deviceInfo setObject:osBrand forKey:@"osBrand"];
                 [deviceInfo setObject:osModel forKey:@"osModel"];
@@ -98,18 +98,18 @@
                 [deviceInfo setObject:versionCode forKey:@"versionCode"];
                 [deviceInfo setObject:versionName forKey:@"versionName"];
                 [deviceInfo setObject:plat forKey:@"plat"];
-                [deviceInfo setObject:dbSizeStr?dbSizeStr:@"" forKey:@"DBSize"];
-                
+                [deviceInfo setObject:dbSizeStr ? dbSizeStr : @"" forKey:@"DBSize"];
+
                 [result setObject:deviceInfo forKey:@"device"];
-                
+
                 [result setObject:traceLogs forKey:@"infos"];
-                
+
                 NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:result error:nil];
                 [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:[[QIMKit sharedInstance] qimNav_UploadLog] withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
                     NSLog(@"清除本地日志上报数据");
                     [[QIMAutoTrackerDataManager qimDB_sharedLogDBInstance] qim_deleteTraceLog];
-                } withFailedCallBack:^(NSError *error) {
-                    
+                }                              withFailedCallBack:^(NSError *error) {
+
                 }];
             }
         }

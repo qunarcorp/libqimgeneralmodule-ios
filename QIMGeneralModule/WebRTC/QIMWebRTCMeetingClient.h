@@ -9,12 +9,14 @@
 #import <Foundation/Foundation.h>
 
 @class QIMRTCView;
+
 @interface QIMWebRTCMeetingClient : NSObject
 
-@property (nonatomic, strong) QIMRTCView *rtcMeetingView;
-@property (strong, nonatomic) NSString *roomId;
-@property (strong, nonatomic) NSString *roomName;
-@property (strong, nonatomic) NSString *groupId;
+@property(nonatomic, strong) QIMRTCView *rtcMeetingView;
+@property(strong, nonatomic) NSString *roomId;
+@property(strong, nonatomic) NSString *roomName;
+@property(strong, nonatomic) NSString *groupId;
+
 + (instancetype)sharedInstance;
 
 - (void)startEngine;
