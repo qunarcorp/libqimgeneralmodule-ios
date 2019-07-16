@@ -116,7 +116,7 @@ static QIMNoteManager *__QIMNoteManager = nil;
     if (self) {
         self.baseUrl = [[QIMKit sharedInstance] qimNav_QCloudHost];
         if (self.baseUrl.length <= 0) {
-            self.baseUrl = @"https://qt.qunar.com/package/qtapi/qcloud/";
+            self.baseUrl = @"https://qim.qunar.com/package/qtapi/qcloud/";
         }
         self.passwordVersion = [[[QIMKit sharedInstance] userObjectForKey:@"passwordVerison"] integerValue];
         self.passwordDict = [NSMutableDictionary dictionary];

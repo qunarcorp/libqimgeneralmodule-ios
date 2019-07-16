@@ -95,7 +95,7 @@ static QIMWebRTCClient *instance = nil;
 }
 
 - (void)updateICEServers{
-    NSString *httpUrl = [NSString stringWithFormat:@"https://qt.qunar.com/rtc/index.php?username=%@",[[[QIMKit sharedInstance] thirdpartKeywithValue] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSString *httpUrl = [NSString stringWithFormat:@"https://qim.qunar.com/rtc/index.php?username=%@",[[[QIMKit sharedInstance] thirdpartKeywithValue] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     NSURL *url = [NSURL URLWithString:httpUrl];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
     [request startSynchronous];
@@ -350,7 +350,7 @@ static QIMWebRTCClient *instance = nil;
     if (isCaller) {
         [self initRTCSetting];
         // 如果是发起者，创建一个offer信令
-        Message *msg = [[QIMKit sharedInstance] sendMessage:@"[当前客户端不支持音视频]" WithInfo:nil ToUserId:self.remoteJID WihtMsgType:QIMWebRTC_MsgType_Video];
+        QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"[当前客户端不支持音视频]" WithInfo:nil ToUserId:self.remoteJID WithMsgType:QIMWebRTC_MsgType_Video];
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message":msg}];
         });

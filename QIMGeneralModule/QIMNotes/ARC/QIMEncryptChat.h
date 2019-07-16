@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
-@class Message;
+@class QIMMessageModel;
 typedef enum : NSUInteger {
     QIMEncryptChatStateNone = 0,
     QIMEncryptChatStateEncrypting,
@@ -65,16 +65,16 @@ typedef enum : NSUInteger {
 /**
  解密得到MessageType
  */
-- (NSInteger)getMessageTypeWithEncryptMsg:(Message *)msg WithUserId:(NSString *)userId;
+- (NSInteger)getMessageTypeWithEncryptMsg:(QIMMessageModel *)msg WithUserId:(NSString *)userId;
 
 /**
  解密得到MessageBody
  */
-- (NSString *)getMessageBodyWithEncryptMsg:(Message *)msg WithUserId:(NSString *)userId;
+- (NSString *)getMessageBodyWithEncryptMsg:(QIMMessageModel *)msg WithUserId:(NSString *)userId;
 
 /**
  解密得到MessageExtendInfo
  */
-- (NSString *)getMessageExtendInfoWithEncryptMsg:(Message *)msg WithUserId:(NSString *)userId;
+- (NSString *)getMessageExtendInfoWithEncryptMsg:(QIMMessageModel *)msg WithUserId:(NSString *)userId;
 
 @end

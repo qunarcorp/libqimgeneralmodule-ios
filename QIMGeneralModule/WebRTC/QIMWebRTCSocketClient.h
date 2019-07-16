@@ -48,7 +48,7 @@ NSString *NSStringFromWebRTCRoomEvent(WebRTCRoomEvent value);
 
 //Join room
 //Represents a client’s request to join a room. If the room does not exist, it is created. To obtain the available rooms, the client should previously use the REST method getAllRooms.
-- (void)joinRoom:(NSString *)roomName WithTopic:(NSString *)topic WihtNickName:(NSString *)nickName complete:(void(^)(NSDictionary *))complete;
+- (void)joinRoom:(NSString *)roomName WithTopic:(NSString *)topic WithNickName:(NSString *)nickName complete:(void(^)(NSDictionary *))complete;
 
 //Publish video
 //Represents a client’s request to start streaming her local media to anyone inside the room. The user can use the SDP answer from the response to display her local media after having passed through the KMS server (as opposed or besides using just the local stream), and thus check what other users in the room are receiving from her stream. The loopback can be enabled using the corresponding parameter.

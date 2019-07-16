@@ -11,16 +11,24 @@
 @implementation QIMLogFormatter
 
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-    NSString *logLevel;
-    switch (logMessage->_flag) {
-        case DDLogFlagError : logLevel = @"❗️❗️❗️"; break;
-        case DDLogFlagWarning : logLevel = @"⚠️⚠️⚠️"; break;
-        case DDLogFlagInfo : logLevel = @"ℹ️ℹ️ℹ️"; break;
-        case DDLogFlagDebug : logLevel = @"🔧🔧🔧"; break;
-        default : logLevel = @""; break;
+    NSString *logLevel; // 日志等级
+    switch (logMessage->_flag) {
+        case DDLogFlagError    : logLevel = @"Error";   break;
+        case DDLogFlagWarning  : logLevel = @"Warning"; break;
+        case DDLogFlagInfo     : logLevel = @"Info";    break;
+        case DDLogFlagDebug    : logLevel = @"Debug";   break;
+        default                : logLevel = @"Verbose"; break;
     }
-    //以上是根据不同的类型 定义不同的标记字符
-    return [NSString stringWithFormat:@"%@ %@[line:%zd%@]: %@\n", logMessage.timestamp, logMessage->_function, logMessage->_line, logLevel, logMessage->_message];
+    
+    NSString *dateAndTime = [logMessage.timestamp descriptionWithLocale:[NSLocale currentLocale]]; // 日期和时间
+//    NSString *logFileName = logMessage -> _fileName; // 文件名
+    NSString *threadName = logMessage -> _threadID;
+    NSString *logFunction = logMessage -> _function; // 方法名
+//    NSUInteger logLine = logMessage -> _line;        // 行号
+    NSString *logMsg = logMessage->_message;         // 日志消息
+    
+    // 日志格式：日期和时间 文件名 方法名 : 行数 <日志等级> 日志消息
+    return [NSString stringWithFormat:@"%@ 【Thread-%@】 %@ : %@", dateAndTime, threadName, logFunction, logMsg];
 }
 
 @end
