@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMGeneralModule"
-  s.version      = "3.0.10211613"
+  s.version      = "4.0.10211613"
   s.summary      = "Qunar chat App 6.0+ version QIMGeneralModule"
   s.description  = <<-DESC
                    Qunar QIMGeneralModule公共模块
@@ -98,10 +98,10 @@ Pod::Spec.new do |s|
   else
 
     puts '线上release QIMGeneralModule依赖第三方库'
-      s.dependency 'QIMCommon', '~> 3.0'
+      s.dependency 'QIMCommon', '~> 4.0'
       s.dependency 'QIMOpenSSL'
-      s.dependency 'QIMKitVendor', '~> 3.0'
-      s.dependency 'QIMCommonCategories', '~> 3.0'
+      s.dependency 'QIMKitVendor', '~> 4.0'
+      s.dependency 'QIMCommonCategories', '~> 4.0'
   end
   
 
