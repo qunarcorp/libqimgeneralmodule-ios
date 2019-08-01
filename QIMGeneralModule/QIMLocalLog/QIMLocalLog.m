@@ -297,7 +297,7 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     NSMutableDictionary *requestDic = [NSMutableDictionary dictionary];
     [requestDic setObject:@"qchat@qunar.com" forKey:@"from"];
     [requestDic setObject:@"QChat Team" forKey:@"from_name"];
-    [requestDic setObject:@[@{@"to": @"lilulucas.li@qunar.com", @"name": @"李露"}, @{@"to": @"kaiming.zhang@qunar.com", @"name": @"张凯铭"}] forKey:@"tos"];
+    [requestDic setObject:@[@"lilulucas.li@qunar.com", @"kaiming.zhang@qunar.com"] forKey:@"tos"];
     [requestDic setObject:title forKey:@"subject"];
     NSString *systemVersion = [[QIMKit sharedInstance] SystemVersion];
     NSString *appVersion = [[QIMKit sharedInstance] AppBuildVersion];
@@ -310,7 +310,7 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     [requestDic setObject:@"日志反馈" forKey:@"alt_body"];
     [requestDic setObject:@(YES) forKey:@"is_html"];
     NSData *requestData = [[QIMJSONSerializer sharedInstance] serializeObject:requestDic error:nil];
-    NSURL *requestUrl = [NSURL URLWithString:@"https://qim.qunar.com/test_public/public/mainSite/sendMail.php"];
+    NSURL *requestUrl = [NSURL URLWithString:@"https://qim.qunar.com/package/newapi/nck/sendmail.qunar"];
 
     NSMutableDictionary *requestHeader = [NSMutableDictionary dictionaryWithCapacity:1];
     [requestHeader setObject:@"application/json;" forKey:@"Content-type"];
