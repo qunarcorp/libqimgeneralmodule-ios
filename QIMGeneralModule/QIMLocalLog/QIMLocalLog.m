@@ -308,7 +308,7 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
         [requestDic setObject:logFileUrl forKey:@"body"];
     }
     [requestDic setObject:@"日志反馈" forKey:@"alt_body"];
-    [requestDic setObject:@(YES) forKey:@"is_html"];
+    [requestDic setObject:@"true" forKey:@"is_html"];
     NSData *requestData = [[QIMJSONSerializer sharedInstance] serializeObject:requestDic error:nil];
     NSURL *requestUrl = [NSURL URLWithString:@"https://qim.qunar.com/package/newapi/nck/sendmail.qunar"];
 
