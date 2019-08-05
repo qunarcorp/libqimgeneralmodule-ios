@@ -99,7 +99,7 @@
 @implementation QIMNoteManager
 
 + (void)load {
-    [QIMNoteManager sharedInstance];
+//    [QIMNoteManager sharedInstance];
 }
 
 static QIMNoteManager *__QIMNoteManager = nil;
