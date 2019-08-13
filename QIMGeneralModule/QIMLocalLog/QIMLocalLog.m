@@ -319,14 +319,16 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     [request setHTTPMethod:QIMHTTPMethodPOST];
     [request setHTTPBody:requestData];
     [request setTimeoutInterval:10];
+    request.HTTPRequestHeaders = requestHeader;
     [QIMHTTPClient sendRequest:request complete:^(QIMHTTPResponse *response) {
         if (response.code == 200) {
             QIMVerboseLog(@"提交日志成功");
             if (initiative == YES) {
                 [[QIMLocalLog sharedInstance] deleteLocalLog];
                 NSDictionary *responseDic = [[QIMJSONSerializer sharedInstance] deserializeObject:response.data error:nil];
-                BOOL isOk = [[responseDic objectForKey:@"ok"] boolValue];
-                if (isOk) {
+                BOOL ret = [[responseDic objectForKey:@"ret"] boolValue];
+                NSInteger errcode = [[responseDic objectForKey:@"errcode"] integerValue];
+                if (ret && errcode == 0) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySubmitLog object:@{@"promotMessage":@"反馈成功，非常感谢！"}];
                     });
