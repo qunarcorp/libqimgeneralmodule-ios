@@ -254,7 +254,10 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     NSString *dbWALPath = [NSString stringWithFormat:@"%@%@", dbPath, @"-wal"];
     [logArray addObject:dbWALPath];
 
-
+    //数据库Version文件
+    NSString *dbVersionPath = [[dbPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBVersion"];
+    [logArray addObject:dbVersionPath];
+    
     //本地日志
     NSArray *allLocalLogs = [self allLogFilesAtPath:[self getLocalLogsPath]];
     for (NSString *logPath in allLocalLogs) {
