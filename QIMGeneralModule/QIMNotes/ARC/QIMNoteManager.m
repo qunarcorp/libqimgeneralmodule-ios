@@ -23,6 +23,7 @@
 #import "QIMPublicRedefineHeader.h"
 #import "AESCrypt.h"
 #import "QIMAES256.h"
+#import "NSBundle+QIMLibrary.h"
 
 @interface QIMNoteManager () {
     dispatch_queue_t _loadNoteModelQueue;
@@ -1218,7 +1219,7 @@ static QIMNoteManager *__QIMNoteManager = nil;
  @param userId 用户Id
  */
 - (void)cancelEncryptSessionWithUserId:(NSString *)userId {
-    [[QIMKit sharedInstance] sendEncryptionChatWithType:QIMEncryptMessageType_Cancel WithBody:@"取消" ToJid:userId];
+    [[QIMKit sharedInstance] sendEncryptionChatWithType:QIMEncryptMessageType_Cancel WithBody:[NSBundle qim_localizedStringForKey:@"Cancel"] ToJid:userId];
 }
     
 /**

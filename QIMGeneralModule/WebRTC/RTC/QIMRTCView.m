@@ -9,6 +9,7 @@
 #import <WebRTC/WebRTC.h>
 #import "QIMRTCViewController.h"
 #import "UIView+QIMExtension.h"
+#import "NSBundle+QIMLibrary.h"
 
 #define kRTCWidth       [UIScreen mainScreen].bounds.size.width
 #define kRTCHeight      [UIScreen mainScreen].bounds.size.height
@@ -821,7 +822,7 @@
     QIMVerboseLog(@"%s", __func__);
 
     NSArray *messages = @[@"现在不方便接听，稍后给你回复。", @"现在不方便接听，有什么事吗", @"马上到"];
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:nil];
     for (NSString *message  in messages) {
         [sheet addButtonWithTitle:message];
     }

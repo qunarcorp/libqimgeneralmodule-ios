@@ -20,6 +20,7 @@
 #import "QIMPublicRedefineHeader.h"
 #import <WebRTC/WebRTC.h>
 #import "Masonry.h"
+#import "NSBundle+QIMLibrary.h"
 
 @interface QIMWebRTCClient () <RTCPeerConnectionDelegate, RTCVideoViewDelegate>
 
@@ -721,13 +722,13 @@ didStartReceivingOnTransceiver:(RTCRtpTransceiver *)transceiver {
 }
 
 // Called any time the ICEConnectionState changes.
-- (void)     peerConnection:(RTCPeerConnection *)peerConnection
+- (void)peerConnection:(RTCPeerConnection *)peerConnection
 didChangeIceConnectionState:(RTCIceConnectionState)newState {
     QIMVerboseLog(@"ICE state changed: %ld", (long) newState);
     switch (newState) {
         case RTCIceConnectionStateNew: {
             QIMVerboseLog(@"newState = RTCICEConnectionNew");
-            [self setConnectLabelText:@"连接中..."];
+            [self setConnectLabelText:[NSBundle qim_localizedStringForKey:@"Connecting…"]];//@"连接中..."];
         }
             break;
         case RTCIceConnectionStateChecking: {
