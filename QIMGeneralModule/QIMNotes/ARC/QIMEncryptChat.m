@@ -17,6 +17,7 @@
 #import "QIMUUIDTools.h"
 #import "UIColor+QIMUtility.h"
 #import "QIMPublicRedefineHeader.h"
+#import "NSBundle+QIMLibrary.h"
 
 NSString *kNoticeTitle = @"Notice";
 
@@ -71,7 +72,7 @@ NSString *kNoticeTitle = @"Notice";
 - (SCLAlertView *)beginAlert {
     _beginAlert = [[SCLAlertView alloc] init];
     [_beginAlert setHorizontalButtons:YES];
-    SCLButton *cancelBtn = [_beginAlert addButton:@"取消" target:self selector:@selector(dismisssEncryptChatAlert)];
+    SCLButton *cancelBtn = [_beginAlert addButton:[NSBundle qim_localizedStringForKey:@"Cancel"] target:self selector:@selector(dismisssEncryptChatAlert)];
     cancelBtn.buttonFormatBlock = ^NSDictionary* (void)
     {
         NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
@@ -124,7 +125,7 @@ NSString *kNoticeTitle = @"Notice";
     vaildPwdBoxTextField.keyboardType = UIKeyboardTypeASCIICapable;
     pwdBoxTextField.secureTextEntry = YES;
     vaildPwdBoxTextField.secureTextEntry = YES;
-    [_createPwdBoxAlert addButton:@"取消" target:self selector:@selector(dismisssEncryptChatAlert)];
+    [_createPwdBoxAlert addButton:[NSBundle qim_localizedStringForKey:@"Cancel"] target:self selector:@selector(dismisssEncryptChatAlert)];
     __weak __typeof(self) weakSelf = self;
     [_createPwdBoxAlert addButton:@"创建" validationBlock:^BOOL {
         if (pwdBoxTextField.text.length == 0)
@@ -177,7 +178,7 @@ NSString *kNoticeTitle = @"Notice";
     vaildPwdBoxTextField.keyboardType = UIKeyboardTypeASCIICapable;
     vaildPwdBoxTextField.secureTextEntry = YES;
     __weak __typeof(self) weakSelf = self;
-    SCLButton *cancelBtn = [_vaildPwdAlert addButton:@"取消" target:self selector:@selector(dismisssEncryptChatAlert)];
+    SCLButton *cancelBtn = [_vaildPwdAlert addButton:[NSBundle qim_localizedStringForKey:@"Cancel"] target:self selector:@selector(dismisssEncryptChatAlert)];
     cancelBtn.buttonFormatBlock = ^NSDictionary* (void)
     {
         NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
@@ -237,7 +238,7 @@ NSString *kNoticeTitle = @"Notice";
     _waitingAlert.showAnimationType = SCLAlertViewHideAnimationSlideOutToCenter;
     _waitingAlert.hideAnimationType = SCLAlertViewHideAnimationSlideOutFromCenter;
     _waitingAlert.backgroundType = SCLAlertViewBackgroundTransparent;
-    [_waitingAlert addButton:@"取消" target:self selector:@selector(cancelEncrypt)];
+    [_waitingAlert addButton:[NSBundle qim_localizedStringForKey:@"Cancel"] target:self selector:@selector(cancelEncrypt)];
     [_waitingAlert addTimerToButtonIndex:0 reverse:YES];
     return _waitingAlert;
 }
@@ -245,7 +246,7 @@ NSString *kNoticeTitle = @"Notice";
 - (SCLAlertView *)closePwdAlert {
     _closePwdAlert = [[SCLAlertView alloc] init];
     [_closePwdAlert setHorizontalButtons:YES];
-    SCLButton *cancelBtn = [_closePwdAlert addButton:@"取消" target:self selector:@selector(dismisssEncryptChatAlert)];
+    SCLButton *cancelBtn = [_closePwdAlert addButton:[NSBundle qim_localizedStringForKey:@"Cancel"] target:self selector:@selector(dismisssEncryptChatAlert)];
     cancelBtn.buttonFormatBlock = ^NSDictionary* (void)
     {
         NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
