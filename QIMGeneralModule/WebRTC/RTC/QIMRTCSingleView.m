@@ -20,6 +20,7 @@
 #import "UIColor+QIMUtility.h"
 #import "QIMKitPublicHeader.h"
 #import "QIMPublicRedefineHeader.h"
+#import "NSBundle+QIMLibrary.h"
 
 #define kRTCWidth       [UIScreen mainScreen].bounds.size.width
 #define kRTCHeight      [UIScreen mainScreen].bounds.size.height
