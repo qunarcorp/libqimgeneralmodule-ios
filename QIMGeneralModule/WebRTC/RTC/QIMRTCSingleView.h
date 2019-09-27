@@ -35,7 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong, nonatomic) UILabel *netTipLabel;
 
 @property(assign, nonatomic) BOOL isRemoteVideoFront;
-
+/** 是否是被呼叫方 */
+@property(assign, nonatomic) BOOL callee;
 #pragma mark - method
 
 - (instancetype)initWithWithXmppId:(NSString *)remoteJid IsVideo:(BOOL)isVideo isCallee:(BOOL)isCallee;

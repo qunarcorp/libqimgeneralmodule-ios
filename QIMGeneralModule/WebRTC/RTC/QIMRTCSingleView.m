@@ -66,8 +66,7 @@
 
 /** 是否是视频聊天 */
 @property(assign, nonatomic) BOOL isVideo;
-/** 是否是被呼叫方 */
-@property(assign, nonatomic) BOOL callee;
+
 /** 本地是否开启摄像头  */
 @property(assign, nonatomic) BOOL localCamera;
 
@@ -370,11 +369,11 @@
 
     self.alpha = 0;
 
-    CATransition *animation = [CATransition animation];
-    animation.duration = 0.6;
+//    CATransition *animation = [CATransition animation];
+//    animation.duration = 0.6;
     [self.rootRTCViewController.view addSubview:self];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:self.rootRTCViewController];
-    [[UIApplication sharedApplication].keyWindow.layer addAnimation:animation forKey:@"animation"];
+//    [[UIApplication sharedApplication].keyWindow.layer addAnimation:animation forKey:@"animation"];
     [[[UIApplication sharedApplication].keyWindow rootViewController] presentViewController:nav animated:NO completion:nil];
 
     [UIView animateWithDuration:0.5 animations:^{
@@ -440,11 +439,24 @@
 
 - (QIMRTCButton *)convertAudioBtn {
     if (!_convertAudioBtn) {
-        _convertAudioBtn = [[QIMRTCButton alloc] initWithTitle:@"切换语音" noHandleImageName:@"voip_convert_icons_130x130_"];
+        _convertAudioBtn = [[QIMRTCButton alloc] initWithTitle:@"切换语音" noHandleImageName:@"icon_avp_loudspeaker_black"];
+        [_convertAudioBtn addTarget:self action:@selector(switchAudio) forControlEvents:UIControlEventTouchUpInside];
     }
     return _convertAudioBtn;
 }
 
+- (void)switchAudio{
+    QIMVerboseLog(@"外放声音%s", __func__);
+    if (!self.convertAudioBtn.selected) {
+        self.convertAudioBtn.selected = YES;
+//        self.loudSpeaker = YES;
+        [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
+    } else {
+        self.convertAudioBtn.selected = NO;
+//        self.loudSpeaker = NO;
+        [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideNone error:nil];
+    }
+}
 - (QIMRTCButton *)switchCameraBtn {
     if (!_switchCameraBtn) {
         _switchCameraBtn = [[QIMRTCButton alloc] initWithTitle:@"切换摄像头" noHandleImageName:@"voip_camera_icons_66x66_"];
