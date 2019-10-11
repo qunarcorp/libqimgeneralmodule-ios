@@ -310,6 +310,13 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     } else {
         [requestDic setObject:logFileUrl forKey:@"body"];
     }
+    if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
+        [requestDic setObject:@"qchat" forKey:@"plat"];
+    } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        [requestDic setObject:@"qtalk" forKey:@"plat"];
+    } else {
+        [requestDic setObject:@"startalk" forKey:@"plat"];
+    }
     [requestDic setObject:@"日志反馈" forKey:@"alt_body"];
     [requestDic setObject:@"true" forKey:@"is_html"];
     NSData *requestData = [[QIMJSONSerializer sharedInstance] serializeObject:requestDic error:nil];
