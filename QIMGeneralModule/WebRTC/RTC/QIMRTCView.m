@@ -11,6 +11,7 @@
 #import "UIView+QIMExtension.h"
 #import "NSBundle+QIMLibrary.h"
 
+
 #define kRTCWidth       [UIScreen mainScreen].bounds.size.width
 #define kRTCHeight      [UIScreen mainScreen].bounds.size.height
 
@@ -164,7 +165,7 @@
             CGRect buttonFrame = self.btnContainerView.frame;
             buttonFrame.origin.y = kRTCHeight - buttonFrame.size.height;
             self.btnContainerView.frame = buttonFrame;
-            [self updateFrameOfRemoteView:CGRectMake(0, self.btnContainerView.top - kMicVideoH - 10, kRTCWidth, kMicVideoH)];
+            [self updateFrameOfLocalView:CGRectMake(0, self.btnContainerView.top - kMicVideoH - 10, kRTCWidth, kMicVideoH)];
 
         }                completion:^(BOOL finished) {
             self.isToolsHidden = NO;
@@ -180,7 +181,7 @@
             CGRect buttonFrame = self.btnContainerView.frame;
             buttonFrame.origin.y = kRTCHeight;
             self.btnContainerView.frame = buttonFrame;
-            [self updateFrameOfRemoteView:CGRectMake(0, self.btnContainerView.top - kMicVideoH - 10, kRTCWidth, kMicVideoH)];
+            [self updateFrameOfLocalView:CGRectMake(0, self.btnContainerView.top - kMicVideoH - 10, kRTCWidth, kMicVideoH)];
         }                completion:^(BOOL finished) {
             self.isToolsHidden = YES;
             [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
@@ -197,7 +198,7 @@
     _startY = 100;
 
 //    self.adverseImageView.backgroundColor = [UIColor blackColor];
-    self.ownImageView.backgroundColor = [UIColor blackColor];
+    self.ownImageView.backgroundColor = [UIColor clearColor];
     self.portraitImageView.backgroundColor = [UIColor clearColor];
     if (!_isRoom) {
         if (self.isVideo && !self.callee) {
@@ -488,7 +489,7 @@
         }];
     }];
 
-    [self updateFrameOfLocalView:CGRectMake(0, 0, kRTCWidth, kRTCHeight)];
+    [self updateFrameOfLocalView:CGRectMake(0, self.btnContainerView.top - kMicVideoH - 10, kRTCWidth, kMicVideoH)];
 
 }
 
@@ -518,8 +519,8 @@
         self.cameraBtn.selected = NO;
         self.inviteBtn.enabled = NO;
         [UIView animateWithDuration:0.5 animations:^{
-            [self updateFrameOfLocalView:self.frame];
-            [self updateFrameOfRemoteView:CGRectMake(0, self.btnContainerView.top - 10 - kMicVideoH, kRTCWidth, kMicVideoH)];
+            [self updateFrameOfRemoteView:self.frame];
+            [self updateFrameOfLocalView:CGRectMake(0, self.btnContainerView.top - 10 - kMicVideoH, kRTCWidth, kMicVideoH)];
 
         }                completion:^(BOOL finished) {
 //            [[QIMWebRTCClient sharedInstance] resizeViews];
@@ -531,8 +532,8 @@
         self.cameraBtn.selected = NO;
         self.inviteBtn.enabled = NO;
         [UIView animateWithDuration:0.5 animations:^{
-            [self updateFrameOfLocalView:self.frame];
-            [self updateFrameOfRemoteView:CGRectMake(0, self.btnContainerView.top - 10 - kMicVideoH, kRTCWidth, kMicVideoH)];
+            [self updateFrameOfRemoteView:self.frame];
+            [self updateFrameOfLocalView:CGRectMake(0, self.btnContainerView.top - 10 - kMicVideoH, kRTCWidth, kMicVideoH)];
 
         }                completion:^(BOOL finished) {
 //            [[QIMWebRTCClient sharedInstance] resizeViews];
@@ -549,22 +550,24 @@
 
     if (!self.hasChangedView) {
         [UIView animateWithDuration:0.5 animations:^{
-            [self updateFrameOfRemoteView:CGRectMake(0, self.btnContainerView.top - 10 - kMicVideoH, kRTCWidth, kMicVideoH)];
-            [self updateFrameOfLocalView:CGRectMake(0, 0, kRTCWidth, kRTCHeight)];
+            [self updateFrameOfLocalView:CGRectMake(0, self.btnContainerView.top - 10 - kMicVideoH, kRTCWidth, kMicVideoH)];
+            [self updateFrameOfRemoteView:CGRectMake(0, 0, kRTCWidth, kRTCHeight)];
         }];
     } else {
         [UIView animateWithDuration:0.5 animations:^{
 
-            [self updateFrameOfRemoteView:CGRectMake(0, self.btnContainerView.top - 10 - kMicVideoH, kRTCWidth, kMicVideoH)];
-            [self updateFrameOfLocalView:CGRectMake(0, kTopInfoH, kRTCWidth, kRTCHeight - kTopInfoH - kContainerH - 7)];
+            [self updateFrameOfLocalView:CGRectMake(0, self.btnContainerView.top - 10 - kMicVideoH, kRTCWidth, kMicVideoH)];
+            [self updateFrameOfRemoteView:CGRectMake(0, kTopInfoH, kRTCWidth, kRTCHeight - kTopInfoH - kContainerH - 7)];
 
         }];
     }
 }
 
 - (void)updateFrameOfLocalView:(CGRect)newFrame {
-    self.ownImageView.frame = newFrame;
-    self.ownImageView.center = self.center;
+    
+    
+    self.ownImageView.frame = CGRectMake(120, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
+//    self.ownImageView.center = self.center;
     for (UIView *subView in self.ownImageView.subviews) {
         Class class = NSClassFromString(@"RTCEAGLVideoView");
         if ([subView isKindOfClass:class]) {
@@ -589,10 +592,11 @@
             }
         }
     }
+    [self bringSubviewToFront:self.ownImageView];
 }
 
 - (void)updateFrameOfRemoteView:(CGRect)newFrame {
-    self.adverseStackView.frame = newFrame;
+    self.adverseStackView.frame = CGRectMake(0, 0, kRTCWidth, kRTCHeight);//newFrame;
     for (UIView *subView in self.adverseStackView.subviews) {
         Class class = NSClassFromString(@"RTCEAGLVideoView");
         if ([subView isKindOfClass:class]) {
@@ -655,7 +659,7 @@
 #pragma mark - 按钮点击事件
 
 - (void)switchClick {
-    [[NSNotificationCenter defaultCenter] postNotificationName:kSwitchCameraNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kSwitchMeetingCameraNotification object:nil];
 }
 
 - (void)muteClick {
@@ -666,7 +670,7 @@
         self.muteBtn.selected = NO;
     }
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:kMuteNotification object:@{@"isMute": @(self.muteBtn.selected)}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kMuteMeetingNotification object:@{@"isMute": @(self.muteBtn.selected)}];
 }
 
 - (void)cameraClick {
@@ -677,10 +681,10 @@
 
         [self initUIForVideoCaller];
         // 在这里添加 开启本地视频采集 的代码
-        [[NSNotificationCenter defaultCenter] postNotificationName:kVideoCaptureNotification object:@{@"videoCapture": @(YES)}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kVideoCaptureMeetingNotification object:@{@"videoCapture": @(YES)}];
         // 对方和本地都开了摄像头
         if (self.oppositeCamera) {
-            [self updateFrameOfLocalView:self.frame];
+            [self updateFrameOfLocalView:CGRectMake(0, self.btnContainerView.top - 10 - kMicVideoH, kRTCWidth, kMicVideoH)];
             [self addSubview:self.ownImageView];
             self.cameraBtn.enabled = YES;
             self.inviteBtn.enabled = YES;
@@ -695,7 +699,7 @@
 
     } else {
         // 在这里添加 关闭本地视频采集 的代码
-        [[NSNotificationCenter defaultCenter] postNotificationName:kVideoCaptureNotification object:@{@"videoCapture": @(NO)}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kVideoCaptureMeetingNotification object:@{@"videoCapture": @(NO)}];
         if (self.oppositeCamera) {
             // 本地未开，对方开了摄像头
             [self clearAllSubViews];
@@ -745,7 +749,7 @@
     }
 
     NSDictionary *dict = @{@"isVideo": @(self.isVideo), @"isCaller": @(!self.callee), @"answered": @(self.answered)};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kHangUpNotification object:dict];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHangUpMeetingNotification object:dict];
 }
 
 - (void)packupClick {
@@ -873,7 +877,7 @@
         dict = @{@"isVideo": @(NO), @"audioAccept": @(YES)};
     }
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:kAcceptNotification object:dict];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kAcceptMeetingNotification object:dict];
 }
 
 // 视频通话时的语音接听按钮
@@ -893,7 +897,7 @@
 
     NSDictionary *dict = @{@"isVideo": @(YES), @"audioAccept": @(YES)};
     // 只有视频通话的语音接听，传一个参数NO。
-    [[NSNotificationCenter defaultCenter] postNotificationName:kAcceptNotification object:dict];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kAcceptMeetingNotification object:dict];
 }
 
 // 语音通话，缩小后的按钮点击事件
@@ -945,8 +949,8 @@
     if (self.answered) {
         [UIView animateWithDuration:1.0 animations:^{
             self.frame = [UIScreen mainScreen].bounds;
-            [self updateFrameOfLocalView:CGRectMake(0, 0, kRTCWidth, kRTCHeight)];
-            [self updateFrameOfRemoteView:CGRectMake(0, self.btnContainerView.top - 10 - kMicVideoH, kRTCWidth, kMicVideoH)];
+            [self updateFrameOfRemoteView:CGRectMake(0, 0, kRTCWidth, kRTCHeight)];
+            [self updateFrameOfLocalView:CGRectMake(0, self.btnContainerView.top - 10 - kMicVideoH, kRTCWidth, kMicVideoH)];
         }                completion:^(BOOL finished) {
             [UIView animateWithDuration:1 animations:^{
                 self.topContainerView.transform = CGAffineTransformIdentity;
@@ -1042,7 +1046,7 @@
 - (UIImageView *)ownImageView {
     if (!_ownImageView) {
         _ownImageView = [[UIImageView alloc] init];
-        [_ownImageView setBackgroundColor:[UIColor blackColor]];
+        [_ownImageView setBackgroundColor:[UIColor clearColor]];
         [_ownImageView setUserInteractionEnabled:YES];
         _ownImageView.contentMode = UIViewContentModeScaleAspectFit;
     }
@@ -1306,7 +1310,7 @@
 
             [UIView animateWithDuration:1.0 animations:^{
 //                self.ownImageView.frame = self.frame;
-                [self updateFrameOfLocalView:self.frame];
+                [self updateFrameOfLocalView:CGRectMake(0, self.btnContainerView.top - kMicVideoH - 10, kRTCWidth, kMicVideoH)];
             }];
         } else {
             // 本地和对方都未开始摄像头
@@ -1320,13 +1324,19 @@
     }
 }
 
-- (void)addRemoteUserHeaderImageViewWithUserName:(NSString *)userName {
+- (void)addRemoteUserHeaderImageViewWithUserName:(NSString *)userName andtag:(NSInteger)tag{
 
     NSString *userId = [userName copy];
     QIMRTCHeaderView *headerView = [[QIMRTCHeaderView alloc] initWithinitWithFrame:CGRectMake(_startHeaderX, 0, 65, 65) userId:userId];
     headerView.userInteractionEnabled = YES;
     headerView.rtcHeaderViewDidClickDelegate = self;
-    headerView.tag = self.adverseUser.count - 1;
+    if (tag == 999999) {
+        headerView.tag = self.adverseUser.count - 1;
+    }
+    else
+    {
+        headerView.tag = tag;
+    }
     if (_isRoom) {
         [self.adverseHeaderImageStackView addSubview:headerView];
     }
@@ -1346,7 +1356,7 @@
 
     [self.adverseUser addObject:userName];
     if (showUserHeader) {
-        [self addRemoteUserHeaderImageViewWithUserName:userName];
+        [self addRemoteUserHeaderImageViewWithUserName:userName andtag:999999];
     }
 
     RTCEAGLVideoView *remoteView = [self chooseRemoteVideoViewWithUserName:userName];
@@ -1356,7 +1366,7 @@
 - (UIButton *)changeViewBtn {
     if (!_changeViewBtn) {
         _changeViewBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_changeViewBtn addTarget:self action:@selector(changView:) forControlEvents:UIControlEventTouchUpInside];
+        [_changeViewBtn addTarget:self action:@selector(onToolsViewHidenClick:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _changeViewBtn;
 }
@@ -1366,7 +1376,7 @@
     if (_startX > kRTCWidth) {
         return nil;
     }
-    CGRect frame = CGRectMake(kRTCWidth - _startX - kMicVideoW, 0, kMicVideoW, kMicVideoH);
+    CGRect frame = CGRectMake(0, 0, kRTCWidth, kRTCHeight);//CGRectMake(kRTCWidth - _startX - kMicVideoW, 0, kMicVideoW, kMicVideoH);
     RTCEAGLVideoView *remoteVideoView = [[RTCEAGLVideoView alloc] initWithFrame:frame];
     remoteVideoView.contentMode = UIViewContentModeScaleAspectFit;
     remoteVideoView.tag = kRTCWidth;
@@ -1398,11 +1408,14 @@
             [UIView animateWithDuration:0.1 animations:^{
 
 //                [[QIMWebRTCClient sharedInstance] changeViews];
+//                [self.adverseStackView removeAllSubviews];
                 self.hasChangedView = YES;
             }];
         } else {
             [UIView animateWithDuration:0.1 animations:^{
 //                [[QIMWebRTCClient sharedInstance] resizeViews];
+
+                
                 self.hasChangedView = NO;
             }];
         }
@@ -1428,7 +1441,7 @@
     [self.adverseHeaderImageStackView removeAllSubviews];
     for (NSInteger i = 0; i < self.adverseUser.count; i++) {
         NSString *name = [self.adverseUser objectAtIndex:i];
-        [self addRemoteUserHeaderImageViewWithUserName:name];
+        [self addRemoteUserHeaderImageViewWithUserName:name andtag:i];
     }
     if (self.adverseUser.count) {
         [[QIMWebRTCMeetingClient sharedInstance] addedStreamWithClickUserId:[self.adverseUser objectAtIndex:0]];

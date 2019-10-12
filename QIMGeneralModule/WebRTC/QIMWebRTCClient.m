@@ -389,7 +389,7 @@ static QIMWebRTCClient *instance = nil;
     if (isCaller) {
         [self initRTCSetting];
         // 如果是发起者，创建一个offer信令
-        NSDictionary *dict = @{@"type": @"create",@"time":[NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]};
+        NSDictionary *dict = @{@"type": @"create"};
         NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
         [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"create" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
         __block NSInteger timerCount = 60;
@@ -399,10 +399,11 @@ static QIMWebRTCClient *instance = nil;
                 self.timeOutTimer = nil;
                 [timer invalidate];
                 timer=nil;
-                NSDictionary *dict = @{@"type": @"timeout",@"time":[NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]};
+                NSDictionary *dict = @{@"type": @"timeout"};
                 NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
                 [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"timeout" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
-                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"对方无人接听" WithInfo:nil ToUserId:self.remoteJID WithMsgType:_webRTCType];
+//                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"对方无人接听" WithInfo:nil ToUserId:self.remoteJID WithMsgType:_webRTCType];
+                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"对方无人接听" WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
@@ -626,7 +627,7 @@ static QIMWebRTCClient *instance = nil;
 
 - (void)hangupEvent{
 
-    NSDictionary *dict = @{@"type": @"close",@"time":[NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]};
+    NSDictionary *dict = @{@"type": @"close"};
     NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
 //    [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"close" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
     [self processMessageDict:dict];
@@ -657,7 +658,7 @@ static QIMWebRTCClient *instance = nil;
 }
 
 - (void)acceptAction {
-    NSDictionary *dict = @{@"type": @"pickup",@"time":[NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]};
+    NSDictionary *dict = @{@"type": @"pickup"};
     NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
     [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"pickup" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
     [self.audioPlayer stop];
@@ -724,31 +725,33 @@ static QIMWebRTCClient *instance = nil;
             [self.timeOutTimer invalidate];
             self.timeOutTimer = nil;
             if (self.rtcView.callee && !self.callConnected) {
-                NSDictionary *tempdict = @{@"type": @"deny",@"time":[NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]};
+                NSDictionary *tempdict = @{@"type": @"deny",@"local":@"YES"};
                 NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:tempdict];
                 [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"deny" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
-                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"已拒绝" WithInfo:nil ToUserId:self.remoteJID WithMsgType:_webRTCType];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
-                });
+//                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"已拒绝" WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
+//                dispatch_async(dispatch_get_main_queue(), ^{
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
+//                });
             } else if (!self.rtcView.callee && !self.callConnected) {
-                 NSDictionary *tempdict = @{@"type": @"cancel",@"time":[NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]};
+                NSDictionary *tempdict = @{@"type": @"cancel",@"local":@"YES"};
                 NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:tempdict];
                 [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"cancel" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
-                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"已取消" WithInfo:nil ToUserId:self.remoteJID WithMsgType:_webRTCType];
+                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"已取消" WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
                 });
             }
             else{
-                NSDictionary *tempdict = @{@"type": @"close",@"time":[NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]};
+                NSString * timeStr = [self getTimestamp:self.chatCreatTime time2:[NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]];
+                NSDictionary *tempdict = @{@"type": @"close",@"time":@(([NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]].longLongValue - self.chatCreatTime.longLongValue))};
                 NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:tempdict];
                 [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"close" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
-                NSString * timeStr = [self getTimestamp:self.chatCreatTime time2:[NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]];
-                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:[NSString stringWithFormat:@"通话时长：%@",timeStr] WithInfo:nil ToUserId:self.remoteJID WithMsgType:_webRTCType];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
-                });
+                if (!self.rtcView.callee) {
+                    QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:[NSString stringWithFormat:@"通话时长：%@",timeStr] WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
+                    });
+                }
             }
             if (self.rtcView) {
                 [self.rtcView dismiss];
@@ -770,10 +773,10 @@ static QIMWebRTCClient *instance = nil;
         });
     } else if ([type isEqualToString:@"deny"]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSDictionary *dict = @{@"type": @"deny",@"time":[NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]};
+            NSDictionary *dict = @{@"type": @"deny"};
             NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
             [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"deny" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
-            QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"对方已拒绝" WithInfo:nil ToUserId:self.remoteJID WithMsgType:_webRTCType];
+            QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"对方已拒绝" WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
             });
@@ -793,13 +796,13 @@ static QIMWebRTCClient *instance = nil;
         }
     }
     else if([type isEqualToString:@"cancel"]){
-        NSDictionary *tempdict = @{@"type": @"cancel",@"time":[NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]};
+        NSDictionary *tempdict = @{@"type": @"cancel"};
         NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:tempdict];
         [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"cancel" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
-        QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"对方已取消" WithInfo:nil ToUserId:self.remoteJID WithMsgType:_webRTCType];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
-        });
+//        QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"对方已取消" WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
+//        });
         if (self.rtcView) {
             [self.rtcView dismiss];
             [self cleanCache];
@@ -1086,7 +1089,7 @@ didRemoveIceCandidates:(NSArray<RTCIceCandidate *> *)candidates {
     //format of second
     NSString *str_second = [NSString stringWithFormat:@"%ld",interval%60];
     //format of time
-    NSString *format_time = [NSString stringWithFormat:@"%@分钟%@秒",str_minute,str_second];
+    NSString *format_time = [NSString stringWithFormat:@"%@:%@",str_minute,str_second];
     
     NSLog(@"format_time : %@",format_time);
     
