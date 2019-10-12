@@ -304,19 +304,21 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
     [requestDic setObject:title forKey:@"subject"];
     NSString *systemVersion = [[QIMKit sharedInstance] SystemVersion];
     NSString *appVersion = [[QIMKit sharedInstance] AppBuildVersion];
-    NSString *eventName = [NSString stringWithFormat:@"【SystemVersion:%@】-【AppVersion:%@】", systemVersion, appVersion];
-    if (content.length > 0) {
-        [requestDic setObject:[NSString stringWithFormat:@"%@ ---- %@ ------  %@", eventName, content, logFileUrl ? logFileUrl : @""] forKey:@"body"];
-    } else {
-        [requestDic setObject:logFileUrl forKey:@"body"];
-    }
+    NSMutableDictionary *oldNavConfigUrlDict = [[QIMKit sharedInstance] userObjectForKey:@"QC_CurrentNavDict"];
+    QIMVerboseLog(@"本地找到的oldNavConfigUrlDict : %@", oldNavConfigUrlDict);
+    NSString *platName = @"Startalk";
     if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-        [requestDic setObject:@"qchat" forKey:@"plat"];
+        platName = @"QChat";
     } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
-        [requestDic setObject:@"qtalk" forKey:@"plat"];
+        platName = @"QTalk";
     } else {
-        [requestDic setObject:@"startalk" forKey:@"plat"];
+        platName = @"Startalk";
     }
+    
+    NSString *eventName = [NSString stringWithFormat:@"反馈内容：%@\n平台：QChat\n用户ID：%@\n导航地址: %@\n日志地址 : %@\n设备信息：%@\n设备系统版本：%@\nApp版本:%@", content, [[QIMKit sharedInstance] getLastJid], [oldNavConfigUrlDict objectForKey:QIMNavUrlKey], logFileUrl, [[[QIMKit sharedInstance] deviceName] stringByReplacingOccurrencesOfString:@" " withString:@""], systemVersion, appVersion];
+    
+    [requestDic setObject:eventName forKey:@"body"];
+    [requestDic setObject:[platName lowercaseString] forKey:@"plat"];
     [requestDic setObject:@"日志反馈" forKey:@"alt_body"];
     [requestDic setObject:@"true" forKey:@"is_html"];
     NSData *requestData = [[QIMJSONSerializer sharedInstance] serializeObject:requestDic error:nil];
