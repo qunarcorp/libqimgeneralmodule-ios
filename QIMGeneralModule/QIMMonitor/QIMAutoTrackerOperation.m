@@ -12,6 +12,7 @@
 #import "QIMKitPublicHeader.h"
 #import "QIMJSONSerializer.h"
 #import "QIMDataController.h"
+#import "QIMStringTransformTools.h"
 
 @implementation QIMAutoTrackerOperation
 
@@ -89,7 +90,7 @@
                 NSString *versionName = [[QIMKit sharedInstance] AppVersion];
                 NSString *plat = [QIMKit getQIMProjectTitleName];
                 long long dbSize = [[QIMDataController getInstance] sizeOfDBPath];
-                NSString *dbSizeStr = [[QIMDataController getInstance] transfromTotalSize:dbSize];
+                NSString *dbSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:dbSize];
 
                 [deviceInfo setObject:os forKey:@"os"];
                 [deviceInfo setObject:osBrand forKey:@"osBrand"];

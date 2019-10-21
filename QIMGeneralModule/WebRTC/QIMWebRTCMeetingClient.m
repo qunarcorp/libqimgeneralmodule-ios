@@ -418,7 +418,8 @@ static QIMWebRTCMeetingClient *instance = nil;
         // 1.显示视图
         self.rtcMeetingView = [[QIMRTCView alloc] initWithRoomId:roomId WithRoomName:roomName isJoin:YES];
         self.rtcMeetingView.nickName = roomName;
-        self.rtcMeetingView.headerImage = [[QIMKit sharedInstance] getGroupImageFromLocalByGroupId:self.groupId];
+        //mark by groupHeader
+//        self.rtcMeetingView.headerImage = [[QIMKit sharedInstance] getGroupImageFromLocalByGroupId:self.groupId];
         if ([[QIMKit sharedInstance] getCurrentServerTime] - startTime > 24 * 60 * 60 * 1000) {
             [self.rtcMeetingView showAlertMessage:@"该视频会议房间已经超过一天，不能加入。"];
             return;
