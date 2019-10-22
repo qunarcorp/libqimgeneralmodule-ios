@@ -35,5 +35,5 @@
 
 - (void)addedStreamWithClickUserId:(NSString *)userId;
 
-q
+
 @end

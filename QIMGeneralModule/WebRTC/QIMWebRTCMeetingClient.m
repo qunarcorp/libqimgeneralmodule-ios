@@ -268,11 +268,7 @@ static QIMWebRTCMeetingClient *instance = nil;
 }
 
 - (void)updateICEServers {
-    if (self.httpServer.length <= 0) {
-        self.httpServer = @"https://qtalktv.qunar.com:8443";
-    }
-    if (self.httpServer.length > 0) {
-        NSString *httpUrl = [NSString stringWithFormat:@"%@/getTurnServers?username=%@", self.httpServer, [[[QIMKit sharedInstance] thirdpartKeywithValue] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        NSString *httpUrl = [NSString stringWithFormat:@"%@getTurnServers?username=%@", [[QIMKit sharedInstance] qimNav_VideoUrl], [[[QIMKit sharedInstance] thirdpartKeywithValue] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         NSURL *url = [NSURL URLWithString:httpUrl];
         QIMHTTPRequest *request = [[QIMHTTPRequest alloc] initWithURL:url];
         [QIMHTTPClient sendRequest:request complete:^(QIMHTTPResponse *response) {
@@ -290,7 +286,6 @@ static QIMWebRTCMeetingClient *instance = nil;
         }                  failure:^(NSError *error) {
             
         }];
-    }
 }
 
 - (void)addNotifications {
@@ -878,7 +873,7 @@ static QIMWebRTCMeetingClient *instance = nil;
                 [messageDic setObject:@([[QIMKit sharedInstance] getCurrentServerTime]) forKey:@"startTime"];
                 [messageDic setObject:[mySelf.rtcMeetingView.socketClient getServerAdress] forKey:@"server"];
                 NSString *extendInfo = [[QIMJSONSerializer sharedInstance] serializeObject:messageDic];
-                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"[当前客户端不支持音视频]" WithInfo:extendInfo ToGroupId:mySelf.groupId WithMsgType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
+                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"[当前客户端不支持音视频]" WithInfo:extendInfo ToGroupId:mySelf.groupId WithMsgType:QIMMessageTypeWebRtcMsgTypeVideoGroup];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:mySelf.groupId userInfo:@{@"message": msg}];
                 });
