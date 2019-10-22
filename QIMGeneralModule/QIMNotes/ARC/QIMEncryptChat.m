@@ -389,12 +389,12 @@ NSString *kNoticeTitle = @"Notice";
     switch (encryptState) {
         case QIMEncryptChatStateNone:
         case QIMEncryptChatStateDecrypted: {
-            [self.beginAlert showCustom:[[[[UIApplication sharedApplication] delegate] window] rootViewController] image:[UIImage imageNamed:@"explore_tab_passwordBox"] color:[UIColor qim_colorWithHex:0x22B573 alpha:1.0] title:@"提示" subTitle:@"加密会话操作" closeButtonTitle:nil duration:0.0f];
+            [self.beginAlert showCustom:[[[[UIApplication sharedApplication] delegate] window] rootViewController] image:[UIImage imageNamed:@"explore_tab_passwordBox"] color:[UIColor qim_colorWithHex:0x22B573 alpha:1.0] title:[NSBundle qim_localizedStringForKey:@"Reminder"] subTitle:@"加密会话操作" closeButtonTitle:nil duration:0.0f];
         }
             break;
         case QIMEncryptChatStateEncrypting: {
             //close加密
-            [self.closePwdAlert showWarning:[[[[UIApplication sharedApplication] delegate] window] rootViewController] title:@"提示" subTitle:@"加密会话操作" closeButtonTitle:nil duration:0];
+            [self.closePwdAlert showWarning:[[[[UIApplication sharedApplication] delegate] window] rootViewController] title:[NSBundle qim_localizedStringForKey:@"Reminder"] subTitle:@"加密会话操作" closeButtonTitle:nil duration:0];
         }
             break;
             break;
@@ -412,7 +412,7 @@ NSString *kNoticeTitle = @"Notice";
     QIMNoteModel *encryptPwdBox = [[QIMNoteManager sharedInstance] getEncrptPwdBox];
     if (encryptPwdBox == nil) {
         //本地无加密会话密码箱时，创建
-        [self.createPwdBoxAlert showEdit:[[[[UIApplication sharedApplication] delegate] window] rootViewController] title:@"提示" subTitle:@"       **密码箱能够帮助你存储难记的密码，我们只帮助你记录用主密码加密过的信息。切记，一定要记住你的密码箱的主密码，它是开启密码箱的钥匙，如果丢失了主密码，我们是无能力帮你恢复您记录的数据的。不要遗失您的主密码！！！" closeButtonTitle:nil duration:0];
+        [self.createPwdBoxAlert showEdit:[[[[UIApplication sharedApplication] delegate] window] rootViewController] title:[NSBundle qim_localizedStringForKey:@"Reminder"] subTitle:@"       **密码箱能够帮助你存储难记的密码，我们只帮助你记录用主密码加密过的信息。切记，一定要记住你的密码箱的主密码，它是开启密码箱的钥匙，如果丢失了主密码，我们是无能力帮你恢复您记录的数据的。不要遗失您的主密码！！！" closeButtonTitle:nil duration:0];
     } else {
         
         NSString *encryptBoxPassword = [[QIMNoteManager sharedInstance] getPasswordWithCid:encryptPwdBox.c_id];

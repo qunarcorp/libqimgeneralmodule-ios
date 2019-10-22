@@ -31,8 +31,12 @@ UIKIT_EXTERN NSString *const kHangUpNotification;
  */
 UIKIT_EXTERN NSString *const kAcceptNotification;
 
+UIKIT_EXTERN NSString *const kAcceptMeetingNotification;
+
 // 摄像头切换的通知，接收到该通知时，需要切换摄像头,默认应该是开启前置摄像头
 UIKIT_EXTERN NSString *const kSwitchCameraNotification;
+
+UIKIT_EXTERN NSString *const kSwitchMeetingCameraNotification;
 
 /*  静音按钮事件通知, 静音之后，对方听不到自己这边的任何声音
  object 中的参数：
@@ -40,11 +44,17 @@ UIKIT_EXTERN NSString *const kSwitchCameraNotification;
  */
 UIKIT_EXTERN NSString *const kMuteNotification;
 
+
+UIKIT_EXTERN NSString *const kMuteMeetingNotification;
+
 /* 开启和关闭本地摄像头的事件，需要在收到通知后，开启或者关闭视频采集功能
  示例：@{@"videoCapture":@(YES)}
  */
 UIKIT_EXTERN NSString *const kVideoCaptureNotification;
 
+UIKIT_EXTERN NSString *const kVideoCaptureMeetingNotification;
+
+UIKIT_EXTERN NSString *const kHangUpMeetingNotification;
 @interface QIMRTCNSNotification : NSObject
 
 @end

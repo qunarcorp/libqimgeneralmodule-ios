@@ -29,8 +29,7 @@ Pod::Spec.new do |s|
       webrtc.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMWebRTCEnable=1'}
       webrtc.frameworks = 'VideoToolbox', 'GLKit', 'CoreTelephony', 'AVFoundation', 'UIKit', 'Foundation'
       webrtc.dependency 'SocketRocket'
-
-      webrtc.dependency 'GoogleWebRTC', '1.1.26989'
+      webrtc.dependency 'GoogleWebRTC'
       webrtc.libraries = 'stdc++', 'bz2', 'resolv'
 
   end

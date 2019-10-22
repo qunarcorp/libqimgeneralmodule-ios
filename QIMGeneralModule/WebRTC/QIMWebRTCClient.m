@@ -10,7 +10,6 @@
 #import <CoreTelephony/CTCall.h>
 #import "QIMRTCNSNotification.h"
 #import "QIMWebRTCClient.h"
-
 #import "QIMUUIDTools.h"
 #import "QIMKitPublicHeader.h"
 #import "QIMJSONSerializer.h"
@@ -21,6 +20,10 @@
 #import <WebRTC/WebRTC.h>
 #import "Masonry.h"
 #import "NSBundle+QIMLibrary.h"
+#import "QIMVideoEncoderFactory.h"
+#import "QIMVideoDecoderFactory.h"
+#import "QIMRTCSettingModel.h"
+
 
 @interface QIMWebRTCClient () <RTCPeerConnectionDelegate, RTCVideoViewDelegate>
 
@@ -49,6 +52,11 @@
 
 @property(nonatomic, strong) RTCFileLogger *fileLogger;
 
+@property (nonatomic,strong) NSNumber * chatCreatTime;
+
+@property (nonatomic , weak) NSTimer * timeOutTimer;
+
+@property (nonatomic , assign) BOOL callConnected;
 @end
 
 @implementation QIMWebRTCClient {
@@ -72,6 +80,14 @@ static QIMWebRTCClient *instance = nil;
     return instance;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.callConnected = NO;
+    }
+    return self;
+}
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -96,7 +112,10 @@ static QIMWebRTCClient *instance = nil;
 }
 
 - (void)updateICEServers {
-    NSString *httpUrl = [NSString stringWithFormat:@"https://qim.qunar.com/rtc/index.php?username=%@", [[[QIMKit sharedInstance] thirdpartKeywithValue] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    
+    
+//    NSString *httpUrl = [NSString stringWithFormat:@"https://qim.qunar.com/rtc/index.php?username=%@", [[[QIMKit sharedInstance] thirdpartKeywithValue] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+     NSString *httpUrl = [NSString stringWithFormat:@"%@rtc?username=%@",[[QIMKit sharedInstance] qimNav_VideoUrl] , [[[QIMKit sharedInstance] thirdpartKeywithValue] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     NSURL *url = [NSURL URLWithString:httpUrl];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
     [request startSynchronous];
@@ -284,10 +303,29 @@ static QIMWebRTCClient *instance = nil;
 }
 
 - (void)startEngine {
-    RTCDefaultVideoDecoderFactory *decoderFactory = [[RTCDefaultVideoDecoderFactory alloc] init];
-    RTCDefaultVideoEncoderFactory *encoderFactory = [[RTCDefaultVideoEncoderFactory alloc] init];
-    self.peerConnectionFactory = [[RTCPeerConnectionFactory alloc] initWithEncoderFactory:encoderFactory decoderFactory:decoderFactory];
 
+    
+//    RTCVideoDecoderFactoryH264 *decoderFactory = [[RTCVideoDecoderFactoryH264 alloc] init];
+//    RTCVideoEncoderFactoryH264 *encoderFactory = [[RTCVideoEncoderFactoryH264 alloc] init];
+    
+    RTCDefaultVideoDecoderFactory * decoderFactory = [[RTCDefaultVideoDecoderFactory alloc] init];
+    RTCDefaultVideoEncoderFactory * encoderFactory = [[RTCDefaultVideoEncoderFactory alloc] init];
+    
+//    QIMVideoEncoderFactory * encoderFactory = [[QIMVideoEncoderFactory alloc]init];
+//    QIMVideoDecoderFactory * decoderFactory = [[QIMVideoDecoderFactory alloc]init];
+    QIMRTCSettingModel * model = [[QIMRTCSettingModel alloc]init];
+//    [encoderFactory setPreferredCodec:[model currentVideoCodecSettingFromStore]];
+//    RTCVideoEncoderFactoryH264 * encoderFactory = [[RTCVideoEncoderFactoryH264 alloc] init];
+//    RTCVideoDecoderFactoryH264 * decoderFactory = [[RTCVideoDecoderFactoryH264 alloc] init];
+    NSArray * array = [encoderFactory supportedCodecs];
+    
+    for (RTCVideoCodecInfo * info in array) {
+        NSLog(@"%@",info);
+    }
+    
+//    [encoderFactory setPreferredCodec:array[1]];
+    self.peerConnectionFactory = [[RTCPeerConnectionFactory alloc] initWithEncoderFactory:encoderFactory decoderFactory:decoderFactory];
+//    self.peerConnectionFactory = [[RTCPeerConnectionFactory alloc]init];
 
     self.pcConstraints = [self defaultAnswerConstraints];
     self.sdpConstraints = [self defaultOfferConstraints];
@@ -302,7 +340,16 @@ static QIMWebRTCClient *instance = nil;
     //创建PeerConnection
     RTCMediaConstraints *optionalConstraints = [self defaultPeerConnectionConstraints];
     RTCConfiguration *config = [[RTCConfiguration alloc] init];
-    config.iceServers = _ICEServers;
+    [config setIceServers:self.ICEServers];
+    [config setIceTransportPolicy:RTCIceTransportPolicyRelay];
+//    [config setRtcpMuxPolicy:RTCRtcpMuxPolicyRequire];
+    [config setTcpCandidatePolicy:RTCTcpCandidatePolicyEnabled];
+    [config setRtcpMuxPolicy:RTCRtcpMuxPolicyNegotiate];
+    [config setBundlePolicy:RTCBundlePolicyMaxBundle];
+    [config setContinualGatheringPolicy:RTCContinualGatheringPolicyGatherContinually];
+    [config setKeyType:RTCEncryptionKeyTypeECDSA];
+//    [config setCandidateNetworkPolicy:RTCCandidateNetworkPolicyAll];
+//    config.iceServers = _ICEServers;
     self.peerConnection = [self.peerConnectionFactory peerConnectionWithConfiguration:config constraints:optionalConstraints delegate:self];
 }
 
@@ -340,15 +387,39 @@ static QIMWebRTCClient *instance = nil;
 
     // 4.监听系统电话
     [self listenSystemCall];
-
+    _webRTCType = QIMMessageType_WebRTC_Vedio;
     // 5.做RTC必要设置
     if (isCaller) {
         [self initRTCSetting];
         // 如果是发起者，创建一个offer信令
-        QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"[当前客户端不支持音视频]" WithInfo:nil ToUserId:self.remoteJID WithMsgType:QIMWebRTC_MsgType_Video];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
-        });
+        NSDictionary *dict = @{@"type": @"create"};
+        NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
+        [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"create" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
+        __block NSInteger timerCount = 60;
+        self.timeOutTimer = [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+            if (timerCount<=0) {
+                [self.timeOutTimer invalidate];
+                self.timeOutTimer = nil;
+                [timer invalidate];
+                timer=nil;
+                NSDictionary *dict = @{@"type": @"timeout"};
+                NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
+                [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"timeout" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
+//                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"对方无人接听" WithInfo:nil ToUserId:self.remoteJID WithMsgType:_webRTCType];
+                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"对方无人接听" WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
+                });
+            }
+            timerCount --;
+        }];
+        [self.timeOutTimer fireDate];
+//        QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"[当前客户端不支持音视频]" WithInfo:nil ToUserId:self.remoteJID WithMsgType:QIMMessageType_WebRTC_Vedio];
+        self.chatCreatTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
+//        });
     } else {
         // 如果是接收者，就要处理信令信息，创建一个answer
         QIMVerboseLog(@"如果是接收者，就要处理信令信息");
@@ -406,7 +477,9 @@ static QIMWebRTCClient *instance = nil;
 
     // 4.取消系统电话监听
     self.callCenter = nil;
-
+    self.callConnected = NO;
+    [self.timeOutTimer invalidate];
+    self.timeOutTimer = nil;
     _peerConnection = nil;
     _localVideoTrack = nil;
     _remoteVideoTrack = nil;
@@ -458,7 +531,6 @@ static QIMWebRTCClient *instance = nil;
 
     if (self.rtcView.isRemoteVideoFront) {
         dispatch_async(dispatch_get_main_queue(), ^{
-
             [self.rtcView.masterView removeAllSubviews];
             [self.rtcView.otherView removeAllSubviews];
             [self.rtcView.masterView addSubview:self.localVideoView];
@@ -468,10 +540,8 @@ static QIMWebRTCClient *instance = nil;
         });
     } else {
         dispatch_async(dispatch_get_main_queue(), ^{
-
             [self.rtcView.masterView removeAllSubviews];
             [self.rtcView.otherView removeAllSubviews];
-
             [self.rtcView.masterView addSubview:self.remoteVideoView];
             [self.rtcView.otherView addSubview:self.localVideoView];
             [self updateMakeConstraints];
@@ -558,10 +628,11 @@ static QIMWebRTCClient *instance = nil;
     return sdp;
 }
 
-- (void)hangupEvent {
+- (void)hangupEvent{
+
     NSDictionary *dict = @{@"type": @"close"};
     NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
-    [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"close" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
+//    [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"close" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
     [self processMessageDict:dict];
 }
 
@@ -571,20 +642,31 @@ static QIMWebRTCClient *instance = nil;
         NSDictionary *dict = [notification userInfo];
         NSString *extendInfo = [dict objectForKey:@"extendInfo"];
         NSString *resource = [dict objectForKey:@"resource"];
+        NSNumber * carbonMessage = [dict objectForKey:@"carbonMessage"];
         if (self.remoteResource.length <= 0) {
             self.remoteResource = resource;
         }
         QIMVerboseLog(@"===========音视频信息=========\r receiveAudioVideoMsgNotify extendInfo %@", extendInfo);
         NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:extendInfo error:nil];
-        [self processMessageDict:infoDic];
+        NSMutableDictionary * myInfoDic = [NSMutableDictionary dictionary];
+        if (carbonMessage && carbonMessage.boolValue == true) {
+            [myInfoDic setObject:carbonMessage forKey:@"carbonMessage"];
+            [myInfoDic addEntriesFromDictionary:infoDic];
+            [self processMessageDict:myInfoDic];
+        }
+        else{
+            [self processMessageDict:infoDic];
+        }
     }
 }
 
 - (void)acceptAction {
+    NSDictionary *dict = @{@"type": @"pickup"};
+    NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
+    [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"pickup" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
     [self.audioPlayer stop];
-
     [self initRTCSetting];
-
+    self.callConnected = YES;
     __weak QIMWebRTCClient *weakSelf = self;
     [self.peerConnection offerForConstraints:self.sdpConstraints completionHandler:^(RTCSessionDescription *_Nullable sdp, NSError *_Nullable error) {
         QIMWebRTCClient *strongSelf = weakSelf;
@@ -594,7 +676,14 @@ static QIMWebRTCClient *instance = nil;
 
 - (void)processMessageDict:(NSDictionary *)dict {
     NSString *type = dict[@"type"];
+    NSNumber * carbonMessage = [dict objectForKey:@"carbonMessage"];
     dict = dict[@"payload"];
+    if (carbonMessage && carbonMessage == true && ![type isEqualToString:@"pickup"]) {
+        return;
+    }
+    if ([type isEqualToString:@"create"]){
+        self.chatCreatTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
+    }
     if ([type isEqualToString:@"offer"]) {
         NSString *sdpStr = dict[@"sdp"];
         sdpStr = [self getLocalSDPByRemoteSDP:sdpStr];
@@ -604,7 +693,7 @@ static QIMWebRTCClient *instance = nil;
             RTCLogError(@"processMessageDict setRemoteDescription Error : %@", error);
             [weakSelf peerConnection:[weakSelf peerConnection] didSetSessionDescriptionWithError:error];
         }];
-
+//
         // 2.将音乐停止
         if ([_audioPlayer isPlaying]) {
             [_audioPlayer stop];
@@ -619,6 +708,9 @@ static QIMWebRTCClient *instance = nil;
             QIMVerboseLog(@"setRemoteSDP : %@", remoteSdp);
             [mySelf peerConnection:[mySelf peerConnection] didSetSessionDescriptionWithError:error];
         }];
+        [self.timeOutTimer invalidate];
+        self.timeOutTimer = nil;
+        self.callConnected = YES;
     } else if ([type isEqualToString:@"candidate"]) {
         NSString *mid = [dict objectForKey:@"id"];
         NSNumber *sdpLineIndex = [dict objectForKey:@"label"];
@@ -631,27 +723,93 @@ static QIMWebRTCClient *instance = nil;
             QIMVerboseLog(@"");
         }
     } else if ([type isEqualToString:@"close"]) {
+        
         dispatch_async(dispatch_get_main_queue(), ^{
+            [self.timeOutTimer invalidate];
+            self.timeOutTimer = nil;
+            if (self.rtcView.callee && !self.callConnected) {
+                NSDictionary *tempdict = @{@"type": @"deny",@"local":@"YES"};
+                NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:tempdict];
+                [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"deny" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
+//                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"已拒绝" WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
+//                dispatch_async(dispatch_get_main_queue(), ^{
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
+//                });
+            } else if (!self.rtcView.callee && !self.callConnected) {
+                NSDictionary *tempdict = @{@"type": @"cancel",@"local":@"YES"};
+                NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:tempdict];
+                [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"cancel" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
+                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"已取消" WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
+                });
+            }
+            else{
+                NSString * timeStr = [self getTimestamp:self.chatCreatTime time2:[NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]];
+                NSDictionary *tempdict = @{@"type": @"close",@"time":@(([NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]].longLongValue - self.chatCreatTime.longLongValue))};
+                NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:tempdict];
+                [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"close" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
+                if (!self.rtcView.callee) {
+                    QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:[NSString stringWithFormat:@"通话时长：%@",timeStr] WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
+                    });
+                }
+            }
             if (self.rtcView) {
                 [self.rtcView dismiss];
                 [self cleanCache];
             }
         });
     } else if ([type isEqualToString:@"busy"]) {
-
+//        NSDictionary *dict = @{@"type": @"busy",@"time":[NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]};
+//        NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
+//        [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"busy" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            if (self.rtcView) {
+//                [self.rtcView dismiss];
+//                [self cleanCache];
+//            }
+//        });
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (self.rtcView) {
-                [self.rtcView dismiss];
-                [self cleanCache];
-            }
+            [[[UIAlertView alloc]initWithTitle:@"提示" message:@"对方正忙，请稍后重试" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
         });
     } else if ([type isEqualToString:@"deny"]) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSDictionary *dict = @{@"type": @"deny"};
+            NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
+            [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"deny" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
+            QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"对方已拒绝" WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
+            });
             if (self.rtcView) {
                 [self.rtcView dismiss];
                 [self cleanCache];
             }
         });
+    }
+    else if ([type isEqualToString:@"pickup"]) {
+        self.callConnected = YES;
+        if (carbonMessage.boolValue==true && carbonMessage!=nil) {
+            if (self.rtcView) {
+                [self.rtcView dismiss];
+                [self cleanCache];
+            }
+        }
+    }
+    else if([type isEqualToString:@"cancel"]){
+        NSDictionary *tempdict = @{@"type": @"cancel"};
+        NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:tempdict];
+        [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"cancel" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
+//        QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"对方已取消" WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
+//        });
+        if (self.rtcView) {
+            [self.rtcView dismiss];
+            [self cleanCache];
+        }
     }
 }
 
@@ -725,6 +883,7 @@ didStartReceivingOnTransceiver:(RTCRtpTransceiver *)transceiver {
 - (void)peerConnection:(RTCPeerConnection *)peerConnection
 didChangeIceConnectionState:(RTCIceConnectionState)newState {
     QIMVerboseLog(@"ICE state changed: %ld", (long) newState);
+//    QIMVerboseLog(@"peerConnection %@",pee)
     switch (newState) {
         case RTCIceConnectionStateNew: {
             QIMVerboseLog(@"newState = RTCICEConnectionNew");
@@ -847,8 +1006,7 @@ didRemoveIceCandidates:(NSArray<RTCIceCandidate *> *)candidates {
 #pragma mark - RTCSessionDescriptionDelegate
 
 // Called when creating a session.
-- (void)     peerConnection:(RTCPeerConnection *)peerConnection
-didCreateSessionDescription:(RTCSessionDescription *)sdp
+- (void)peerConnection:(RTCPeerConnection *)peerConnection didCreateSessionDescription:(RTCSessionDescription *)sdp
                       error:(NSError *)error {
     if (error) {
         QIMVerboseLog(@"创建SessionDescription 失败 : %@", error);
@@ -921,6 +1079,25 @@ didCreateSessionDescription:(RTCSessionDescription *)sdp
     }];
     [self.remoteVideoTrack addRenderer:self.remoteVideoView];
     self.localVideoView.captureSession = self.capturer.captureSession;
+}
+
+
+
+- (NSString *)getTimestamp:(NSNumber*)time1 time2:(NSNumber *)time2{
+    
+    NSInteger interval    =time2.integerValue - time1.integerValue;
+    
+    //format of minute
+    NSString *str_minute = [NSString stringWithFormat:@"%ld",interval/60];
+    //format of second
+    NSString *str_second = [NSString stringWithFormat:@"%ld",interval%60];
+    //format of time
+    NSString *format_time = [NSString stringWithFormat:@"%@:%@",str_minute,str_second];
+    
+    NSLog(@"format_time : %@",format_time);
+    
+    return format_time;
+    
 }
 
 @end
