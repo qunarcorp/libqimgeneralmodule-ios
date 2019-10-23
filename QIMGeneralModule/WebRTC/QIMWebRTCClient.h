@@ -32,4 +32,6 @@
 
 - (void)changeViews;
 
+- (void)callBusy;
+
 @end
