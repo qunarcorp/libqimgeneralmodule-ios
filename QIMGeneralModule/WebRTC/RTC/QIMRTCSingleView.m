@@ -286,7 +286,7 @@
     [self addGestureRecognizer:self.toolsGenTap];
 
     //主视频窗口
-    self.masterView.frame = self.frame;
+    self.masterView.frame = CGRectMake(0,80, self.frame.size.width, self.frame.size.height - 80  - 100);//self.frame;
     self.masterView.backgroundColor = [UIColor clearColor];
     [self addSubview:self.masterView];
 

@@ -688,11 +688,6 @@ static QIMWebRTCClient *instance = nil;
     }
     if ([type isEqualToString:@"create"]){
         self.chatCreatTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
-        if (self.rtcView) {
-            NSDictionary *dict = @{@"type": @"busy",@"time":[NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]};
-            NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
-            [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"busy" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
-        }
     }
     if ([type isEqualToString:@"offer"]) {
         NSString *sdpStr = dict[@"sdp"];
@@ -776,14 +771,9 @@ static QIMWebRTCClient *instance = nil;
 //        NSDictionary *dict = @{@"type": @"busy",@"time":[NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]};
 //        NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
 //        [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"busy" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (self.rtcView) {
-                [self.rtcView dismiss];
-                [self cleanCache];
-            }
-        });
+        
 //        if (self.rtcView.callee) {
-            [[[UIAlertView alloc]initWithTitle:@"提示" message:@"对方正忙，请稍后重试" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+        
 //        dispatch_async(dispatch_get_main_queue(), ^{
 //            if (self.rtcView) {
 //                [self.rtcView dismiss];
@@ -885,7 +875,15 @@ static QIMWebRTCClient *instance = nil;
     NSDictionary *dict = @{@"type": @"busy"};
     NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
     [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"busy" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.rtcView) {
+            [self.rtcView dismiss];
+            [self cleanCache];
+        }
+    });
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[[UIAlertView alloc]initWithTitle:@"提示" message:@"对方正忙，请稍后重试" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+    });
 }
 
 // Triggered when a remote peer close a stream.
@@ -1121,9 +1119,24 @@ didRemoveIceCandidates:(NSArray<RTCIceCandidate *> *)candidates {
     NSInteger interval    =time2.integerValue - time1.integerValue;
     
     //format of minute
-    NSString *str_minute = [NSString stringWithFormat:@"%ld",interval/60];
+    NSString *str_minute = @"";
+    if (interval/60 < 10) {
+        str_minute = [NSString stringWithFormat:@"0%ld",interval/60];
+    }
+    else{
+       str_minute = [NSString stringWithFormat:@"%ld",interval/60];
+    }
+    
     //format of second
-    NSString *str_second = [NSString stringWithFormat:@"%ld",interval%60];
+    NSString *str_second = @"";
+    if (interval%60 < 10) {
+        str_second = [NSString stringWithFormat:@"0%ld",interval%60];
+    }
+    else
+    {
+        str_second = [NSString stringWithFormat:@"%ld",interval%60];
+    }
+    
     //format of time
     NSString *format_time = [NSString stringWithFormat:@"%@:%@",str_minute,str_second];
     
