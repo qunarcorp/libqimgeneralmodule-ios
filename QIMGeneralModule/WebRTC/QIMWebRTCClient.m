@@ -406,7 +406,8 @@ static QIMWebRTCClient *instance = nil;
                 NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
                 [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"timeout" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
 //                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"对方无人接听" WithInfo:nil ToUserId:self.remoteJID WithMsgType:_webRTCType];
-                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"对方无人接听" WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
+                
+                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:[NSBundle qim_localizedStringForKey:@"atom_rtc_video_no_answer"] WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
@@ -745,7 +746,8 @@ static QIMWebRTCClient *instance = nil;
                 NSDictionary *tempdict = @{@"type": @"cancel",@"local":@"YES"};
                 NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:tempdict];
                 [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"cancel" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
-                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"已取消" WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
+                
+                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:[NSBundle qim_localizedStringForKey:@"atom_rtc_canceled"] WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
                 });
@@ -756,7 +758,8 @@ static QIMWebRTCClient *instance = nil;
                 NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:tempdict];
                 [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"close" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
                 if (!self.rtcView.callee) {
-                    QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:[NSString stringWithFormat:@"通话时长：%@",timeStr] WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
+                    
+                    QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"atom_rtc_duration"],timeStr] WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
                     });
@@ -789,7 +792,8 @@ static QIMWebRTCClient *instance = nil;
             if (self.rtcView) {
                 NSString *extentInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
                 [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"deny" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
-                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"对方已拒绝" WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
+                
+                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:[NSBundle qim_localizedStringForKey:@"atom_rtc_deny_other"] WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
                 });
