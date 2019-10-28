@@ -179,8 +179,7 @@ NSString *NSStringFromWebRTCRoomEvent(WebRTCRoomEvent value) {
 - (void)updateSocketHost {
 
     NSString *remoteKey = [[QIMKit sharedInstance] thirdpartKeywithValue];
-    NSString *url = [NSString stringWithFormat:@"%@?action=conference&method=get_servers&username=%@", [[QIMKit sharedInstance] qimNav_Group_room_host], remoteKey];
-
+    NSString * url = [NSString stringWithFormat:@"%@rtc?action=conference&method=get_servers&username=%@",[[QIMKit sharedInstance]qimNav_VideoUrl],remoteKey];
     QIMHTTPRequest *request = [[QIMHTTPRequest alloc] initWithURL:[NSURL URLWithString:url]];
     [QIMHTTPClient sendRequest:request complete:^(QIMHTTPResponse *response) {
         if (response.code == 200) {

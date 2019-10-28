@@ -22,6 +22,7 @@
 
 #import <WebRTC/WebRTC.h>
 #import "Masonry.h"
+#import "QIMKit+QIMGroup.h"
 
 @interface QIMWebRTCMeetingClient () <QIMWebRTCSocketClientDelegate, RTCPeerConnectionDelegate /*,RTCSessionDescriptionDelegate*/, RTCVideoViewDelegate> {
     RTCConfiguration *_configuration;
@@ -215,6 +216,15 @@ static QIMWebRTCMeetingClient *instance = nil;
     if (_localVideoTrack) {
         [self.localPeerConnection addTrack:_localVideoTrack streamIds:@[kARDMediaStreamId]];
     }
+//    RTCMediaStream * stream = [_peerConnectionFactory mediaStreamWithStreamId:kARDMediaStreamId];
+//
+//    [self.roomMemberStreams setObject:stream forKey:@"kaiming.zhang@ejabhost1"];
+//    RTCVideoTrack *videoTrack = stream.videoTracks[0];
+//    [self.remoteVideoTrackDic setObject:videoTrack forKey:@"kaiming.zhang@ejabhost1"];
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        RTCEAGLVideoView *remoteVideoView = [self.rtcMeetingView addRemoteVideoViewWithUserName:@"kaiming.zhang@ejabhost1" WithUserHeader:YES];
+//        [videoTrack addRenderer:remoteVideoView];
+//    });
 }
 
 - (RTCMediaConstraints *)defaultMediaAudioConstraints {
@@ -258,11 +268,7 @@ static QIMWebRTCMeetingClient *instance = nil;
 }
 
 - (void)updateICEServers {
-    if (self.httpServer.length <= 0) {
-        self.httpServer = @"https://qtalktv5.vc.cn6.qunar.com:8443";
-    }
-    if (self.httpServer.length > 0) {
-        NSString *httpUrl = [NSString stringWithFormat:@"%@/getTurnServers?username=%@", self.httpServer, [[[QIMKit sharedInstance] thirdpartKeywithValue] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        NSString *httpUrl = [NSString stringWithFormat:@"%@getTurnServers?username=%@", [[QIMKit sharedInstance] qimNav_VideoUrl], [[[QIMKit sharedInstance] thirdpartKeywithValue] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         NSURL *url = [NSURL URLWithString:httpUrl];
         QIMHTTPRequest *request = [[QIMHTTPRequest alloc] initWithURL:url];
         [QIMHTTPClient sendRequest:request complete:^(QIMHTTPResponse *response) {
@@ -278,16 +284,15 @@ static QIMWebRTCMeetingClient *instance = nil;
                 }
             }
         }                  failure:^(NSError *error) {
-
+            
         }];
-    }
 }
 
 - (void)addNotifications {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hangupEvent) name:kHangUpNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(switchCamera) name:kSwitchCameraNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(muteButton:) name:kMuteNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoMuteButton:) name:kVideoCaptureNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hangupEvent) name:kHangUpMeetingNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(switchCamera) name:kSwitchMeetingCameraNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(muteButton:) name:kMuteMeetingNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoMuteButton:) name:kVideoCaptureMeetingNotification object:nil];
 }
 
 
@@ -388,6 +393,7 @@ static QIMWebRTCMeetingClient *instance = nil;
 
     if (message) {
         NSString *roomId = [message objectForKey:@"roomName"];
+        
         NSString *roomName = [message objectForKey:@"topic"];
         NSString *navServer = [message objectForKey:@"navServ"];
         NSString *httpServer = [message objectForKey:@"server"];
@@ -395,7 +401,10 @@ static QIMWebRTCMeetingClient *instance = nil;
         self.httpServer = httpServer;
         long long startTime = [[message objectForKey:@"startTime"] longLongValue];
         _createRoom = NO;
-
+        NSDictionary * dic =  [[QIMKit sharedInstance] getGroupCardByGroupId:roomId];
+        if (dic && dic.count > 0) {
+            roomName = dic[@"Name"];
+        }
         self.roomName = roomName;
         self.roomId = roomId;
         // 更新ICE Servers
@@ -482,7 +491,12 @@ static QIMWebRTCMeetingClient *instance = nil;
     self.roomMembers = [NSMutableArray array];
     self.peerConnectionCanDic = [NSMutableDictionary dictionary];
     [self initRTCSetting];
-
+    if (!self.navServer || !self.httpServer) {
+        [self.rtcMeetingView.socketClient updateSocketHost];
+    } else {
+        [self.rtcMeetingView.socketClient setNavServerAddress:self.navServer];
+        [self.rtcMeetingView.socketClient setHttpsServerAddress:self.httpServer];
+    }
     [self.rtcMeetingView.socketClient connectWebRTCRoomServer];
 }
 
@@ -634,6 +648,7 @@ static QIMWebRTCMeetingClient *instance = nil;
             dispatch_async(dispatch_get_main_queue(), ^{
                 RTCEAGLVideoView *remoteVideoView = [self.rtcMeetingView chooseRemoteVideoViewWithUserName:userId];
                 [videoTrack addRenderer:remoteVideoView];
+//                [_localVideoTrack addRenderer:videoTrack];
             });
         }
     }
@@ -858,7 +873,7 @@ static QIMWebRTCMeetingClient *instance = nil;
                 [messageDic setObject:@([[QIMKit sharedInstance] getCurrentServerTime]) forKey:@"startTime"];
                 [messageDic setObject:[mySelf.rtcMeetingView.socketClient getServerAdress] forKey:@"server"];
                 NSString *extendInfo = [[QIMJSONSerializer sharedInstance] serializeObject:messageDic];
-                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"[当前客户端不支持音视频]" WithInfo:extendInfo ToGroupId:mySelf.groupId WithMsgType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
+                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"[当前客户端不支持音视频]" WithInfo:extendInfo ToGroupId:mySelf.groupId WithMsgType:QIMMessageTypeWebRtcMsgTypeVideoGroup];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:mySelf.groupId userInfo:@{@"message": msg}];
                 });
@@ -1091,6 +1106,19 @@ static QIMWebRTCMeetingClient *instance = nil;
             [self.rtcMeetingView updateVideoView];
         });
     }
+}
+
+-(void)changeView{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.rtcMeetingView.ownImageView removeAllSubviews];
+
+//        [self.rtcView.masterView removeAllSubviews];
+//        [self.rtcView.otherView removeAllSubviews];
+//        [self.rtcView.masterView addSubview:self.localVideoView];
+//        [self.rtcView.otherView addSubview:self.remoteVideoView];
+//        [self updateMakeConstraints];
+//        self.rtcView.isRemoteVideoFront = NO;
+    });
 }
 
 @end
