@@ -10,7 +10,7 @@
 #import "QIMRTCViewController.h"
 #import "UIView+QIMExtension.h"
 #import "NSBundle+QIMLibrary.h"
-
+#import "UIApplication+QIMApplication.h"
 
 #define kRTCWidth       [UIScreen mainScreen].bounds.size.width
 #define kRTCHeight      [UIScreen mainScreen].bounds.size.height
@@ -473,7 +473,8 @@
     [self.rootRTCViewController.view addSubview:self];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:self.rootRTCViewController];
     [[UIApplication sharedApplication].keyWindow.layer addAnimation:animation forKey:@"animation"];
-    [[[UIApplication sharedApplication].keyWindow rootViewController] presentViewController:nav animated:NO completion:nil];
+//    [[[UIApplication sharedApplication].keyWindow rootViewController] presentViewController:nav animated:NO completion:nil];
+    [[[UIApplication sharedApplication] visibleNavigationController] presentViewController:nav animated:NO completion:nil];
 
     [UIView animateWithDuration:0.5 animations:^{
         self.alpha = 1;
@@ -1462,7 +1463,8 @@
     }];
     [alertVc addAction:cancelAction];
     [alertVc addAction:okAction];
-    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertVc animated:YES completion:nil];
+//    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertVc animated:YES completion:nil];
+    [[[UIApplication sharedApplication] visibleNavigationController] presentViewController:alertVc animated:NO completion:nil];
 }
 
 - (void)setContectText:(NSString *)text {
