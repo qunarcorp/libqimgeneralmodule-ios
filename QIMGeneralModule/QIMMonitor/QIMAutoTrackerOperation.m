@@ -88,8 +88,13 @@
                 NSString *versionCode = [[QIMKit sharedInstance] AppBuildVersion];
                 NSString *versionName = [[QIMKit sharedInstance] AppVersion];
                 NSString *plat = [QIMKit getQIMProjectTitleName];
+                
                 long long dbSize = [[QIMDataController getInstance] sizeOfDBPath];
+                long long dbWalSize = [[QIMDataController getInstance] sizeOfDBWALPath];
                 NSString *dbSizeStr = [[QIMDataController getInstance] transfromTotalSize:dbSize];
+                NSString *dbWalSizeStr = [[QIMDataController getInstance] transfromTotalSize:dbWalSize];
+                
+                NSString *allDBSize = [NSString stringWithFormat:@"DBDataSize : %@, DBDataWalSize : %@", dbSizeStr, dbWalSizeStr];
 
                 [deviceInfo setObject:os forKey:@"os"];
                 [deviceInfo setObject:osBrand forKey:@"osBrand"];
@@ -98,7 +103,7 @@
                 [deviceInfo setObject:versionCode forKey:@"versionCode"];
                 [deviceInfo setObject:versionName forKey:@"versionName"];
                 [deviceInfo setObject:plat forKey:@"plat"];
-                [deviceInfo setObject:dbSizeStr ? dbSizeStr : @"" forKey:@"DBSize"];
+                [deviceInfo setObject:allDBSize ? allDBSize : @"" forKey:@"DBSize"];
 
                 [result setObject:deviceInfo forKey:@"device"];
 
