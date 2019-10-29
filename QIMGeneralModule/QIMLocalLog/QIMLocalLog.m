@@ -315,7 +315,7 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
         platName = @"Startalk";
     }
     
-    NSString *eventName = [NSString stringWithFormat:@"反馈内容：%@\n平台：QChat\n用户ID：%@\n导航地址: %@\n日志地址 : %@\n设备信息：%@\n设备系统版本：%@\nApp版本:%@", content, [[QIMKit sharedInstance] getLastJid], [oldNavConfigUrlDict objectForKey:QIMNavUrlKey], logFileUrl, [[[QIMKit sharedInstance] deviceName] stringByReplacingOccurrencesOfString:@" " withString:@""], systemVersion, appVersion];
+    NSString *eventName = [NSString stringWithFormat:@"反馈内容：%@\n平台：%@\n用户ID：%@\n导航地址: %@\n日志地址 : %@\n设备信息：%@\n设备系统版本：%@\nApp版本:%@", content, platName, [[QIMKit sharedInstance] getLastJid], [oldNavConfigUrlDict objectForKey:QIMNavUrlKey], logFileUrl, [[[QIMKit sharedInstance] deviceName] stringByReplacingOccurrencesOfString:@" " withString:@""], systemVersion, appVersion];
     
     [requestDic setObject:eventName forKey:@"body"];
     [requestDic setObject:[platName lowercaseString] forKey:@"plat"];
