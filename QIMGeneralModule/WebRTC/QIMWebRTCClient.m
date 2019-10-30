@@ -57,6 +57,8 @@
 @property (nonatomic , weak) NSTimer * timeOutTimer;
 
 @property (nonatomic , assign) BOOL callConnected;
+
+@property (nonatomic , assign) BOOL isVideo;
 @end
 
 @implementation QIMWebRTCClient {
@@ -85,6 +87,7 @@ static QIMWebRTCClient *instance = nil;
     self = [super init];
     if (self) {
         self.callConnected = NO;
+        self.isVideo = YES;
     }
     return self;
 }
@@ -290,15 +293,17 @@ static QIMWebRTCClient *instance = nil;
     RTCAudioTrack *track = [_peerConnectionFactory audioTrackWithSource:source
                                                                 trackId:kARDAudioTrackId];
     [_peerConnection addTrack:track streamIds:@[kARDMediaStreamId]];
-    _localVideoTrack = [self createLocalVideoTrack];
-    if (_localVideoTrack) {
-        [_peerConnection addTrack:_localVideoTrack streamIds:@[kARDMediaStreamId]];
-        // We can set up rendering for the remote track right away since the transceiver already has an
-        // RTCRtpReceiver with a track. The track will automatically get unmuted and produce frames
-        // once RTP is received.
-//        RTCVideoTrack *track = (RTCVideoTrack *)([self videoTransceiver].receiver.track);
-        //        [_delegate appClient:self didReceiveRemoteVideoTrack:track];
-//        [self didReceiveRemoteVideoTrack:track];
+    if (self.isVideo) {
+        _localVideoTrack = [self createLocalVideoTrack];
+        if (_localVideoTrack) {
+            [_peerConnection addTrack:_localVideoTrack streamIds:@[kARDMediaStreamId]];
+            // We can set up rendering for the remote track right away since the transceiver already has an
+            // RTCRtpReceiver with a track. The track will automatically get unmuted and produce frames
+            // once RTP is received.
+            //        RTCVideoTrack *track = (RTCVideoTrack *)([self videoTransceiver].receiver.track);
+            //                [_delegate appClient:self didReceiveRemoteVideoTrack:track];
+            //        [self didReceiveRemoteVideoTrack:track];
+        }
     }
 }
 
@@ -367,6 +372,7 @@ static QIMWebRTCClient *instance = nil;
 - (void)showRTCViewByXmppId:(NSString *)remoteJid isVideo:(BOOL)isVideo isCaller:(BOOL)isCaller {
 
     // 1.显示视图
+    self.isVideo = isVideo;
     self.rtcView = [[QIMRTCSingleView alloc] initWithWithXmppId:remoteJid IsVideo:isVideo isCallee:!isCaller];
     [self.rtcView show];
     [self.rtcView updateRemoteUserInfoWithXmppId:remoteJid];
@@ -387,7 +393,13 @@ static QIMWebRTCClient *instance = nil;
 
     // 4.监听系统电话
     [self listenSystemCall];
-    _webRTCType = QIMMessageType_WebRTC_Vedio;
+    if (isVideo) {
+        _webRTCType = QIMMessageType_WebRTC_Vedio;
+    }
+    else
+    {
+        _webRTCType = QIMMessageType_WebRTC_Audio;
+    }
     // 5.做RTC必要设置
     if (isCaller) {
         [self initRTCSetting];
@@ -407,7 +419,7 @@ static QIMWebRTCClient *instance = nil;
                 [[QIMKit sharedInstance] sendAudioVideoWithType:_webRTCType WithBody:@"timeout" WithExtentInfo:extentInfo WithMsgId:[QIMUUIDTools UUID] ToJid:[self getRemoteFullJid]];
 //                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:@"对方无人接听" WithInfo:nil ToUserId:self.remoteJID WithMsgType:_webRTCType];
                 
-                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:[NSBundle qim_localizedStringForKey:@"atom_rtc_video_no_answer"] WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
+                QIMMessageModel *msg = [[QIMKit sharedInstance] sendMessage:[NSBundle qim_localizedStringForKey:@"atom_rtc_avcall"] WithInfo:extentInfo ToUserId:self.remoteJID WithMsgType:_webRTCType];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.remoteJID userInfo:@{@"message": msg}];
