@@ -268,6 +268,11 @@ static QIMWebRTCMeetingClient *instance = nil;
 }
 
 - (void)updateICEServers {
+//    https://150.242.184.16:8443
+//http://150.242.184.16:8080
+//    [[QIMKit sharedInstance] qimNav_VideoUrl]
+//    NSString *httpUrl = [NSString stringWithFormat:@"http://150.242.184.16:8080/room/getTurnServers?username=%@",  [[[QIMKit sharedInstance] thirdpartKeywithValue] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+//
         NSString *httpUrl = [NSString stringWithFormat:@"%@getTurnServers?username=%@", [[QIMKit sharedInstance] qimNav_VideoUrl], [[[QIMKit sharedInstance] thirdpartKeywithValue] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         NSURL *url = [NSURL URLWithString:httpUrl];
         QIMHTTPRequest *request = [[QIMHTTPRequest alloc] initWithURL:url];
@@ -833,7 +838,7 @@ static QIMWebRTCMeetingClient *instance = nil;
                             RTCSessionDescription *remoteSdp = [[RTCSessionDescription alloc] initWithType:RTCSdpTypeAnswer sdp:sdpAnswer];
                             [peerConnection setRemoteDescription:remoteSdp completionHandler:^(NSError *_Nullable error) {
                                 if (error) {
-                                    QIMVerboseLog(@"");
+                                    QIMVerboseLog(@"remoteSdpremoteSdpremoteSdpremoteSdpremoteSdpremoteSdp");
                                 } else {
                                     dispatch_async(dispatch_get_main_queue(), ^{
                                         RTCPeerConnection *peerConnection = [weakSelf.peerConnectionDic objectForKey:user];
@@ -903,9 +908,9 @@ static QIMWebRTCMeetingClient *instance = nil;
                                             for (RTCIceCandidate *candidate in  [mySelf.willSendCanDic objectForKey:myUserName]) {
                                                 [mySelf.rtcMeetingView.socketClient sendICECandidateWithEndpointName:myUserName WithCandidate:candidate.sdp WithSdpMLineIndex:candidate.sdpMLineIndex WithSdpMid:candidate.sdpMid complete:^(BOOL success) {
                                                     if (success) {
-
+                                                        QIMVerboseLog(@"RTCIceCandidate RTCIceCandidate success");
                                                     } else {
-                                                        QIMVerboseLog(@"");
+                                                        QIMVerboseLog(@"fafaf");
                                                     }
 
                                                 }];
