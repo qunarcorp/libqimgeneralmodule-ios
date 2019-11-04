@@ -150,12 +150,12 @@
 }
 
 - (void)hiddenHeaderView {
-//    [UIView animateWithDuration:0.5 animations:^{
-//        CGRect topFrame = self.topUserInfoView.frame;
-//        topFrame.origin.y = -topFrame.size.height - 20;
-//        self.topUserInfoView.frame = topFrame;
-//        self.topUserInfoView.hidden = YES;
-//    }];
+    [UIView animateWithDuration:0.5 animations:^{
+        CGRect topFrame = self.topUserInfoView.frame;
+        topFrame.origin.y = -topFrame.size.height - 20;
+        self.topUserInfoView.frame = topFrame;
+        self.topUserInfoView.hidden = YES;
+    }];
 }
 
 - (void)hiddenBottomView {
@@ -182,6 +182,7 @@
 //            [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 //            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
 //        }];
+//    }
 //    } else {
 //        //进入全屏
 //        [UIView animateWithDuration:0.5 animations:^{
