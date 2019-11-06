@@ -716,6 +716,9 @@ static QIMWebRTCClient *instance = nil;
         if ([_audioPlayer isPlaying]) {
             [_audioPlayer stop];
         }
+        [self.timeOutTimer invalidate];
+        self.timeOutTimer = nil;
+        self.callConnected = YES;
 
     } else if ([type isEqualToString:@"answer"]) {
         NSString *sdpStr = dict[@"sdp"];
