@@ -15,7 +15,6 @@
 #import "QIMJSONSerializer.h"
 #import "UIView+QIMExtension.h"
 #import "NSBundle+QIMLibrary.h"
-#import "ASIHTTPRequest.h"
 #import "QIMPublicRedefineHeader.h"
 #import <WebRTC/WebRTC.h>
 #import "Masonry.h"
@@ -119,6 +118,21 @@ static QIMWebRTCClient *instance = nil;
     
 //    NSString *httpUrl = [NSString stringWithFormat:@"https://qim.qunar.com/rtc/index.php?username=%@", [[[QIMKit sharedInstance] thirdpartKeywithValue] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
      NSString *httpUrl = [NSString stringWithFormat:@"%@rtc?username=%@",[[QIMKit sharedInstance] qimNav_VideoUrl] , [[[QIMKit sharedInstance] thirdpartKeywithValue] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    [[QIMKit sharedInstance] sendTPGetRequestWithUrl:httpUrl withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        int errorCode = [[infoDic objectForKey:@"error"] intValue];
+        if (errorCode == 0) {
+            NSArray *services = [infoDic objectForKey:@"serverses"];
+            for (NSDictionary *service in services) {
+                NSArray *ices = [self getICEServicesWithService:service];
+                [self.ICEServers addObjectsFromArray:ices];
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    //mark by AFN
+    /*
     NSURL *url = [NSURL URLWithString:httpUrl];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
     [request startSynchronous];
@@ -133,6 +147,7 @@ static QIMWebRTCClient *instance = nil;
             }
         }
     }
+     */
 }
 
 - (void)addNotifications {
