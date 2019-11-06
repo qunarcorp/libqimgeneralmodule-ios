@@ -9,18 +9,11 @@
 #import "QIMNoteManager.h"
 #import "QIMNoteModel.h"
 #import "QIMJSONSerializer.h"
-#import "ASIHTTPRequest.h"
 #import "QIMUUIDTools.h"
 #import "NSMutableDictionary+QIMSafe.h"
-#import "QIMKit+QIMDBDataManager.h"
-#import "QIMKit+QIMUserCacheManager.h"
-#import "QIMKit.h"
-#import "QIMKit+QIMNavConfig.h"
-#import "QIMKit+QIMMessage.h"
-#import "QIMKit+QIMAppSetting.h"
-#import "QIMKit+QIMEncryptChat.h"
-#import "QIMNetwork.h"
+#import "QIMKitPublicHeader.h"
 #import "QIMPublicRedefineHeader.h"
+//#import "QIMNetwork.h"
 #import "AESCrypt.h"
 #import "QIMAES256.h"
 #import "NSBundle+QIMLibrary.h"
@@ -495,13 +488,29 @@ static QIMNoteManager *__QIMNoteManager = nil;
     NSString *content = model.q_content ? model.q_content : @"";
     NSString *urlStr = [NSString stringWithFormat:@"%@saveToMain.qunar", self.baseUrl];
     __block NSURL *url = [NSURL URLWithString:urlStr];
-
+    NSDictionary *paramDict = @{@"type": @(type), @"title":title?title:@"", @"desc":desc?desc:@"", @"content":content?content:@""};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([infoDic objectForKey:@"ret"] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSDictionary *data = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                NSInteger qid = [[data objectForKey:@"qid"] integerValue];
+                NSInteger version = [[data objectForKey:@"version"] integerValue];
+                
+                [[QIMKit sharedInstance] updateToMainWithQId:qid WithCid:model.c_id WithQType:type WithQTitle:title WithQDescInfo:desc WithQContent:content WithQTime:version WithQState:model.q_state WithQExtendedFlag:QIMNoteExtendedFlagStateRemoteUpdated];
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
     [request setRequestMethod:@"POST"];
     [request setUseCookiePersistence:NO];
     [request setRequestHeaders:[self requestHeaders]];
-    NSDictionary *paramDict = @{@"type": @(type), @"title":title?title:@"", @"desc":desc?desc:@"", @"content":content?content:@""};
-    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
     [request appendPostData:data];
     [request startSynchronous];
     NSError *error = [request error];
@@ -517,6 +526,7 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     }
+     */
 }
 
 - (void)updateToRemoteMainWithMainItem:(QIMNoteModel *)model {
@@ -528,14 +538,30 @@ static QIMNoteManager *__QIMNoteManager = nil;
     NSString *desc = model.q_introduce ? model.q_introduce : @"";
     NSString *content = model.q_content ? model.q_content : @"";
     NSString *urlStr = [NSString stringWithFormat:@"%@updateMain.qunar", self.baseUrl];
+    NSDictionary *paramDict = @{@"qid": @(qid), @"title": title?title:@"", @"desc":desc?desc:@"", @"content":content?content:@""};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSDictionary *dict = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                NSInteger resultQid = [[dict objectForKey:@"qid"] integerValue];
+                NSInteger version = [[dict objectForKey:@"version"] integerValue];
+                [[QIMKit sharedInstance] updateToMainItemTimeWithQId:resultQid WithQTime:version WithQExtendedFlag:QIMNoteExtendedFlagStateRemoteUpdated];
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
     __block NSURL *url = [NSURL URLWithString:urlStr];
 
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
     [request setRequestMethod:@"POST"];
     [request setUseCookiePersistence:NO];
     [request setRequestHeaders:[self requestHeaders]];
-    NSDictionary *paramDict = @{@"qid": @(qid), @"title": title?title:@"", @"desc":desc?desc:@"", @"content":content?content:@""};
-    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
     [request appendPostData:data];
     [request startSynchronous];
     NSError *error = [request error];
@@ -550,6 +576,7 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     }
+    */
 }
 
 /*
@@ -566,14 +593,30 @@ static QIMNoteManager *__QIMNoteManager = nil;
 - (void)deleteToRemoteMainWithQid:(NSInteger)qid {
     
     NSString *urlStr = [NSString stringWithFormat:@"%@deleteMain.qunar", self.baseUrl];
+    NSDictionary *paramDict = @{@"qid": @(qid)};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSDictionary *dict = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                NSInteger resultQid = [[dict objectForKey:@"qid"] integerValue];
+                NSInteger version = [[dict objectForKey:@"version"] integerValue];
+                [[QIMKit sharedInstance] deleteToMainWithQid:resultQid];
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
     __block NSURL *url = [NSURL URLWithString:urlStr];
 
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
     [request setRequestMethod:@"POST"];
     [request setUseCookiePersistence:NO];
     [request setRequestHeaders:[self requestHeaders]];
-    NSDictionary *paramDict = @{@"qid": @(qid)};
-    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
     [request appendPostData:data];
     [request startSynchronous];
     NSError *error = [request error];
@@ -588,11 +631,30 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     }
+     */
 }
 
 - (void)collectToRemoteMainWithQid:(NSInteger)qid {
 
     NSString *urlStr = [NSString stringWithFormat:@"%@collectionMain.qunar", self.baseUrl];
+    NSDictionary *paramDict = @{@"qid": @(qid)};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSDictionary *dict = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                NSInteger resultQid = [[dict objectForKey:@"qid"] integerValue];
+                NSInteger version = [[dict objectForKey:@"version"] integerValue];
+                [[QIMKit sharedInstance] updateToMainItemTimeWithQId:resultQid WithQTime:version WithQExtendedFlag:QIMNoteExtendedFlagStateRemoteUpdated];
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
     __block NSURL *url = [NSURL URLWithString:urlStr];
 
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
@@ -615,10 +677,30 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     }
+    */
 }
 
 - (void)cancelCollectToRemoteMainWithQid:(NSInteger)qid {
     NSString *urlStr = [NSString stringWithFormat:@"%@cancelCollectionMain.qunar", self.baseUrl];
+    NSDictionary *paramDict = @{@"qid": @(qid)};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSDictionary *dict = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                NSInteger resultQid = [[dict objectForKey:@"qid"] integerValue];
+                NSInteger version = [[dict objectForKey:@"version"] integerValue];
+                [[QIMKit sharedInstance] updateToMainItemTimeWithQId:resultQid WithQTime:version WithQExtendedFlag:QIMNoteExtendedFlagStateRemoteUpdated];
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
     __block NSURL *url = [NSURL URLWithString:urlStr];
 
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
@@ -641,11 +723,31 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     }
+     */
 }
 
 - (void)moveToRemoteBasketMainWithQid:(NSInteger)qid {
 
     NSString *urlStr = [NSString stringWithFormat:@"%@moveToBasketMain.qunar", self.baseUrl];
+    NSDictionary *paramDict = @{@"qid": @(qid)};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSDictionary *dict = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                NSInteger resultQid = [[dict objectForKey:@"qid"] integerValue];
+                NSInteger version = [[dict objectForKey:@"version"] integerValue];
+                [[QIMKit sharedInstance] updateToMainItemTimeWithQId:resultQid WithQTime:version WithQExtendedFlag:QIMNoteExtendedFlagStateRemoteUpdated];
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
     __block NSURL *url = [NSURL URLWithString:urlStr];
 
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
@@ -668,11 +770,31 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     }
+    */
 }
 
 - (void)moveOutRemoteBasketMainWithQid:(NSInteger)qid {
 
     NSString *urlStr = [NSString stringWithFormat:@"%@moveOutBasketMain.qunar", self.baseUrl];
+    NSDictionary *paramDict = @{@"qid": @(qid)};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSDictionary *dict = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                NSInteger resultQid = [[dict objectForKey:@"qid"] integerValue];
+                NSInteger version = [[dict objectForKey:@"version"] integerValue];
+                [[QIMKit sharedInstance] updateToMainItemTimeWithQId:resultQid WithQTime:version WithQExtendedFlag:QIMNoteExtendedFlagStateRemoteUpdated];
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //mark by AFN
+    /*
     __block NSURL *url = [NSURL URLWithString:urlStr];
 
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
@@ -695,6 +817,7 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     }
+    */
 }
 
 - (void)getCloudRemoteMainWithVersion:(NSInteger)version
@@ -704,7 +827,35 @@ static QIMNoteManager *__QIMNoteManager = nil;
     
     NSDictionary *paramDict = @{@"version": @(version), @"type":@(type)};
     NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:response.data error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSArray *resultArray = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                for (NSDictionary *dict in resultArray) {
+                    NSInteger resultQid = [[dict objectForKey:@"qid"] integerValue];
+                    NSInteger resultType = [[dict objectForKey:@"type"] integerValue];
+                    NSString *resultTitle = [dict objectForKey:@"title"];
+                    NSString *resultDesc = [dict objectForKey:@"desc"];
+                    NSString *resultContent = [dict objectForKey:@"content"];
+                    NSInteger resultVersion = [[dict objectForKey:@"version"] integerValue];
+                    NSInteger resultState = [[dict objectForKey:@"state"] integerValue];
+                    if ([[QIMKit sharedInstance] checkExitsMainItemWithQid:resultQid WithCId:0]) {
+                        [[QIMKit sharedInstance] updateToMainWithQId:resultQid WithCid:0 WithQType:resultType WithQTitle:resultTitle WithQDescInfo:resultDesc WithQContent:resultContent WithQTime:resultVersion WithQState:resultState WithQExtendedFlag:QIMNoteExtendedFlagStateRemoteUpdated];
+                    } else {
+                        [[QIMKit sharedInstance] insertQTNotesMainItemWithQId:resultQid WithCid:0 WithQType:resultType WithQTitle:resultTitle WithQIntroduce:resultDesc WithQContent:resultContent WithQTime:resultVersion WithQState:resultState WithQExtendedFlag:QIMNoteExtendedFlagStateRemoteUpdated];
+                    }
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[NSNotificationCenter defaultCenter] postNotificationName:QTNoteManagerGetCloudMainSuccessNotification object:nil];
+                    });
+                }
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
     
+    /*
     QIMHTTPRequest *request = [[QIMHTTPRequest alloc] initWithURL:url];
     [request setHTTPMethod:QIMHTTPMethodPOST];
     [request setHTTPRequestHeaders:[self requestHeaders]];
@@ -740,6 +891,7 @@ static QIMNoteManager *__QIMNoteManager = nil;
     } failure:^(NSError *error) {
         
     }];
+    */
 }
 
 - (void)getCloudRemoteMainHistoryWithQId:(NSInteger)qid{
@@ -747,7 +899,33 @@ static QIMNoteManager *__QIMNoteManager = nil;
     NSString *urlStr = [NSString stringWithFormat:@"%@getCloudMainHistory.qunar", self.baseUrl];
     __block NSURL *url = [NSURL URLWithString:urlStr];
     dispatch_async(_loadNoteModelQueue, ^{
-
+        
+        NSDictionary *paramDict = @{@"qid": @(qid)};
+        NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+        [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+            NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+            if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+                NSArray *resultArray = [infoDic objectForKey:@"data"];
+                if (data && ![data isKindOfClass:[NSNull class]]) {
+                    if (!result) {
+                        result = [NSMutableArray arrayWithCapacity:3];
+                    }
+                    for (NSDictionary *dict in resultArray) {
+                        QIMNoteModel *model = [[QIMNoteModel alloc] init];
+                        [model setValuesForKeysWithDictionary:dict];
+                        [result addObject:model];
+                    }
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[NSNotificationCenter defaultCenter] postNotificationName:QTNoteManagerGetCloudMainHistorySuccessNotification object:nil];
+                    });
+                }
+            }
+        } withFailedCallBack:^(NSError *error) {
+            
+        }];
+        
+        //Mark by AFN
+        /*
         ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
         [request setRequestMethod:@"POST"];
         [request setUseCookiePersistence:NO];
@@ -776,11 +954,28 @@ static QIMNoteManager *__QIMNoteManager = nil;
                 }
             }
         }
+        */
     });
 }
 
 - (void)batchSyncToRemoteMainItemsWithInserts:(NSArray *)inserts updates:(NSArray *)updates {
     NSString *urlStr = [NSString stringWithFormat:@"%@syncCloudMainList.qunar", self.baseUrl];
+    NSDictionary *paramDict = @{@"insert": inserts.count ? inserts : @[], @"update":updates.count ? updates : @[]};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSArray *resultArray = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                [[QIMKit sharedInstance] updateToMainItemWithDicts:resultArray];
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
     NSURL *url = [NSURL URLWithString:urlStr];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
     [request setRequestMethod:@"POST"];
@@ -800,6 +995,7 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     }
+     */
 }
 
 
@@ -820,6 +1016,28 @@ static QIMNoteManager *__QIMNoteManager = nil;
     NSString *descInfo = model.qs_introduce;
     NSString *content = model.qs_content;
     NSString *urlStr = [NSString stringWithFormat:@"%@saveToSub.qunar", self.baseUrl];
+    NSDictionary *paramDict = @{@"qid": @(qid), @"type": @(type), @"title": title ? title : @"", @"desc": descInfo ? descInfo : @"", @"content" : content ? content : @""};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        QIMVerboseLog(@"infoDic == %@", infoDic);
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSDictionary *dict = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                NSInteger qsid = [[dict objectForKey:@"qsid"] integerValue];
+                NSInteger versioin = [[dict objectForKey:@"version"] integerValue];
+                [[QIMKit sharedInstance] updateToSubWithCid:model.c_id WithQSid:qsid WithCSid:model.cs_id WithQSTitle:model.qs_title WithQSDescInfo:model.qs_introduce WithQSContent:model.qs_content WithQSTime:versioin WithQSState:model.qs_state WithQS_ExtendedFlag:QIMNoteExtendedFlagStateRemoteUpdated];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:QTNoteManagerSaveCloudMainSuccessNotification object:nil];
+                });
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
     __block NSURL *url = [NSURL URLWithString:urlStr];
 
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
@@ -849,6 +1067,7 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     }
+    */
 }
 
 - (void)updateToRemoteSubWithSubModel:(QIMNoteModel *)model {
@@ -861,6 +1080,24 @@ static QIMNoteManager *__QIMNoteManager = nil;
     NSString *descInfo = model.qs_introduce;
     NSString *content = model.qs_content;
     NSString *urlStr = [NSString stringWithFormat:@"%@updateSub.qunar", self.baseUrl];
+    NSDictionary *paramDict = @{@"qsid": @(qsid), @"type": @(type), @"title": title ? title : @"", @"desc": descInfo ? descInfo : @"", @"content" : content ? content : @""};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSDictionary *dict = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                NSInteger resultQSid = [[dict objectForKey:@"qsid"] integerValue];
+                NSInteger version = [[dict objectForKey:@"version"] integerValue];
+                [[QIMKit sharedInstance] updateToSubItemTimeWithCSId:version WithQSTime:resultQSid WithQsExtendedFlag:QIMNoteExtendedFlagStateRemoteUpdated];
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
     __block NSURL *url = [NSURL URLWithString:urlStr];
 
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
@@ -884,11 +1121,25 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     }
+    */
 }
 
 - (void)deleteToRemoteSubWithQSid:(NSInteger)qsid {
 //    deleteSub.qunar
     NSString *urlStr = [NSString stringWithFormat:@"%@deleteSub.qunar", self.baseUrl];
+    NSDictionary *paramDict = @{@"qsid": @(qsid)};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+//            NSDictionary *dict = [infoDic objectForKey:@"data"];
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //mark by AFN
+    /*
     __block NSURL *url = [NSURL URLWithString:urlStr];
 
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
@@ -906,11 +1157,30 @@ static QIMNoteManager *__QIMNoteManager = nil;
 //            NSDictionary *dict = [infoDic objectForKey:@"data"];
         }
     }
+    */
 }
 
 - (void)collectionToRemoteSubWithQSid:(NSInteger)qsid {
 
     NSString *urlStr = [NSString stringWithFormat:@"%@collectionSub.qunar", self.baseUrl];
+    NSDictionary *paramDict = @{@"qsid": @(qsid)};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSDictionary *dict = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                NSInteger resultQSid = [[dict objectForKey:@"qsid"] integerValue];
+                NSInteger version = [[dict objectForKey:@"version"] integerValue];
+                [[QIMKit sharedInstance] updateToSubItemTimeWithCSId:version WithQSTime:resultQSid WithQsExtendedFlag:QIMNoteExtendedFlagStateRemoteUpdated];
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
     __block NSURL *url = [NSURL URLWithString:urlStr];
 
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
@@ -933,11 +1203,30 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     }
+    */
 }
 
 - (void)cancelCollectionToRemoteSubWithQSid:(NSInteger)qsid {
 
     NSString *urlStr = [NSString stringWithFormat:@"%@cancelCollectionSub.qunar", self.baseUrl];
+    NSDictionary *paramDict = @{@"qsid": @(qsid)};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSDictionary *dict = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                NSInteger resultQsid = [[dict objectForKey:@"qsid"] integerValue];
+                NSInteger version = [[dict objectForKey:@"version"] integerValue];
+                [[QIMKit sharedInstance] updateToSubItemTimeWithCSId:resultQsid WithQSTime:version WithQsExtendedFlag:QIMNoteExtendedFlagStateRemoteUpdated];
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
     __block NSURL *url = [NSURL URLWithString:urlStr];
 
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
@@ -960,11 +1249,31 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     }
+    */
 }
 
 - (void)moveToBasketRemoteSubWithQSid:(NSInteger)qsid {
 
     NSString *urlStr = [NSString stringWithFormat:@"%@moveToBasketSub.qunar", self.baseUrl];
+    NSDictionary *paramDict = @{@"qsid": @(qsid)};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSDictionary *dict = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                NSInteger resultQSid = [[dict objectForKey:@"qsid"] integerValue];
+                NSInteger version = [[dict objectForKey:@"version"] integerValue];
+                [[QIMKit sharedInstance] updateToSubItemTimeWithCSId:resultQSid WithQSTime:version WithQsExtendedFlag:QIMNoteExtendedFlagStateRemoteUpdated];
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
     __block NSURL *url = [NSURL URLWithString:urlStr];
 
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
@@ -987,11 +1296,31 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     }
+    */
 }
 
 - (void)moveOutRemoteBasketSubWithQSid:(NSInteger)qsid {
 
     NSString *urlStr = [NSString stringWithFormat:@"%@moveOutBasketSub.qunar", self.baseUrl];
+    NSDictionary *paramDict = @{@"qsid": @(qsid)};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSDictionary *dict = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                NSInteger resultQSid = [[dict objectForKey:@"qsid"] integerValue];
+                NSInteger version = [[dict objectForKey:@"version"] integerValue];
+                [[QIMKit sharedInstance] updateToSubItemTimeWithCSId:resultQSid WithQSTime:version WithQsExtendedFlag:QIMNoteExtendedFlagStateRemoteUpdated];
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
     __block NSURL *url = [NSURL URLWithString:urlStr];
 
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
@@ -1014,6 +1343,7 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     }
+    */
 }
 
 - (void)getCloudRemoteSubWithQid:(NSInteger)qid
@@ -1021,6 +1351,44 @@ static QIMNoteManager *__QIMNoteManager = nil;
                          version:(NSInteger)version
                             type:(QIMPasswordType)type {
     NSString *urlStr = [NSString stringWithFormat:@"%@getCloudSub.qunar", self.baseUrl];
+    NSMutableDictionary *paramDic = [NSMutableDictionary dictionary];
+    [paramDic setQIMSafeObject:@(version) forKey:@"version"];
+    [paramDic setQIMSafeObject:@(qid) forKey:@"qid"];
+    if (type != -1) {
+        [paramDic setQIMSafeObject:@(type) forKey:@"type"];
+    }
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDic error:nil];
+    
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSArray *resultArray = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                for (NSDictionary *dict in resultArray) {
+                    NSInteger resultQid = [[dict objectForKey:@"qid"] integerValue];
+                    NSInteger resultQsid = [[dict objectForKey:@"qsid"] integerValue];
+                    NSString *resultTitle = [dict objectForKey:@"title"];
+                    NSInteger resultType = [[dict objectForKey:@"type"] integerValue];
+                    NSString *resultContent = [dict objectForKey:@"content"];
+                    NSString *resultDesc = [dict objectForKey:@"desc"];
+                    NSInteger resultState = [[dict objectForKey:@"state"] integerValue];
+                    NSInteger resultVersion = [[dict objectForKey:@"version"] integerValue];
+                    
+                    QIMNoteModel *model = [self getQTNoteSubItemWithParmDict:@{@"qs_id" : @(resultQsid)}];
+                    [[QIMKit sharedInstance] insertQTNotesSubItemWithCId:cid WithQSId:resultQsid WithCSId:model.cs_id WithQSType:resultType WithQSTitle:resultTitle WithQSIntroduce:resultDesc WithQSContent:resultContent WithQSTime:resultVersion WithQState:resultState WithQS_ExtendedFlag:QIMNoteExtendedFlagStateRemoteUpdated];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[NSNotificationCenter defaultCenter] postNotificationName:QTNoteManagerGetCloudSubSuccessNotification object:nil];
+                    });
+                }
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
     __block NSURL *url = [NSURL URLWithString:urlStr];
     dispatch_async(_loadNoteModelQueue, ^{
 
@@ -1064,6 +1432,7 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     });
+    */
 }
 
 
@@ -1071,6 +1440,32 @@ static QIMNoteManager *__QIMNoteManager = nil;
 
     __block NSMutableArray *result = nil;
     NSString *urlStr = [NSString stringWithFormat:@"%@getCloudSubHistory.qunar", self.baseUrl];
+    NSDictionary *paramDict = @{@"qsid": @(qsid)};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSArray *resultArray = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                if (!result) {
+                    result = [NSMutableArray arrayWithCapacity:3];
+                }
+                for (NSDictionary *dict in resultArray) {
+                    QIMNoteModel *model = [[QIMNoteModel alloc] init];
+                    [model setValuesForKeysWithDictionary:dict];
+                    [result addObject:model];
+                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:QTNoteManagerGetCloudSubHistorySuccessNotification object:nil];
+                });
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
     __block NSURL *url = [NSURL URLWithString:urlStr];
     dispatch_async(_loadNoteModelQueue, ^{
 
@@ -1103,11 +1498,27 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     });
+    */
     return result;
 }
 
 - (void)batchSyncToRemoteSubItemsWithInserts:(NSArray *)inserts updates:(NSArray *)updates {
     NSString *urlStr = [NSString stringWithFormat:@"%@syncCloudSubList.qunar", self.baseUrl];
+    NSDictionary *paramDict = @{@"insert": inserts.count ? inserts : @[], @"update":updates.count ? updates : @[]};
+    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
+    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
+            NSArray *resultArray = [infoDic objectForKey:@"data"];
+            if (data && ![data isKindOfClass:[NSNull class]]) {
+                [[QIMKit sharedInstance] updateToSubItemWithDicts:resultArray];
+            }
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    /*
     __block NSURL *url = [NSURL URLWithString:urlStr];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
     [request setRequestMethod:@"POST"];
@@ -1127,6 +1538,7 @@ static QIMNoteManager *__QIMNoteManager = nil;
             }
         }
     }
+    */
 }
 
 @end
