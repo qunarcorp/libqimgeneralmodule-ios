@@ -828,7 +828,7 @@ static QIMNoteManager *__QIMNoteManager = nil;
     NSDictionary *paramDict = @{@"version": @(version), @"type":@(type)};
     NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
     [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withRequestBodyData:data withSuccessCallBack:^(NSData *responseData) {
-        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:response.data error:nil];
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
         if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
             NSArray *resultArray = [infoDic objectForKey:@"data"];
             if (data && ![data isKindOfClass:[NSNull class]]) {
