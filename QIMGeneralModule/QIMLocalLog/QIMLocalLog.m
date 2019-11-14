@@ -286,13 +286,14 @@ static NSString *LocalZipLogsPath = @"ZipLogs";
 //提交反馈
 - (void)submitFeedBackWithContent:(NSString *)content withUserInitiative:(BOOL)initiative {
     QIMVerboseLog(@"提交日志");
-    NSString *logFileUrl = [QIMKit updateLoadFile:[[QIMLocalLog sharedInstance] allLogData] WithMsgId:[QIMUUIDTools UUID] WithMsgType:QIMMessageType_File WithPathExtension:@"zip"];
-    if (logFileUrl.length) {
-        if (![logFileUrl qim_hasPrefixHttpHeader]) {
-            logFileUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], logFileUrl];
+    [[QIMKit sharedInstance] qim_uploadFileWithFileData:[[QIMLocalLog sharedInstance] allLogData] WithPathExtension:@"zip" WithCallback:^(NSString *logFileUrl) {
+        if (logFileUrl.length) {
+            if (![logFileUrl qim_hasPrefixHttpHeader]) {
+                logFileUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], logFileUrl];
+            }
+            [self sendFeedBackWithLogFileUrl:logFileUrl WithContent:content withUserInitiative:initiative];
         }
-        [self sendFeedBackWithLogFileUrl:logFileUrl WithContent:content withUserInitiative:initiative];
-    }
+    }];
 }
 
 - (void)sendFeedBackWithLogFileUrl:(NSString *)logFileUrl WithContent:(NSString *)content withUserInitiative:(BOOL)initiative {
