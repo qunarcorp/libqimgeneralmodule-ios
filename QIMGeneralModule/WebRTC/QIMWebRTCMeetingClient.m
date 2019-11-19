@@ -806,8 +806,8 @@ static QIMWebRTCMeetingClient *instance = nil;
 
 #pragma mark - WebRTC Socket Delegate
 
-- (void)receveRemoteVideoWithUserName:(NSString *)user WithStream:(NSArray *)streams {
 
+- (void)receveRemoteVideoWithUserName:(NSString *)user WithStream:(NSArray *)streams WithFinishHandle:(void(^)(void))handle{
     RTCPeerConnection *peerConnection = [self.peerConnectionDic objectForKey:user];
     if (peerConnection == nil) {
         peerConnection = [self.peerConnectionFactory peerConnectionWithConfiguration:_configuration constraints:self.pcConstraints delegate:self];
@@ -821,6 +821,7 @@ static QIMWebRTCMeetingClient *instance = nil;
             RTCSessionDescription *sdpH264 = [weakSelf descriptionWithDescription:sdp videoFormat:@"VP8"];
             [peerConnection setLocalDescription:sdpH264 completionHandler:^(NSError *_Nullable error) {
                 if (error) {
+                    handle();
                     QIMVerboseLog(@"setLocalDescription Error : %@", error);
                 } else {
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -836,25 +837,35 @@ static QIMWebRTCMeetingClient *instance = nil;
                         [weakSelf.rtcMeetingView.socketClient receiveVideoFromWithSender:sender WithOfferSdp:peerConnection.localDescription.sdp complete:^(NSDictionary *result) {
                             NSString *sdpAnswer = [result objectForKey:@"sdpAnswer"];
                             RTCSessionDescription *remoteSdp = [[RTCSessionDescription alloc] initWithType:RTCSdpTypeAnswer sdp:sdpAnswer];
+                            
                             [peerConnection setRemoteDescription:remoteSdp completionHandler:^(NSError *_Nullable error) {
                                 if (error) {
+//                                    handle();
                                     QIMVerboseLog(@"remoteSdpremoteSdpremoteSdpremoteSdpremoteSdpremoteSdp");
                                 } else {
-                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                    
+//                                    dispatch_async(dispatch_get_main_queue(), ^{
                                         RTCPeerConnection *peerConnection = [weakSelf.peerConnectionDic objectForKey:user];
                                         NSArray *list = [weakSelf.peerConnectionCanDic objectForKey:user];
                                         for (RTCIceCandidate *can in list) {
                                             [peerConnection addIceCandidate:can];
                                         }
                                         [weakSelf.peerConnectionCanDic removeObjectForKey:user];
-                                    });
+//                                    });
                                 }
                             }];
+                            handle();
                         }];
                     });
                 }
             }];
         });
+    }];
+}
+
+- (void)receveRemoteVideoWithUserName:(NSString *)user WithStream:(NSArray *)streams {
+    [self receveRemoteVideoWithUserName:user WithStream:streams WithFinishHandle:^{
+        
     }];
 }
 
@@ -883,65 +894,119 @@ static QIMWebRTCMeetingClient *instance = nil;
                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:mySelf.groupId userInfo:@{@"message": msg}];
                 });
             }
-            [mySelf.localPeerConnection offerForConstraints:mySelf.sdpConstraints completionHandler:^(RTCSessionDescription *_Nullable sdp, NSError *_Nullable error) {
-                RTCLogError(@"offerForConstraints : %@", error);
-                if (error == nil) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        RTCSessionDescription *sdpH264 = [mySelf descriptionWithDescription:sdp videoFormat:@"VP8"];
-                        [mySelf.localPeerConnection setLocalDescription:sdpH264 completionHandler:^(NSError *_Nullable error) {
-                            if (error) {
-                                QIMVerboseLog(@"error : %@", error);
-                            }
-                        }];
-                        [mySelf.rtcMeetingView.socketClient publishVideoWithOfferSdp:sdp.sdp doLoopback:NO complete:^(NSDictionary *result) {
-                            if (result) {
-                                NSString *sdpAnswer = [result objectForKey:@"sdpAnswer"];
-                                RTCSessionDescription *remoteSdp = [[RTCSessionDescription alloc] initWithType:RTCSdpTypeAnswer sdp:sdpAnswer];
-                                [mySelf.localPeerConnection setRemoteDescription:remoteSdp completionHandler:^(NSError *_Nullable error) {
-                                    if (error) {
-                                        QIMVerboseLog(@"error2 : %@", error);
-                                    } else {
-                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                            // 这里切了次线程 莫名其妙的 好使了
-                                            // 感觉 Webrtc的所有对象初始化放到主线程比较好使 没有任何原因 不知道为什么
-                                            NSString *myUserName = [[QIMKit sharedInstance] getLastJid];
-                                            for (RTCIceCandidate *candidate in  [mySelf.willSendCanDic objectForKey:myUserName]) {
-                                                [mySelf.rtcMeetingView.socketClient sendICECandidateWithEndpointName:myUserName WithCandidate:candidate.sdp WithSdpMLineIndex:candidate.sdpMLineIndex WithSdpMid:candidate.sdpMid complete:^(BOOL success) {
-                                                    if (success) {
-                                                        QIMVerboseLog(@"RTCIceCandidate RTCIceCandidate success");
-                                                    } else {
-                                                        QIMVerboseLog(@"fafaf");
-                                                    }
-
-                                                }];
-                                            }
-                                            [mySelf.willSendCanDic removeObjectForKey:myUserName];
-                                            NSArray *list = [mySelf.peerConnectionCanDic objectForKey:myUserName];
-                                            for (RTCIceCandidate *can in list) {
-                                                [mySelf.localPeerConnection addIceCandidate:can];
-                                            }
-                                            [mySelf.peerConnectionCanDic removeObjectForKey:myUserName];
-                                            for (NSDictionary *value in userList) {
-                                                NSString *user = [value objectForKey:@"id"];
-                                                NSArray *streams = [value objectForKey:@"streams"];
-                                                NSNumber *plat = [value objectForKey:@"plat"];
-//                                                [self.userPlatDic setObject:plat?@(plat.intValue):@(-1) forKey:user];
-                                                [self receveRemoteVideoWithUserName:user WithStream:streams];
-
-                                            }
-                                        });
-                                    }
-                                }];
-                            }
-                        }];
-                    });
-                }
-            }];
+            //判断房间里是否有人先接受再发送
+            if (userList.count > 0) {
+//                for (NSDictionary *value in userList) {
+//                    NSString *user = [value objectForKey:@"id"];
+//                    NSArray *streams = [value objectForKey:@"streams"];
+//                    NSNumber *plat = [value objectForKey:@"plat"];
+//                    //                                                [self.userPlatDic setObject:plat?@(plat.intValue):@(-1) forKey:user];
+////                    [self receveRemoteVideoWithUserName:user WithStream:streams];
+//                    [self sendReceveRemoteVideoMesWithListWithUserList:<#(NSArray *)#> FinishHandler:<#^(void)handler#>]
+//                }
+                [mySelf sendReceveRemoteVideoMesWithListWithUserList:userList FinishHandler:^{
+                    [mySelf sendOfferConstrainsWithUserList:userList];
+                }];
+            }
+            else{
+                [mySelf sendOfferConstrainsWithUserList:userList];
+            }
+            
+            
         } else {
             NSDictionary *errorDic = [resultDic objectForKey:@"error"];
             int errorCode = [[errorDic objectForKey:@"code"] intValue];
             NSString *errorMsg = [errorDic objectForKey:@"message"];
             [mySelf.rtcMeetingView showAlertMessage:[NSString stringWithFormat:@"加入房间失败，%d:%@", errorCode, errorMsg]];
+        }
+    }];
+}
+
+- (void)sendReceveRemoteVideoMesWithListWithUserList:(NSArray *)userList FinishHandler:(void(^)(void))handler{
+    
+    dispatch_group_t group = dispatch_group_create();
+    
+    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
+    dispatch_group_async(group, queue, ^{
+        
+        for (NSDictionary *value in userList) {
+            dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+            NSString *user = [value objectForKey:@"id"];
+            NSArray *streams = [value objectForKey:@"streams"];
+            NSNumber *plat = [value objectForKey:@"plat"];
+            //                                                [self.userPlatDic setObject:plat?@(plat.intValue):@(-1) forKey:user];
+    //        [self receveRemoteVideoWithUserName:user WithStream:streams];
+            [self receveRemoteVideoWithUserName:user WithStream:streams WithFinishHandle:^{
+                dispatch_semaphore_signal(semaphore);
+            }];
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        }
+    });
+    
+    dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // 执行下面的判断代码
+            dispatch_async(dispatch_get_main_queue(), ^{
+                handler();
+            });
+    });
+}
+
+- (void)sendOfferConstrainsWithUserList:(NSArray *)userList{
+    __weak QIMWebRTCMeetingClient *mySelf = self;
+    [self.localPeerConnection offerForConstraints:self.sdpConstraints completionHandler:^(RTCSessionDescription *_Nullable sdp, NSError *_Nullable error) {
+        RTCLogError(@"offerForConstraints : %@", error);
+        if (error == nil) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                RTCSessionDescription *sdpH264 = [mySelf descriptionWithDescription:sdp videoFormat:@"VP8"];
+                [mySelf.localPeerConnection setLocalDescription:sdpH264 completionHandler:^(NSError *_Nullable error) {
+                    if (error) {
+                        QIMVerboseLog(@"error : %@", error);
+                    }
+                }];
+                [mySelf.rtcMeetingView.socketClient publishVideoWithOfferSdp:sdp.sdp doLoopback:NO complete:^(NSDictionary *result) {
+                    if (result) {
+                        NSString *sdpAnswer = [result objectForKey:@"sdpAnswer"];
+                        RTCSessionDescription *remoteSdp = [[RTCSessionDescription alloc] initWithType:RTCSdpTypeAnswer sdp:sdpAnswer];
+                        [mySelf.localPeerConnection setRemoteDescription:remoteSdp completionHandler:^(NSError *_Nullable error) {
+                            if (error) {
+                                QIMVerboseLog(@"error2 : %@", error);
+                            } else {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    // 这里切了次线程 莫名其妙的 好使了
+                                    // 感觉 Webrtc的所有对象初始化放到主线程比较好使 没有任何原因 不知道为什么
+                                    NSString *myUserName = [[QIMKit sharedInstance] getLastJid];
+                                    for (RTCIceCandidate *candidate in  [mySelf.willSendCanDic objectForKey:myUserName]) {
+                                        [mySelf.rtcMeetingView.socketClient sendICECandidateWithEndpointName:myUserName WithCandidate:candidate.sdp WithSdpMLineIndex:candidate.sdpMLineIndex WithSdpMid:candidate.sdpMid complete:^(BOOL success) {
+                                            if (success) {
+                                                QIMVerboseLog(@"RTCIceCandidate RTCIceCandidate success");
+                                            } else {
+                                                QIMVerboseLog(@"fafaf");
+                                            }
+                                            
+                                        }];
+                                    }
+                                    [mySelf.willSendCanDic removeObjectForKey:myUserName];
+                                    NSArray *list = [mySelf.peerConnectionCanDic objectForKey:myUserName];
+                                    for (RTCIceCandidate *can in list) {
+                                        [mySelf.localPeerConnection addIceCandidate:can];
+                                    }
+                                    [mySelf.peerConnectionCanDic removeObjectForKey:myUserName];
+                                    if (userList.count <= 0) {
+                                        for (NSDictionary *value in userList) {
+                                            NSString *user = [value objectForKey:@"id"];
+                                            NSArray *streams = [value objectForKey:@"streams"];
+                                            NSNumber *plat = [value objectForKey:@"plat"];
+                                            //                                                [self.userPlatDic setObject:plat?@(plat.intValue):@(-1) forKey:user];
+                                            [self receveRemoteVideoWithUserName:user WithStream:streams];
+                                            
+                                        }
+                                    }
+                                });
+                            }
+                        }];
+                    }
+                }];
+            });
         }
     }];
 }
