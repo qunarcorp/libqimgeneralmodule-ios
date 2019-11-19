@@ -131,23 +131,6 @@ static QIMWebRTCClient *instance = nil;
     } withFailedCallBack:^(NSError *error) {
         
     }];
-    //mark by AFN
-    /*
-    NSURL *url = [NSURL URLWithString:httpUrl];
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
-    [request startSynchronous];
-    if (request.responseStatusCode == 200) {
-        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:request.responseData error:nil];
-        int errorCode = [[infoDic objectForKey:@"error"] intValue];
-        if (errorCode == 0) {
-            NSArray *services = [infoDic objectForKey:@"serverses"];
-            for (NSDictionary *service in services) {
-                NSArray *ices = [self getICEServicesWithService:service];
-                [self.ICEServers addObjectsFromArray:ices];
-            }
-        }
-    }
-     */
 }
 
 - (void)addNotifications {
