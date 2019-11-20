@@ -1019,28 +1019,6 @@ static QIMNoteManager *__QIMNoteManager = nil;
     } withFailedCallBack:^(NSError *error) {
         
     }];
-    
-    /*
-    __block NSURL *url = [NSURL URLWithString:urlStr];
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
-    [request setRequestMethod:@"POST"];
-    [request setUseCookiePersistence:NO];
-    [request setRequestHeaders:[self requestHeaders]];
-    NSDictionary *paramDict = @{@"insert": inserts.count ? inserts : @[], @"update":updates.count ? updates : @[]};
-    NSData *data = [[QIMJSONSerializer sharedInstance] serializeObject:paramDict error:nil];
-    [request appendPostData:data];
-    [request startSynchronous];
-    NSError *error = [request error];
-    if (([request responseStatusCode] == 200) && !error ) {
-        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:request.responseData error:nil];
-        if ([[infoDic objectForKey:@"ret"] integerValue] && [[infoDic objectForKey:@"errcode"] integerValue] == 0) {
-            NSArray *resultArray = [infoDic objectForKey:@"data"];
-            if (data && ![data isKindOfClass:[NSNull class]]) {
-                [[QIMKit sharedInstance] updateToSubItemWithDicts:resultArray];
-            }
-        }
-    }
-    */
 }
 
 @end
