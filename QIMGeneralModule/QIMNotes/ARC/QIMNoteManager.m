@@ -466,13 +466,8 @@ static QIMNoteManager *__QIMNoteManager = nil;
 
 - (NSMutableDictionary *)requestHeaders {
     NSMutableDictionary *cookieProperties = [NSMutableDictionary dictionary];
-    BOOL debug = [[[QIMKit sharedInstance] userObjectForKey:@"QC_Debug"] boolValue];
     NSString *requesTHeaders = [NSString stringWithFormat:@"p_user=%@;q_ckey=%@", [QIMKit getLastUserName], [[QIMKit sharedInstance] thirdpartKeywithValue]];
-    if (debug) {
-        [cookieProperties setObject:requesTHeaders forKey:@"Cookie"];
-    } else {
-        [cookieProperties setObject:requesTHeaders forKey:@"Cookie"];
-    }
+    [cookieProperties setObject:requesTHeaders forKey:@"Cookie"];
     return cookieProperties;
 }
 
