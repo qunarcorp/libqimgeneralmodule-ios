@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target   = '9.0'
 
   s.platform     = :ios, "9.0"
-  s.source_files = "QIMGeneralModule/QIMGeneralModuleFramework.h"
+  s.source_files = "QIMGeneralModule/STIMGeneralModuleFramework.h"
   $debug = ENV['debug']
 
   s.subspec 'WebRTC' do |webrtc|

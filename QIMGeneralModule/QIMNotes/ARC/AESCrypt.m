@@ -28,20 +28,20 @@
 //
 
 #import "AESCrypt.h"
-#import "NSString+QIMBase64.h"
-#import "NSData+QIMBase64.h"
-#import "NSData+QIMCommonCrypto.h"
+#import "NSString+STIMBase64.h"
+#import "NSData+STIMBase64.h"
+#import "NSData+STIMCommonCrypto.h"
 
 @implementation AESCrypt
 
 + (NSString *)encrypt:(NSString *)message password:(NSString *)password {
   NSData *encryptedData = [[message dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptedDataUsingKey:[[password dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
-  NSString *base64EncodedString = [NSString qim_base64StringFromData:encryptedData length:[encryptedData length]];
+  NSString *base64EncodedString = [NSString stimDB_base64StringFromData:encryptedData length:[encryptedData length]];
   return base64EncodedString;
 }
 
 + (NSString *)decrypt:(NSString *)base64EncodedString password:(NSString *)password {
-  NSData *encryptedData = [NSData qim_base64DataFromString:base64EncodedString];
+  NSData *encryptedData = [NSData stimDB_base64DataFromString:base64EncodedString];
   NSData *decryptedData = [encryptedData decryptedAES256DataUsingKey:[[password dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
   return [[NSString alloc] initWithData:decryptedData encoding:NSUTF8StringEncoding];
 }

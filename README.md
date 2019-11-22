@@ -22,16 +22,16 @@ Startalk私有云是一种去中心化的部署方式，
 
 ## 介绍
 
-QIMGeneralModule是在依赖[QIMCommon](https://github.com/qunarcorp/libqimcommon-ios)基础上实现的笔记本，密码箱，音视频通话，日历，日志记录等功能组件。
+STIMGeneralModule是在依赖[STIMCommon](https://github.com/qunarcorp/libqimcommon-ios)基础上实现的笔记本，密码箱，音视频通话，日历，日志记录等功能组件。
 
 为了方便其他开发者不用依赖整套UI使用到笔记本，密码箱，音视频通话等功能，我从中拆分出以下独立组件：
 
-  * QIMCalendars — 高性能的 iOS 日历组件。
+  * STIMCalendars — 高性能的 iOS 日历组件。
 
-  * QIMLocalLog — 高性能的 iOS日志记录框架。
+  * STIMLocalLog — 高性能的 iOS日志记录框架。
 
-  * QIMNotes — 史上最安全的密码箱，基于CKeditor5框架的富文本编辑器
-  * QIMNotify - 全局通知条。
+  * STIMNotes — 史上最安全的密码箱，基于CKeditor5框架的富文本编辑器
+  * STIMNotify - 全局通知条。
   * WebRTC - 高性能的音视频框架。
 
 ## 集成环境
@@ -42,18 +42,18 @@ QIMGeneralModule是在依赖[QIMCommon](https://github.com/qunarcorp/libqimcommo
 
 ### Cocoapods 集成
 
-我们建议你通过 [Cocoapods](https://cocoapods.org/) 来进行 `QIMGeneralModule` 的集成,在 `Podfile` 中加入以下内容:
+我们建议你通过 [Cocoapods](https://cocoapods.org/) 来进行 `STIMGeneralModule` 的集成,在 `Podfile` 中加入以下内容:
 
 ```shell
 source 'https://github.com/qunarcorp/libqimkit-ios-cook.git'
-pod 'QIMGeneralModule'
+pod 'STIMGeneralModule'
 ```
 
 ### 手动集成（不推荐！！！）
 
-1. 下载QIMGeneralModule文件夹内的所有内容
-2. 将QIMGeneralModule内的源文件，资源文件添加（拖放）到你的工程
-3. 为`QIMGeneralModule/QIMNotes/NoARC/**/*.{h,m,c,mm}`添加编译参数`-fno-objc-arc`。
+1. 下载STIMGeneralModule文件夹内的所有内容
+2. 将STIMGeneralModule内的源文件，资源文件添加（拖放）到你的工程
+3. 为`STIMGeneralModule/STIMNotes/NoARC/**/*.{h,m,c,mm}`添加编译参数`-fno-objc-arc`。
 4. 链接以下系统依赖项
     * UIKit
     * Foundation
@@ -66,11 +66,11 @@ pod 'QIMGeneralModule'
 5. 链接以下第三方库
     * SCLAlertView-Objective-C
     * Masonry
-6. 链接QIMSDK依赖项
-    * QIMCommon
-    * QIMOpenSSL
-    * QIMKitVendor
-    * QIMCommonCategories
+6. 链接STIMSDK依赖项
+    * STIMCommon
+    * STIMOpenSSL
+    * STIMKitVendor
+    * STIMCommonCategories
     
 ## 问题反馈
 
