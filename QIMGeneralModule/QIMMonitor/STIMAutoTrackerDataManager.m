@@ -2,7 +2,7 @@
 //  STIMAutoTrackerDataManager.m
 //  STIMGeneralModule
 //
-//  Created by lilu on 2019/4/22.
+//  Created by lihaibin.li on 2019/4/22.
 //  Copyright © 2019 STIM. All rights reserved.
 //
 

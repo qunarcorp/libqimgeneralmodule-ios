@@ -2,7 +2,7 @@
 //  STIMAutoTrackerManager.m
 //  STIMAutoTracker
 //
-//  Created by lilulucas.li on 2019/04/18.
+//  Created by lihaibin.lilucas.li on 2019/04/18.
 //
 
 #import "STIMAutoTrackerManager.h"

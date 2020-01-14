@@ -1,8 +1,8 @@
 //
 //  RTCViewController.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by 李露 on 2017/5/23.
+//  Created by 李海彬 on 2017/5/23.
 //
 //
 

@@ -2,7 +2,7 @@
 //  STIMCalendarsManager.m
 //  STIMGeneralModule
 //
-//  Created by 李露 on 2018/9/10.
+//  Created by 李海彬 on 2018/9/10.
 //  Copyright © 2018年 STIM. All rights reserved.
 //
 

@@ -2,7 +2,7 @@
 //  STIMRTCSingleView.m
 //  STIMGeneralModule
 //
-//  Created by 李露 on 10/19/18.
+//  Created by 李海彬 on 10/19/18.
 //  Copyright © 2018 STIM. All rights reserved.
 //
 

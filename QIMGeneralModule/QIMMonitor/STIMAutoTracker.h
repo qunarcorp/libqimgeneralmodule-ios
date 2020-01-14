@@ -2,7 +2,7 @@
 //  STIMAutoTracker.h
 //  Pods
 //
-//  Created by lilulucas.li on 2019/04/18.
+//  Created by lihaibin.lilucas.li on 2019/04/18.
 //
 
 #ifndef STIMAutoTracker_h
